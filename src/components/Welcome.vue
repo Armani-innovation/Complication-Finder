@@ -1,38 +1,7 @@
 <script setup>
-import {reactive, ref} from "vue";
-import { useCompanyStore } from "./../stores/counter.js";
-import router from "@/router/index.js";
-
-const companyStore = useCompanyStore();
-
-const data = reactive({
-  company : {
-    name: "",
-    registrationNumber: "",
-    nationalID: ""
-  }
-})
-
-let companyName = ref("");
-let companyNationalID = ref("");
-let companyTrademark = ref("");
-
-let isFilled = ref(false);
-
-function savaAndNext() {
-  if (!(companyName.value && companyNationalID.value && companyTrademark.value)) {
-    isFilled.value = true;
-  } else {
-    isFilled.value = false;
-    data.company.name = companyName.value;
-    data.company.registrationNumber = companyNationalID.value;
-    data.company.nationalID = companyTrademark.value;
-    router.push("/domains");
-    companyStore.setCompany(data);
-  }
-}
 
 </script>
+
 <template>
   <div class="main">
     <h3>سلام</h3>
@@ -57,25 +26,14 @@ function savaAndNext() {
       استراتژیک می‌باشد. بررسی نقاط قوت و ضعف داخلی و همچنین تهدیدها و فرصت های بیرونی قبل از بررسی
       دقیق ماموریت و چشم انداز و اهداف آینده ضروری است.
       <br>
-      شرکت شبکه نوآوری و فناوری آرمانی صبا با هدف ارائه خدمات به شرکت های دانش بنیان ، فناور و خلاق
+      شرکت دانش بنیان شبکه نوآوری و فناوری آرمانی صبا با هدف ارائه خدمات به شرکت های دانش بنیان ،
+      فناور و خلاق
       زیست بوم فناوری کشور، با استفاده از کارشناسان حوزه کسب و کار، با طراحی الگوی ارزیابی
       منحصربه‌فرد و تخصصی، در بهبود و توسعه شرکت‌ شما در کنارتان خواهد بود.
-      <br> <br>
-      محمد واعظیان
-      <br>
-      مدیرعامل شرکت شبکه نوآوری و فناوری آرمانی صبا
     </p>
-    <h4>اطلاعات شرکت :</h4>
-    <ul>
-      <li><input type="text" placeholder="نام شرکت" v-model="companyName"/></li>
-      <li><input type="text" placeholder="شناسه ملی شرکت" v-model="companyNationalID"/></li>
-      <li><input type="text" placeholder="شماره ثبت علامت تجاری" v-model="companyTrademark"/></li>
-      <li><input type="text" placeholder="حوضه کاری شرکت"/></li>
-    </ul>
-    <p class="error" v-if="isFilled">لطفا تمام فیلد ها رو پر کنین</p>
-    <RouterLink @click="savaAndNext" to="">
+    <RouterLink to="/CompanyInfo">
       <button class="saveAndNext">
-        ذخیره و بعدی
+        شروع عارضه یابی
       </button>
     </RouterLink>
   </div>
@@ -83,21 +41,22 @@ function savaAndNext() {
 
 <style scoped>
 .main {
-  width: 50%;
+  width: 70%;
+  min-width: 300px;
   height: auto;
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  padding: 5vh 5vh;
-  position: relative;
+  padding: 5vh 5vw;
+  margin: 5vh auto;
 }
 
 .main p {
   text-align: justify;
 }
 
-.main h4 , h3 {
+.main h4, .main h3 {
   margin: 0;
 }
 
@@ -106,13 +65,14 @@ function savaAndNext() {
 }
 
 .main ul {
-  width: 90%;
+  width: 100%;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   justify-content: center;
   margin: 6vh auto 2vh auto;
-  padding-bottom: 20vh;
+  padding-bottom: 10vh;
+  padding-right: 0;
   grid-gap: 3vh 1vw;
 }
 
@@ -126,7 +86,7 @@ function savaAndNext() {
 .main ul li input {
   font-family: "B Yekan", cursive;
   outline: none;
-  width: 90%;
+  width: 100%;
   height: 100%;
   border-radius: 10px;
   border: none;
@@ -136,17 +96,13 @@ function savaAndNext() {
   font-size: 13px;
 }
 
-.main .error {
-  color: red;
-  margin-right: 3vw;
-}
-
 .main .saveAndNext {
-  width: 10vw;
+  width: 100%;
+  max-width: 200px;
   height: 5vh;
   border-radius: 10px;
   border: 0;
-  margin: 0 auto;
+  margin: 2vh auto;
   background-color: #0d6efd;
   color: #ffffff;
   cursor: pointer;
@@ -160,4 +116,5 @@ function savaAndNext() {
 .main .saveAndNext:active {
   border: 2px solid #ffffff;
 }
+
 </style>

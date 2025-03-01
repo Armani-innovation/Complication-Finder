@@ -15,4 +15,25 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("react") || id.includes("vue") || id.includes("svelte")) {
+              return "framework";
+            }
+            if (id.includes("echarts")) {
+              return "charts";
+            }
+            return "vendor";
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000
+  }
+
 })

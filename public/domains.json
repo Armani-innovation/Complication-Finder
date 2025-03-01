@@ -1,0 +1,25 @@
+{
+  "question": "در چه حوزه ای میخواهید ارشگذاری را انجام دهید ؟",
+  "options": [
+    "منابع انسانی",
+    "منابع مالی",
+    "فروش و مارکتینگ",
+    "ساختار سرمایه",
+    "ساختار مدیریتی و سازمانی",
+    "مدیریت ارتباط با مشتری",
+    "ساخت و تولید",
+    "تحقیق و توسعه",
+    "رقابت پذیری محصول"
+  ],
+  "icons": [
+    "users",
+    "coins",
+    "money-bill-trend-up",
+    "building-columns",
+    "building-ngo",
+    "comments",
+    "screwdriver-wrench",
+    "magnifying-glass",
+    "face-grin-tongue-wink"
+  ]
+}

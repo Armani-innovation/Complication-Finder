@@ -1,13 +1,13 @@
 <script setup>
-import {useResultStore} from "./../stores/counter.js";
 import {onMounted, reactive, ref} from "vue";
 import * as echarts from "echarts";
 
-const finalResult = useResultStore().result;
+const finalResult = JSON.parse(localStorage.getItem("finalResult"))
 const scores = reactive([]);
 const gaugeChartRef = ref(null);
 const barChartRef = ref(null);
 let improveSituations = ref(null);
+
 
 for (const key in finalResult.results) {
   if (key != "OverallScore") {
@@ -35,9 +35,9 @@ onMounted(() => {
               color: [
                 [0.2, "#e74c3c"],
                 [0.4, "#e67e22"],
-                [0.6, "#f1c40f"],
-                [0.8, "#2ecc71"],
-                [1, "#27ae60"]
+                [0.6, "#ffe32f"],
+                [0.8, "#2ac56b"],
+                [1, "#208f4f"]
               ]
             }
           },
@@ -50,9 +50,9 @@ onMounted(() => {
             lineStyle: {color: "#34495e", width: 2}
           },
           axisLabel: {
-            fontSize: 12,
+            fontSize: 20,
             fontWeight: "bold",
-            fontFamily: "IRANSans",
+            fontFamily: "BYekan",
             color: "#34495e"
           },
           pointer: {
@@ -72,11 +72,10 @@ onMounted(() => {
             },
             fontSize: 18,
             fontWeight: "bold",
-            fontFamily: "IRANSans",
+            fontFamily: "BYekan",
             color: "#2c3e50",
             offsetCenter: [0, "60%"],
             textShadowColor: "rgba(0, 0, 0, 0.3)",
-            textShadowBlur: 5
           },
           data: [{value: finalResult.results.OverallScore}],
         }
@@ -93,17 +92,17 @@ onMounted(() => {
     const barChartOption = {
       title: {
         text: "تحلیل شاخص‌های فروش و مارکتینگ",
-        subtext: "امتیازات بر اساس بررسی عملکرد فروش و استراتژی بازاریابی",
         left: "center",
         textStyle: {
-          fontFamily: "IRANSans",
+          fontFamily: "BYekan",
           fontSize: 18,
           fontWeight: "bold",
           color: "#2c3e50"
         },
         subtextStyle: {
-          fontFamily: "IRANSans",
+          fontFamily: "BYekan",
           fontSize: 18,
+
           color: "#7f8c8d"
         }
       },
@@ -113,32 +112,40 @@ onMounted(() => {
       },
       grid: {
         left: "200px",
-        right: "50px",
+        right: "200px",
         top: "80px",
         bottom: "40px"
       },
       xAxis: {
         type: "value",
         max: 5,
-        axisLine: {show: false},
-        splitLine: {show: false}
+        axisLine: {show: true},
+        splitLine: {show: true}
       },
       yAxis: {
         type: "category",
+        textStyle: {
+          fontsize: 20
+        },
         data: [
-          "کانال‌های توزیع و فروش",
           "فعالیت‌های صادراتی",
           "شناخت بازار هدف",
-          "سهم بازار",
           "سوابق فروش",
           "روش‌های فروش و مارکتینگ",
+          "کانال‌های توزیع و فروش",
+          "سهم بازار",
           "برندینگ"
         ],
         axisLabel: {
           textStyle: {
-            fontFamily: "IRANSans",
+            fontFamily: "BYekan",
             fontSize: 18,
-            color: "#34495e"
+            color: "#34495e",
+          },
+          options: {
+            layout: {
+              paddingRight: 20,
+            }
           }
         }
       },
@@ -147,12 +154,12 @@ onMounted(() => {
           name: "مقدار",
           type: "bar",
           data: [
-            finalResult.results.DistributionandSalesChannels,
             finalResult.results.ExportActivities,
             finalResult.results.TargetMarketKnowledge,
-            finalResult.results.MarketShare,
             finalResult.results.SalesHistory,
             finalResult.results.MarketingandSalesStrategy,
+            finalResult.results.DistributionandSalesChannels,
+            finalResult.results.MarketShare,
             finalResult.results.Branding
           ],
           barWidth: 25,
@@ -160,11 +167,11 @@ onMounted(() => {
             color: function (params) {
               let value = params.value;
               let colorScale = [
-                {threshold: 1, color: "#c0392b"},
-                {threshold: 2, color: "#e67e22"},
-                {threshold: 3, color: "#f1c40f"},
-                {threshold: 4, color: "#2ecc71"},
-                {threshold: 5, color: "#27ae60"}
+                {threshold: 0, color: "#c0392b"},
+                {threshold: 1, color: "#e67e22"},
+                {threshold: 2, color: "#ffe32f"},
+                {threshold: 3, color: "#2ac56b"},
+                {threshold: 4, color: "#208f4f"}
               ];
               for (let i = colorScale.length - 1; i >= 0; i--) {
                 if (value >= colorScale[i].threshold) {
@@ -189,7 +196,7 @@ onMounted(() => {
             formatter: function (params) {
               return params.value.toFixed(2);
             },
-            fontFamily: "IRANSans"
+            fontFamily: "BYekan"
           }
         }
       ]
@@ -200,19 +207,23 @@ onMounted(() => {
   }
 });
 
-fetch("./../../public/improveSituation.json").then((res) => res.json())
-  .then((data) => {
-      improveSituations.value = data.sales_and_marketing
+fetch("/improveSituation.json").then((res) => res.json())
+  .then((resData) => {
+      improveSituations.value = resData.sales_and_marketing
     }
   )
 
 function setIndex(index) {
-  if (scores[index] > 0 && scores[index] <= 1.7) {
+  if (scores[index] >= 0 && scores[index] < 1) {
     return 1;
-  } else if (scores[index] > 1.7 && scores[index] <= 3.4) {
+  } else if (scores[index] >= 1 && scores[index] < 2) {
     return 2;
-  } else if (scores[index] > 3.4 && scores[index] <= 5) {
+  } else if (scores[index] >= 2 && scores[index] < 3) {
     return 3;
+  } else if (scores[index] >= 3 && scores[index] < 4) {
+    return 4;
+  } else if (scores[index] >= 4 && scores[index] <= 5) {
+    return 5;
   }
 }
 
@@ -220,7 +231,10 @@ function setIndex(index) {
 
 <template>
   <div class="main">
-    <h2> گزارش عارضه یابی فروش و مارکتینگ شرکت {{ finalResult.company.name }} </h2>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="">
+    </div>
+    <h2> گزارش عارضه یابی فروش و مارکتینگ <br> <span>شرکت {{ finalResult.company.name }}</span></h2>
     <div class="textAndChart">
       <p>
         رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت توجه
@@ -247,31 +261,61 @@ function setIndex(index) {
       <div class="barChart" ref="barChartRef"></div>
     </div>
 
-    <h3>راهکار بهبود</h3>
-    <div class="improveSituation" v-for="(improveSituation , index) in improveSituations" :key="index">
+    <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>
+    <div class="improveSituation" v-for="(improveSituation , index) in improveSituations"
+         :key="index">
       <h4>{{ improveSituation[0] }}</h4>
       <pre>
         {{ improveSituation[setIndex(index)] }}
       </pre>
+      <hr style="height: 2px; background-color: black">
+
     </div>
     <p class="finalText">
-      شما میتوانید برای دریافت راهنمایی بیشتر  و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ شبکه نوآوری آرمانی با شماره
-      <a href="tel:+989046504331">09046504331</a> یا
-      <a href="tel:+982332300357">02332300357</a> تماس حاصل نمایید.
+      شما میتوانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ شرکت
+      دانش بنیان شبکه نوآوری آرمانی با شماره های
+      <a href="tel:+982332300357">32300357-023</a>
+      یا
+      <br>
+      <a href="tel:+989046504331">09046504331</a>
+      تماس حاصل نمایید.
     </p>
   </div>
 </template>
 
 <style scoped>
+@font-face {
+  font-family: BYekan;
+  src: url("./../assets/BYekan+.ttf");
+}
+
 .main {
   width: 80%;
+  min-width: 300px;
   height: auto;
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  padding: 5vh 5vh;
+  padding: 5vh 5vw;
   position: relative;
+  margin: 5vh auto;
+}
+
+.main span {
+  font-size: 18px;
+}
+
+.main .logo {
+  width: 100%;
+  height: 16vh;
+  display: flex;
+  justify-content: start;
+}
+
+.main .logo img {
+  width: 10%;
+  height: 100%;
 }
 
 .main p {
@@ -287,6 +331,11 @@ function setIndex(index) {
 
 .main .charts {
   direction: ltr;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .main .gaugeChart {
@@ -300,16 +349,67 @@ function setIndex(index) {
   margin: 0 auto;
 }
 
+.main h3 {
+  color: #0056b3;
+}
+
 .main .improveSituation pre {
   font-family: "B Yekan", cursive;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .main .finalText {
   width: 100%;
+  text-align: center;
 }
 
-.main .finalText a{
+.main .finalText a {
   color: black;
   text-decoration: none;
 }
+
+@media screen and (max-width: 768px) {
+  .main {
+    width: 90%;
+    padding: 4vh 4vw;
+  }
+
+  .main p {
+    width: 100%;
+  }
+
+  .main .textAndChart {
+    flex-direction: column;
+    align-items: center;
+    gap: 5vh;
+  }
+
+  .main .gaugeChart {
+    width: 80%;
+  }
+
+  .main .barChart {
+    height: 250px;
+  }
+
+  .main .finalText {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .main {
+    width: 80%;
+  }
+
+  .main .textAndChart {
+    flex-direction: column;
+  }
+
+  .main .gaugeChart {
+    width: 40vw;
+  }
+}
+
 </style>

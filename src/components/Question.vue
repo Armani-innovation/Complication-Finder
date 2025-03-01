@@ -1,12 +1,10 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
-import axios from "axios";
+import {useCompanyStore} from "./../stores/counter.js";
+import axios from "./../assets/axios.js";
 import router from "@/router/index.js";
-import { useCompanyStore } from "./../stores/counter.js";
-import {useResultStore} from "./../stores/counter.js";
-const companyStore = useCompanyStore();
-const resultStore = useResultStore();
 
+const companyStore = useCompanyStore();
 const props = defineProps(["domain"]);
 
 let questions = reactive([]);
@@ -20,19 +18,51 @@ let picked = ref(null);
 const selectedOption = computed(() => picked.value || 0);
 
 let finalInfo = reactive({
-  domain : "" ,
-  answers : {},
-}) ;
-let finalScore = ref(0);
+  domain: "",
+  answers: {},
+});
 
-function getDomain(domainNum){
+function fetchQuestions() {
+  fetch("/questions.json").then((res) => res.json()).then((resData) => {
+    for (const dataKey in resData[props.domain].questions) {
+      questions.push(resData[props.domain].questions[dataKey])
+      questionsKey.push(dataKey);
+    }
+    for (const dataKey in resData[props.domain].options) {
+      options.push(resData[props.domain].options[dataKey])
+    }
+  })
+}
+
+function updateQuestion() {
+  if (questionCounter.value === questions.length - 1) {
+
+    finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
+    finalInfo.domain = getDomain(props.domain);
+    Object.assign(companyStore.company, finalInfo);
+
+    axios.post("api/diagnostic/", companyStore.company).then(res => {
+      localStorage.setItem("finalResult", JSON.stringify(res.data))
+      router.push("/PayPage")
+    })
+
+  } else {
+
+    finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
+    questionCount.value++;
+    picked.value = null;
+
+  }
+}
+
+function getDomain(domainNum) {
   switch (domainNum) {
     case "1" :
       return "human_resources";
     case "2" :
       return "financial_resources";
     case "3" :
-      return "sales_and_marketing" ;
+      return "sales_and_marketing";
     case "4" :
       return "ساختار سرمایه";
     case "5" :
@@ -48,50 +78,17 @@ function getDomain(domainNum){
   }
 }
 
-function fetchQuestions() {
-  axios.get("./../../public/questions.json").then((res => {
-    for (const resKey in res.data[props.domain].questions) {
-      questions.push(res.data[props.domain].questions[resKey])
-      questionsKey.push(resKey);
-    }
-    for (const resKey in res.data[props.domain].options) {
-      options.push(res.data[props.domain].options[resKey])
-    }
-  }))
-}
-
-function updateQuestion() {
-  if (questionCounter.value === questions.length - 1) {
-    finalScore.value += selectedOption.value;
-    finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
-    finalInfo.domain = getDomain(props.domain);
-    Object.assign(companyStore.company , finalInfo);
-
-    axios.post("http://5.144.130.141:8807/api/diagnostic/", companyStore.company, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => {
-      resultStore.setResult(res.data);
-      router.push("/PayPage")
-    })
-  } else {
-    finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
-    questionCount.value++;
-    finalScore.value += selectedOption.value;
-    picked.value = null;
-  }
-}
-
 fetchQuestions();
+
 </script>
 
 <template>
   <div class="main">
     <p>{{ questions[questionCounter] }}</p>
+
     <ul>
-      <li v-for="(option , index) in options" :key="option" :for="index">
-        <input name="option" type="radio" :id="index" :value="Number(index)+1" v-model="picked"/>
+      <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
+        <input type="radio" name="option" :id="index" :value="Number(index)+1" v-model="picked"/>
         <label :for="index">{{ option }}</label>
       </li>
     </ul>
@@ -105,17 +102,19 @@ fetchQuestions();
 <style scoped>
 .main {
   width: 50%;
+  min-width: 300px;
   height: auto;
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  padding: 5vh 5vh;
+  padding: 5vh 5vw;
   position: relative;
+  margin: 5vh auto;
 }
 
 .main ul {
-  width: 20%;
+  width: 90%;
   height: 35vh;
   list-style: none;
   display: grid;
@@ -126,19 +125,29 @@ fetchQuestions();
 }
 
 .main ul li {
+  width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   border-radius: 15px;
   background-color: #f4f5f7;
   cursor: pointer;
+  padding: 1vh;
+  transition: all 0.3s ease;
+}
+
+.main ul li:hover {
+  background-color: #e0e0e0;
 }
 
 .main ul li label {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   cursor: pointer;
+  padding: 1vh;
 }
 
 .main ul li input {
@@ -147,11 +156,12 @@ fetchQuestions();
 }
 
 .main .saveAndNext {
-  width: 10vw;
+  width: 100%;
+  max-width: 200px;
   height: 5vh;
   border-radius: 10px;
   border: 0;
-  margin: 0 auto;
+  margin: 20vh auto 5vh auto;;
   background-color: #0d6efd;
   color: #ffffff;
   cursor: pointer;
@@ -160,9 +170,43 @@ fetchQuestions();
   justify-content: center;
   text-decoration: none;
   font-family: "B Yekan", cursive;
+  transition: all 0.3s ease;
+}
+
+.main .saveAndNext:hover {
+  background-color: #0056b3;
 }
 
 .main .saveAndNext:active {
   border: 2px solid #ffffff;
 }
+
+@media screen and (max-width: 768px) {
+  .main {
+    width: 90%;
+    padding: 4vh 4vw;
+  }
+
+  .main ul {
+    width: 80%;
+    max-width: 300px;
+  }
+
+  .main .saveAndNext {
+    width: 80%;
+    max-width: 180px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .main {
+    width: 70%;
+  }
+
+  .main ul {
+    width: 50%;
+  }
+}
+
+
 </style>

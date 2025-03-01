@@ -1,28 +1,63 @@
 <script setup>
-//
-//import { computed, getCurrentInstance } from "vue";
-//
-//const instance = getCurrentInstance();
-//const currentComponent = computed(() => {
-//  return instance?.proxy?.$route?.matched?.[0]?.components?.default?.__name || "نامشخص";
-//});
-//
-//console.log(currentComponent.value);
+import {ref, watch} from "vue";
+import {useRoute} from 'vue-router'
+
+const infos = ref(null)
+const complication = ref(null)
+const credits = ref(null)
+const result = ref(null)
+
+const route = useRoute()
+
+watch(() => route.name, (newName) => {
+  switch (newName) {
+    case "Welcome" :
+      welcome()
+      break;
+    case "Questions" :
+      questions()
+      break;
+    case "PayPage" :
+      payPage()
+      break;
+    case "Result" :
+      finalResult()
+      break;
+  }
+})
+
+function welcome() {
+
+}
+
+function questions() {
+}
+
+function payPage() {
+}
+
+function finalResult() {
+}
+
 </script>
 
 <template>
   <div class="main">
     <ul>
       <li>
-        <font-awesome-icon class="icon" icon="circle-question"/>
-        <h4>سوالات عمومی</h4>
+        <font-awesome-icon ref="infos" class="icon" icon="circle-question"/>
+        <h4>اطلاعات شرکت</h4>
       </li>
       <li>
-        <font-awesome-icon class="icon" icon="credit-card"/>
+        <font-awesome-icon ref="complication" class="icon" icon="circle-question"/>
+        <h4>سوالات عارضه یابی</h4>
+      </li>
+      <li>
+        <font-awesome-icon ref="credits" class="icon" icon="credit-card"/>
         <h4>پرداخت</h4>
       </li>
       <li>
-        <font-awesome-icon class="icon" icon="square-poll-vertical"/>
+        <font-awesome-icon ref="result" class="icon" icon="square-poll-vertical"/>
         <h4>گزارش نهایی</h4>
       </li>
     </ul>
