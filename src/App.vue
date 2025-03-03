@@ -1,12 +1,11 @@
 <script setup>
 import Status from "@/components/Status.vue";
-
 </script>
 
 <template>
   <div class="container">
     <h1>پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
-    <Status/>
+    <Status class="status"/>
     <RouterView/>
   </div>
 </template>
@@ -19,5 +18,11 @@ import Status from "@/components/Status.vue";
   }
   .container h1 {
     margin: 5vh 0;
+  }
+
+  @media screen and (max-width: 480px) {
+    .status {
+      display: none;
+    }
   }
 </style>

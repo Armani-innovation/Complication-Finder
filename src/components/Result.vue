@@ -3,11 +3,25 @@ import {onMounted, reactive, ref} from "vue";
 import * as echarts from "echarts";
 
 const finalResult = JSON.parse(localStorage.getItem("finalResult"))
+console.log(finalResult)
 const scores = reactive([]);
+
 const gaugeChartRef = ref(null);
 const barChartRef = ref(null);
+
 let improveSituations = ref(null);
 
+const domainIndicators = {
+  salesAndMarketing : [
+    "برندینگ",
+    "شناخت بازار هدف",
+    "سوابق فروش",
+    "روش‌های فروش و مارکتینگ",
+    "کانال‌های توزیع و فروش",
+    "سهم بازار",
+    "فعالیت‌های صادراتی",
+  ]
+}
 
 for (const key in finalResult.results) {
   if (key != "OverallScore") {
@@ -91,7 +105,7 @@ onMounted(() => {
 
     const barChartOption = {
       title: {
-        text: "تحلیل شاخص‌های فروش و مارکتینگ",
+        text: "تحلیل شاخص‌ها",
         left: "center",
         textStyle: {
           fontFamily: "BYekan",
@@ -127,41 +141,21 @@ onMounted(() => {
         textStyle: {
           fontsize: 20
         },
-        data: [
-          "فعالیت‌های صادراتی",
-          "شناخت بازار هدف",
-          "سوابق فروش",
-          "روش‌های فروش و مارکتینگ",
-          "کانال‌های توزیع و فروش",
-          "سهم بازار",
-          "برندینگ"
-        ],
+        data : domainIndicators.salesAndMarketing ,
         axisLabel: {
           textStyle: {
             fontFamily: "BYekan",
             fontSize: 18,
             color: "#34495e",
           },
-          options: {
-            layout: {
-              paddingRight: 20,
-            }
-          }
+          overflow : "break"
         }
       },
       series: [
         {
           name: "مقدار",
           type: "bar",
-          data: [
-            finalResult.results.ExportActivities,
-            finalResult.results.TargetMarketKnowledge,
-            finalResult.results.SalesHistory,
-            finalResult.results.MarketingandSalesStrategy,
-            finalResult.results.DistributionandSalesChannels,
-            finalResult.results.MarketShare,
-            finalResult.results.Branding
-          ],
+          data : scores ,
           barWidth: 25,
           itemStyle: {
             color: function (params) {
@@ -307,14 +301,14 @@ function setIndex(index) {
 }
 
 .main .logo {
-  width: 100%;
-  height: 16vh;
+  width: 7vw;
+  aspect-ratio: 4/4;
   display: flex;
   justify-content: start;
 }
 
 .main .logo img {
-  width: 10%;
+  width: 100%;
   height: 100%;
 }
 
@@ -340,6 +334,7 @@ function setIndex(index) {
 
 .main .gaugeChart {
   width: 35vw;
+  height: auto;
   margin: 0 auto;
 }
 
@@ -367,49 +362,6 @@ function setIndex(index) {
 .main .finalText a {
   color: black;
   text-decoration: none;
-}
-
-@media screen and (max-width: 768px) {
-  .main {
-    width: 90%;
-    padding: 4vh 4vw;
-  }
-
-  .main p {
-    width: 100%;
-  }
-
-  .main .textAndChart {
-    flex-direction: column;
-    align-items: center;
-    gap: 5vh;
-  }
-
-  .main .gaugeChart {
-    width: 80%;
-  }
-
-  .main .barChart {
-    height: 250px;
-  }
-
-  .main .finalText {
-    text-align: center;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .main {
-    width: 80%;
-  }
-
-  .main .textAndChart {
-    flex-direction: column;
-  }
-
-  .main .gaugeChart {
-    width: 40vw;
-  }
 }
 
 </style>

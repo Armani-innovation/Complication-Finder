@@ -20,6 +20,8 @@ import {faBuildingColumns} from "@fortawesome/free-solid-svg-icons";
 import {faScrewdriverWrench} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import {faFaceGrinTongueWink} from "@fortawesome/free-solid-svg-icons";
+import {faInfo} from "@fortawesome/free-solid-svg-icons";
+import {faHandshake} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUsers);
 library.add(faCreditCard);
@@ -33,6 +35,8 @@ library.add(faBuildingColumns);
 library.add(faScrewdriverWrench);
 library.add(faMagnifyingGlass);
 library.add(faFaceGrinTongueWink);
+library.add(faInfo);
+library.add(faHandshake);
 
 
 

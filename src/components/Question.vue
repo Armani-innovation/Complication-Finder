@@ -1,7 +1,7 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
 import {useCompanyStore} from "./../stores/counter.js";
-import axios from "./../assets/axios.js";
+import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 
 const companyStore = useCompanyStore();
@@ -115,19 +115,19 @@ fetchQuestions();
 
 .main ul {
   width: 90%;
-  height: 35vh;
+  height: auto;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   grid-gap: 2vh;
-  margin: 5vh 2vw;
+  margin: 5vh 0 0 0;
   padding: 0;
 }
 
 .main ul li {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   border-radius: 15px;
   background-color: #f4f5f7;
@@ -143,7 +143,7 @@ fetchQuestions();
 .main ul li label {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   width: 100%;
   height: 100%;
   cursor: pointer;
@@ -152,7 +152,13 @@ fetchQuestions();
 
 .main ul li input {
   cursor: pointer;
-  margin: 0 0.2vw;
+  display: none;
+}
+
+.main ul li input:checked + label {
+  color: green;
+  font-weight: bold;
+  transition: ease 100ms;
 }
 
 .main .saveAndNext {
@@ -161,7 +167,7 @@ fetchQuestions();
   height: 5vh;
   border-radius: 10px;
   border: 0;
-  margin: 20vh auto 5vh auto;;
+  margin: 10vh auto 5vh auto;;
   background-color: #0d6efd;
   color: #ffffff;
   cursor: pointer;
@@ -180,33 +186,5 @@ fetchQuestions();
 .main .saveAndNext:active {
   border: 2px solid #ffffff;
 }
-
-@media screen and (max-width: 768px) {
-  .main {
-    width: 90%;
-    padding: 4vh 4vw;
-  }
-
-  .main ul {
-    width: 80%;
-    max-width: 300px;
-  }
-
-  .main .saveAndNext {
-    width: 80%;
-    max-width: 180px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .main {
-    width: 70%;
-  }
-
-  .main ul {
-    width: 50%;
-  }
-}
-
 
 </style>

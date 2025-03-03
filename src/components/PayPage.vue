@@ -102,34 +102,4 @@
   border: 2px solid #ffffff;
 }
 
-@media screen and (max-width: 768px) {
-  .main {
-    width: 90%;
-    padding: 4vh 4vw;
-  }
-
-  .main ul {
-    width: 100%;
-    grid-template-columns: 1fr;
-    gap: 2vh;
-  }
-
-  .main .saveAndNext {
-    width: 80%;
-    max-width: 180px;
-    margin: 5vh auto 0 auto;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .main {
-    width: 70%;
-  }
-
-  .main ul {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-
 </style>

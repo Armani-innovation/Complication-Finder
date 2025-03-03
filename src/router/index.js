@@ -11,11 +11,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { name: "Welcome", component: Welcome, path: "/"},
+    { name: "CompanyInfo", component: CompanyInfo, path: "/CompanyInfo" },
     { name: "Domain", component: Domain, path: "/domains"},
     { name: "Questions", component: Question, path: "/questions/:domain", props: true},
     { name: "PayPage", component: PayPage, path: "/PayPage"},
     { name: "Result", component: Result, path: "/result" },
-    { name: "CompanyInfo", component: CompanyInfo, path: "/CompanyInfo" },
   ],
 });
 
