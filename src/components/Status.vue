@@ -71,31 +71,44 @@ function finalResult() {
   result.value.$el.classList.add("now")
   resultTitle.value.classList.add("now")
 }
-
 </script>
 
 <template>
   <div class="main">
     <ul>
       <li>
-        <font-awesome-icon ref="description" class="icon" icon="handshake"/>
-        <h4 class="" ref="descriptionTitle">معرفی عارضه یاب</h4>
+        <div class="icons">
+          <font-awesome-icon ref="description" class="icon" icon="handshake"/>
+          <h4 class="" ref="descriptionTitle">معرفی عارضه یاب</h4>
+        </div>
       </li>
       <li>
-        <font-awesome-icon ref="infos" class="icon" icon="info"/>
-        <h4 class="" ref="infosTitle">اطلاعات شرکت</h4>
+        <img class="svg" src="./../assets/svg-image-3.svg" alt="">
+        <div class="icons">
+          <font-awesome-icon ref="infos" class="icon" icon="info"/>
+          <h4 class="" ref="infosTitle">اطلاعات شرکت</h4>
+        </div>
       </li>
       <li>
-        <font-awesome-icon ref="complication" class="icon" icon="circle-question"/>
-        <h4 class="" ref="complicationTitle">سوالات عارضه یابی</h4>
+        <img class="svg" src="./../assets/svg-image-3.svg" alt="">
+        <div class="icons">
+          <font-awesome-icon ref="complication" class="icon" icon="circle-question"/>
+          <h4 class="" ref="complicationTitle">سوالات عارضه یابی</h4>
+        </div>
       </li>
       <li>
-        <font-awesome-icon ref="credits" class="icon" icon="credit-card"/>
-        <h4 class="" ref="creditsTitle">پرداخت</h4>
+        <img class="svg" src="./../assets/svg-image-3.svg" alt="">
+        <div class="icons">
+          <font-awesome-icon ref="credits" class="icon" icon="credit-card"/>
+          <h4 class="" ref="creditsTitle">پرداخت</h4>
+        </div>
       </li>
       <li>
-        <font-awesome-icon ref="result" class="icon" icon="square-poll-vertical"/>
-        <h4 class="" ref="resultTitle">گزارش نهایی</h4>
+        <img class="svg" src="./../assets/svg-image-3.svg" alt="">
+        <div class="icons">
+          <font-awesome-icon ref="result" class="icon" icon="square-poll-vertical"/>
+          <h4 class="" ref="resultTitle">گزارش نهایی</h4>
+        </div>
       </li>
     </ul>
   </div>
@@ -124,13 +137,25 @@ function finalResult() {
 
 .main ul li {
   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main ul li .svg{
+  width: 40%;
+  height: auto;
+}
+
+.main ul li .icons{
+  display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.main ul li h4 {
+.main ul li .icons h4 {
   margin: 0;
   opacity: 0.5;
+  font-size: 1vw;
 }
 
 .main ul li .icon {
@@ -159,8 +184,14 @@ function finalResult() {
 }
 
 @media screen and (max-width: 480px) {
-  .main ul {
-    grid-template-columns: repeat(3 , 1fr);
+  .main {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .main {
+    width: 90%;
   }
 }
 </style>

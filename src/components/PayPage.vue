@@ -8,17 +8,13 @@
       عارضه یابی شما با موفقیت انجام شد
       لطفا برای مشاهده گزارش مبلغ 5,000,000 تومان را پرداخت کنید
     </pre>
-    <router-link to="/result">
-      <button class="saveAndNext">
+    <router-link class="saveAndNext" to="/result">
         پرداخت و مشاهده نتیجه
-      </button>
     </router-link>
-
   </div>
 </template>
 
 <style scoped>
-
 .main {
   width: 50%;
   min-width: 300px;
@@ -77,7 +73,7 @@
 }
 
 .main .saveAndNext {
-  width: 15vw;
+  width: 100%;
   max-width: 200px;
   height: 5vh;
   border-radius: 10px;
@@ -92,6 +88,7 @@
   text-decoration: none;
   font-family: "B Yekan", cursive;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .main .saveAndNext:hover {
@@ -102,4 +99,9 @@
   border: 2px solid #ffffff;
 }
 
+@media screen and (max-width: 900px) {
+  .main {
+    width: 90%;
+  }
+}
 </style>

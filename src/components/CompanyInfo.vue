@@ -5,7 +5,6 @@ import router from "@/router/index.js";
 
 const companyStore = useCompanyStore();
 
-
 const data = reactive({
   company: {
     name: "",
@@ -33,6 +32,7 @@ function savaAndNext() {
   }
 }
 </script>
+
 <template>
   <div class="main">
     <h4>برای شروع عارضه یابی لطفا اطلاعات شرکتتون رو وارد کنین</h4>
@@ -43,7 +43,7 @@ function savaAndNext() {
       <li><input type="text" placeholder="حوزه کاری شرکت"/></li>
     </ul>
     <p class="error" v-if="isFilled">لطفا تمام فیلد ها رو پر کنین</p>
-    <RouterLink @click="savaAndNext" to="">
+    <RouterLink class="saveAndNext" @click="savaAndNext" to="">
       <button class="saveAndNext">
         ذخیره و بعدی
       </button>
@@ -111,7 +111,7 @@ function savaAndNext() {
   height: 5vh;
   border-radius: 10px;
   border: 0;
-  margin: 2vh auto;
+  margin: 5vh auto;
   background-color: #0d6efd;
   color: #ffffff;
   cursor: pointer;
@@ -120,10 +120,15 @@ function savaAndNext() {
   justify-content: center;
   text-decoration: none;
   font-family: "B Yekan", cursive;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.main .saveAndNext:hover {
+  background-color: #0056b3;
 }
 
 .main .saveAndNext:active {
   border: 2px solid #ffffff;
 }
-
 </style>

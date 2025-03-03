@@ -36,22 +36,19 @@ function fetchQuestions() {
 
 function updateQuestion() {
   if (questionCounter.value === questions.length - 1) {
-
     finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
     finalInfo.domain = getDomain(props.domain);
     Object.assign(companyStore.company, finalInfo);
 
     axios.post("api/diagnostic/", companyStore.company).then(res => {
       localStorage.setItem("finalResult", JSON.stringify(res.data))
+      console.log(JSON.parse(localStorage.getItem("finalResult")));
       router.push("/PayPage")
     })
-
   } else {
-
     finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
     questionCount.value++;
     picked.value = null;
-
   }
 }
 
@@ -79,20 +76,17 @@ function getDomain(domainNum) {
 }
 
 fetchQuestions();
-
 </script>
 
 <template>
   <div class="main">
     <p>{{ questions[questionCounter] }}</p>
-
     <ul>
       <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
         <input type="radio" name="option" :id="index" :value="Number(index)+1" v-model="picked"/>
         <label :for="index">{{ option }}</label>
       </li>
     </ul>
-
     <button class="saveAndNext" @click="updateQuestion" :disabled="!picked">
       ذخیره و بعدی
     </button>
@@ -101,7 +95,7 @@ fetchQuestions();
 
 <style scoped>
 .main {
-  width: 50%;
+  width: 70%;
   min-width: 300px;
   height: auto;
   background-color: #ffffff;
@@ -167,16 +161,14 @@ fetchQuestions();
   height: 5vh;
   border-radius: 10px;
   border: 0;
-  margin: 10vh auto 5vh auto;;
+  margin: 10vh auto 5vh auto;
   background-color: #0d6efd;
   color: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
   font-family: "B Yekan", cursive;
-  transition: all 0.3s ease;
 }
 
 .main .saveAndNext:hover {
@@ -187,4 +179,15 @@ fetchQuestions();
   border: 2px solid #ffffff;
 }
 
+@media screen and (max-width: 480px) {
+  .main {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .main {
+    width: 90%;
+  }
+}
 </style>

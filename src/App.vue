@@ -4,7 +4,7 @@ import Status from "@/components/Status.vue";
 
 <template>
   <div class="container">
-    <h1>پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
+    <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
     <Status class="status"/>
     <RouterView/>
   </div>
@@ -18,6 +18,9 @@ import Status from "@/components/Status.vue";
   }
   .container h1 {
     margin: 5vh 0;
+  }
+  .container .title {
+    text-align: center;
   }
 
   @media screen and (max-width: 480px) {

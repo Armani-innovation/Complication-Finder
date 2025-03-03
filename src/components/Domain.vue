@@ -27,7 +27,7 @@ onMounted(loadDomains)
       </li>
     </ul>
 
-    <router-link :to="{ name: 'Questions', params: { domain: selectedDomain }}">
+    <router-link class="saveAndNext link" :to="{ name: 'Questions', params: { domain: selectedDomain }}">
       <button class="saveAndNext" :disabled="!picked">
         ذخیره و بعدی
       </button>
@@ -117,6 +117,7 @@ onMounted(loadDomains)
   text-decoration: none;
   font-family: "B Yekan", cursive;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .main .saveAndNext:hover {
@@ -126,5 +127,4 @@ onMounted(loadDomains)
 .main .saveAndNext:active {
   border: 2px solid #ffffff;
 }
-
 </style>
