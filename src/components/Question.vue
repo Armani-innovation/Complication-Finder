@@ -4,6 +4,8 @@ import {useCompanyStore} from "./../stores/counter.js";
 import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 
+let isLoading = ref(false);
+
 const companyStore = useCompanyStore();
 const props = defineProps(["domain"]);
 
@@ -39,11 +41,12 @@ function updateQuestion() {
     finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
     finalInfo.domain = getDomain(props.domain);
     Object.assign(companyStore.company, finalInfo);
-
+    isLoading.value = true;
     axios.post("api/diagnostic/", companyStore.company).then(res => {
       localStorage.setItem("finalResult", JSON.stringify(res.data))
       console.log(JSON.parse(localStorage.getItem("finalResult")));
       router.push("/PayPage")
+      isLoading.value = false;
     })
   } else {
     finalInfo.answers[`${questionsKey[questionCount.value]}`] = selectedOption.value;
@@ -55,23 +58,32 @@ function updateQuestion() {
 function getDomain(domainNum) {
   switch (domainNum) {
     case "1" :
+      sessionStorage.setItem("domain", "human_resources");
       return "human_resources";
     case "2" :
+      sessionStorage.setItem("domain", "financial_resources");
       return "financial_resources";
     case "3" :
+      sessionStorage.setItem("domain", "sales_and_marketing");
       return "sales_and_marketing";
     case "4" :
-      return "ساختار سرمایه";
+      sessionStorage.setItem("domain", "capital_structure");
+      return "capital_structure";
     case "5" :
-      return "ساختار مدیریتی و سازمانی";
+      sessionStorage.setItem("domain", "management_organizational_structure");
+      return "management_organizational_structure";
     case "6" :
-      return "مدیریت ارتباط با مشتری";
+      sessionStorage.setItem("domain", "customer_relationship_management");
+      return "customer_relationship_management";
     case "7" :
-      return "ساخت و تولید";
+      sessionStorage.setItem("domain", "manufacturing_and_production");
+      return "manufacturing_and_production";
     case "8" :
-      return "تحقیق و توسعه";
+      sessionStorage.setItem("domain", "research_and_development");
+      return "research_and_development";
     case "9" :
-      return "رقابت پذیری محصول";
+      sessionStorage.setItem("domain", "product_competitiveness");
+      return "product_competitiveness";
   }
 }
 
@@ -79,7 +91,7 @@ fetchQuestions();
 </script>
 
 <template>
-  <div class="main">
+  <div v-if="!isLoading" class="main">
     <p>{{ questions[questionCounter] }}</p>
     <ul>
       <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
@@ -91,6 +103,7 @@ fetchQuestions();
       ذخیره و بعدی
     </button>
   </div>
+  <img v-else class="loader" src="./../assets/Animation.gif" alt="">
 </template>
 
 <style scoped>
@@ -177,12 +190,6 @@ fetchQuestions();
 
 .main .saveAndNext:active {
   border: 2px solid #ffffff;
-}
-
-@media screen and (max-width: 480px) {
-  .main {
-    width: 90%;
-  }
 }
 
 @media screen and (max-width: 992px) {

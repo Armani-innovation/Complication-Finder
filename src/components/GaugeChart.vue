@@ -212,10 +212,4 @@ onUnmounted(() => {
   width: 100%;
   height: 300px;
 }
-
-@media (min-width: 768px) {
-  .gaugeChart {
-    height: 400px;
-  }
-}
 </style>

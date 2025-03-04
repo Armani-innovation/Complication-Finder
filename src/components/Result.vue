@@ -4,21 +4,77 @@ import RadarChart from "./RadarChart.vue";
 import {reactive , ref} from "vue";
 
 const finalResult = JSON.parse(localStorage.getItem("finalResult"))
+const domain = sessionStorage.getItem("domain");
 const scores = reactive([]);
 
 let improveSituations = ref(null);
 
-const domainIndicators = {
-  salesAndMarketing: [
+const domainIndicators = [
+  [
+    "تعداد نیروی کار",
+    "حفظ کارکنان",
+    "بهره وری کارکنان",
+    "سیستم ارزیابی عملکرد کارکنان",
+    "سیستم آموزش کارکنان",
+    "همکاری و کار تیمی",
+    "آگاهی ارزشهای اخلاقی"
+  ],
+  [
+    "جریان نقدی عملیاتی",
+    "نسبت فعلی",
+    "سرمایه در گردش",
+    "نرخ سوزی سرمایه",
+    "حاشیه سود خالص",
+    "گردش حساب های پرداختنی",
+    "مجموع هزینه عملکرد مالی",
+    "نسبت هزینه فعالیت مالی",
+    "گزارش خطاهای مالی",
+    "انحراف بودجه",
+    "رشد فروش"
+  ],
+  [
     "برندینگ",
     "شناخت بازار هدف",
     "سوابق فروش",
     "روش‌های فروش و مارکتینگ",
     "کانال‌های توزیع و فروش",
     "سهم بازار",
-    "فعالیت‌های صادراتی",
-  ]
-}
+    "فعالیت‌های صادراتی"
+  ],
+  [
+    "منابع تامین مالی",
+    "تحمل ریسک"
+  ],
+  [
+    "نمودار سازمانی",
+    "سیستم مدیریت دانش و اطلاعات",
+    "سیستم سازماندهی محل کار",
+    "مدیریت استراتژی و چشم انداز",
+    "تفویض اختیار"
+  ],
+  [
+    "سیستم بازخورد",
+    "امکانات",
+    "حفظ مشتری"
+  ],
+  [
+    "تولید ماهانه",
+    "سیستم مدیریت تولید",
+    "فناوری تولید",
+    "تولید بازار محور",
+    "بهره وری تولید",
+    "استانداردهای ملی و بین المللی",
+    "گارانتی",
+    "سیستم کنترل کیفیت"
+  ],
+  [
+    "بهبود محصول",
+    "نوآوری"
+  ],
+  [
+    "مزیت رقابتی"
+  ],
+]
 
 for (const key in finalResult.results) {
   if (key != "OverallScore") {
@@ -28,7 +84,7 @@ for (const key in finalResult.results) {
 
 fetch("/improveSituation.json").then((res) => res.json())
   .then((resData) => {
-      improveSituations.value = resData.sales_and_marketing
+      improveSituations.value = resData[getIndex(domain)]
     }
   )
 
@@ -43,6 +99,29 @@ function setIndex(index) {
     return 4;
   } else if (scores[index] >= 4 && scores[index] <= 5) {
     return 5;
+  }
+}
+
+function getIndex(domain) {
+  switch (domain) {
+    case "human_resources" :
+      return 0;
+    case "financial_resources" :
+      return 1;
+    case "sales_and_marketing" :
+      return 2;
+    case "capital_structure" :
+      return 3;
+    case "management_organizational_structure" :
+      return 4;
+    case "customer_relationship_management" :
+      return 5;
+    case "manufacturing_and_production" :
+      return 6;
+    case "research_and_development" :
+      return 7;
+    case "product_competitiveness" :
+      return 8;
   }
 }
 </script>
@@ -75,7 +154,7 @@ function setIndex(index) {
       <GaugeChart class="gaugeChart" :value="finalResult.results.OverallScore"></GaugeChart>
     </div>
 
-    <RadarChart :keys="domainIndicators.salesAndMarketing" :values="scores" >
+    <RadarChart :keys="domainIndicators[getIndex(domain)]" :values="scores" >
     </RadarChart>
 
     <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>
@@ -86,7 +165,7 @@ function setIndex(index) {
         <pre>
         {{ improveSituation[setIndex(index)] }}
         </pre>
-        <GaugeChart class="gaugeChartPre" style="width: 30vw; aspect-ratio: 1/1" :value="scores[index]"></GaugeChart>
+        <GaugeChart class="gaugeChartPre" :value="scores[index]"></GaugeChart>
       </div>
       <hr style="height: 2px; background-color: black">
     </div>
@@ -173,6 +252,11 @@ function setIndex(index) {
   display: flex;
 }
 
+.main .improveSituation div .gaugeChartPre {
+  width: 30vw;
+  aspect-ratio: 4/4;
+}
+
 .main .finalText {
   width: 100%;
   text-align: center;
@@ -203,7 +287,14 @@ function setIndex(index) {
     width: 100%;
   }
   .main .improveSituation div .gaugeChartPre{
-    width: 80vw;
+    width: 50vw;
+    height: auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .main .improveSituation div .gaugeChartPre{
+    width: 70vw;
     height: auto;
   }
 }
