@@ -44,7 +44,6 @@ function updateQuestion() {
     isLoading.value = true;
     axios.post("api/diagnostic/", companyStore.company).then(res => {
       localStorage.setItem("finalResult", JSON.stringify(res.data))
-      console.log(JSON.parse(localStorage.getItem("finalResult")));
       router.push("/PayPage")
       isLoading.value = false;
     })

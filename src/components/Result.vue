@@ -124,6 +124,29 @@ function getIndex(domain) {
       return 8;
   }
 }
+
+function getDomain(domain) {
+  switch (domain) {
+    case "human_resources" :
+      return "منابع انسانی";
+    case "financial_resources" :
+      return "منابع مالی";
+    case "sales_and_marketing" :
+      return "فروش و مارکتینگ";
+    case "capital_structure" :
+      return "ساختار سرمایه";
+    case "management_organizational_structure" :
+      return "ساختار مدیریتی و سازمانی";
+    case "customer_relationship_management" :
+      return "مدیریت ارتباط با مشتری";
+    case "manufacturing_and_production" :
+      return "ساخت و تولید";
+    case "research_and_development" :
+      return "تحقیق و توسعه";
+    case "product_competitiveness" :
+      return "رقابت پذیری محصول";
+  }
+}
 </script>
 
 <template>
@@ -131,7 +154,7 @@ function getIndex(domain) {
     <div class="logo">
       <img src="../assets/logo.png" alt="">
     </div>
-    <h2> گزارش عارضه یابی فروش و مارکتینگ <br> <span>شرکت {{ finalResult.company.name }}</span></h2>
+    <h2> گزارش عارضه یابی {{getDomain(domain)}} <br> <span>شرکت {{ finalResult.company.name }}</span></h2>
     <div class="textAndChart">
       <p>
         رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت توجه
