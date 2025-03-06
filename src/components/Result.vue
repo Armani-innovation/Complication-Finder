@@ -1,7 +1,7 @@
 <script setup>
 import GaugeChart from './GaugeChart.vue'
 import RadarChart from "./RadarChart.vue";
-import {reactive , ref} from "vue";
+import {reactive, ref} from "vue";
 
 const finalResult = JSON.parse(localStorage.getItem("finalResult"))
 const domain = sessionStorage.getItem("domain");
@@ -154,18 +154,24 @@ function getDomain(domain) {
     <div class="logo">
       <img src="../assets/logo.png" alt="">
     </div>
-    <h2> گزارش عارضه یابی {{getDomain(domain)}} <br> <span>شرکت {{ finalResult.company.name }}</span></h2>
+    <h2> گزارش عارضه یابی {{ getDomain(domain) }} <br> <span>شرکت {{
+        finalResult.company.name
+      }}</span></h2>
     <div class="textAndChart">
       <p>
-        رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت توجه
+        رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت
+        توجه
         به
         بازاریابی و فروش نسبت به چند سال گذشته دو چندان گردد. لزوم برنامه ریزی منظم و رعایت اصول
-        بازاریابی و فروش از عوامل حیاتی حفظ و نگه داشت جایگاه کسب و کارها در دنیای امروز است. باتوجه
-        به اهمیت این واحد، لازم است معیار های استاندارد برای سنجش فرآیندهای فروش و مارکتینگ طراحی و
+        بازاریابی و فروش از عوامل حیاتی حفظ و نگه داشت جایگاه کسب و کارها در دنیای امروز است.
+        باتوجه
+        به اهمیت این واحد، لازم است معیار های استاندارد برای سنجش فرآیندهای فروش و مارکتینگ طراحی
+        و
         وضعیت چگونگی انجام کار هر یک مشخص شود.
         KPI های فروش شاخص‌های برجسته‌ای هستند که به یک رهبر فروش، مدیر فروش و تیم فروش کمک می‌کنند
         تا
-        میزان پیشرفت خود را در رسیدن به اهداف فروش و اهداف سازمانی تعیین کنند. یک واحد فروش موفق، به
+        میزان پیشرفت خود را در رسیدن به اهداف فروش و اهداف سازمانی تعیین کنند. یک واحد فروش موفق،
+        به
         داده‌های فروش صحیح دسترسی دارد. با استفاده از KPI، بخش فروش شما می‌تواند:
         <br>
         • پیشرفت خود را در دستیابی به اهداف پیگیری کند.
@@ -177,7 +183,7 @@ function getDomain(domain) {
       <GaugeChart class="gaugeChart" :value="finalResult.results.OverallScore"></GaugeChart>
     </div>
 
-    <RadarChart :keys="domainIndicators[getIndex(domain)]" :values="scores" >
+    <RadarChart :keys="domainIndicators[getIndex(domain)]" :values="scores">
     </RadarChart>
 
     <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>
@@ -193,7 +199,8 @@ function getDomain(domain) {
       <hr style="height: 2px; background-color: black">
     </div>
     <p class="finalText">
-      شما میتوانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ شرکت
+      شما میتوانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ
+      شرکت
       دانش بنیان شبکه نوآوری آرمانی با شماره های
       <a href="tel:+982332300357">32300357-023</a>
       یا
@@ -202,12 +209,24 @@ function getDomain(domain) {
       تماس حاصل نمایید.
     </p>
   </div>
+  <div class="sideBar"></div>
 </template>
 
 <style scoped>
 @font-face {
   font-family: BYekan;
   src: url("./../assets/BYekan+.ttf");
+}
+
+.container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.sideBar {
+  width: 5vw;
+  height: 100vh;
+  background-color: green;
 }
 
 .main {
@@ -295,28 +314,33 @@ function getDomain(domain) {
     flex-direction: column;
     margin: 0;
   }
-  .main .textAndChart p{
+
+  .main .textAndChart p {
     width: 100%;
   }
+
   .main .gaugeChart {
     width: 55vw;
     height: 50vh;
     margin: 0 auto;
   }
+
   .main .improveSituation div {
     flex-direction: column;
   }
-  .main .improveSituation div pre{
+
+  .main .improveSituation div pre {
     width: 100%;
   }
-  .main .improveSituation div .gaugeChartPre{
+
+  .main .improveSituation div .gaugeChartPre {
     width: 50vw;
     height: auto;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .main .improveSituation div .gaugeChartPre{
+  .main .improveSituation div .gaugeChartPre {
     width: 70vw;
     height: auto;
   }

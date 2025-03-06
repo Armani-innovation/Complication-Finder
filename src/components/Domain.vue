@@ -54,7 +54,7 @@ onMounted(loadDomains)
   height: auto;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   justify-content: center;
   grid-gap: 2vh 1vw;
   margin: 0 auto;
