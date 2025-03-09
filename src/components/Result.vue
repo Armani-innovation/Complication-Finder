@@ -198,6 +198,9 @@ function getDomain(domain) {
       </div>
       <hr style="height: 2px; background-color: black">
     </div>
+    <router-link class="saveAndNext" to="/domains">
+      ادامه عارضه یابی
+    </router-link>
     <p class="finalText">
       شما میتوانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ
       شرکت
@@ -209,24 +212,12 @@ function getDomain(domain) {
       تماس حاصل نمایید.
     </p>
   </div>
-  <div class="sideBar"></div>
 </template>
 
 <style scoped>
 @font-face {
   font-family: BYekan;
   src: url("./../assets/BYekan+.ttf");
-}
-
-.container {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-.sideBar {
-  width: 5vw;
-  height: 100vh;
-  background-color: green;
 }
 
 .main {
@@ -295,8 +286,35 @@ function getDomain(domain) {
 }
 
 .main .improveSituation div .gaugeChartPre {
-  width: 30vw;
+  width: 25vw;
   aspect-ratio: 4/4;
+}
+
+.main .saveAndNext {
+  width: 100%;
+  max-width: 200px;
+  height: 5vh;
+  border-radius: 10px;
+  border: 0;
+  margin: 5vh auto;
+  background-color: #0d6efd;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: "B Yekan", cursive;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.main .saveAndNext:hover {
+  background-color: #0056b3;
+}
+
+.main .saveAndNext:active {
+  border: 2px solid #ffffff;
 }
 
 .main .finalText {

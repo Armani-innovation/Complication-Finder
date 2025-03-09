@@ -27,6 +27,9 @@ watch(() => route.name, (newName) => {
     case "CompanyInfo" :
       companyInfo()
       break;
+    case "Domain" :
+      companyInfo()
+      break;
     case "Questions" :
       questions()
       break;
@@ -40,34 +43,125 @@ watch(() => route.name, (newName) => {
 })
 
 function welcome() {
-  description.value.$el.classList.add("now")
-  descriptionTitle.value.classList.add("now")
-}
+  description.value.$el.classList.add( "now")
+  descriptionTitle.value.classList.add( "now")
+  description.value.$el.classList.remove( "passed")
+  descriptionTitle.value.classList.remove( "passed")
 
+  infos.value.$el.classList.remove("now")
+  infosTitle.value.classList.remove("now")
+  infos.value.$el.classList.remove("passed")
+  infosTitle.value.classList.remove("passed")
+
+  complication.value.$el.classList.remove("now")
+  complicationTitle.value.classList.remove("now")
+  complication.value.$el.classList.remove("passed")
+  complicationTitle.value.classList.remove("passed")
+
+  credits.value.$el.classList.remove("now")
+  creditsTitle.value.classList.remove("now")
+  credits.value.$el.classList.remove("passed")
+  creditsTitle.value.classList.remove("passed")
+
+  result.value.$el.classList.remove("now")
+  resultTitle.value.classList.remove("now")
+}
 function companyInfo() {
-  description.value.$el.classList.add("passed")
-  descriptionTitle.value.classList.add("passed")
+  description.value.$el.classList.add( "passed")
+  descriptionTitle.value.classList.add( "passed")
+  description.value.$el.classList.remove( "now")
+  descriptionTitle.value.classList.remove( "now")
+
   infos.value.$el.classList.add("now")
   infosTitle.value.classList.add("now")
+  infos.value.$el.classList.remove("passed")
+  infosTitle.value.classList.remove("passed")
+
+  complication.value.$el.classList.remove("now")
+  complicationTitle.value.classList.remove("now")
+  complication.value.$el.classList.remove("passed")
+  complicationTitle.value.classList.remove("passed")
+
+  credits.value.$el.classList.remove("now")
+  creditsTitle.value.classList.remove("now")
+  credits.value.$el.classList.remove("passed")
+  creditsTitle.value.classList.remove("passed")
+
+  result.value.$el.classList.remove("now")
+  resultTitle.value.classList.remove("now")
 }
 
 function questions() {
+  description.value.$el.classList.add( "passed")
+  descriptionTitle.value.classList.add( "passed")
+  description.value.$el.classList.remove( "now")
+  descriptionTitle.value.classList.remove( "now")
+
   infos.value.$el.classList.add("passed")
   infosTitle.value.classList.add("passed")
+  infos.value.$el.classList.remove("now")
+  infosTitle.value.classList.remove("now")
+
   complication.value.$el.classList.add("now")
   complicationTitle.value.classList.add("now")
+  complication.value.$el.classList.remove("passed")
+  complicationTitle.value.classList.remove("passed")
+
+  credits.value.$el.classList.remove("now")
+  creditsTitle.value.classList.remove("now")
+  credits.value.$el.classList.remove("passed")
+  creditsTitle.value.classList.remove("passed")
+
+  result.value.$el.classList.remove("now")
+  resultTitle.value.classList.remove("now")
 }
 
 function payPage() {
+  description.value.$el.classList.add( "passed")
+  descriptionTitle.value.classList.add( "passed")
+  description.value.$el.classList.remove( "now")
+  descriptionTitle.value.classList.remove( "now")
+
+  infos.value.$el.classList.add("passed")
+  infosTitle.value.classList.add("passed")
+  infos.value.$el.classList.remove("now")
+  infosTitle.value.classList.remove("now")
+
   complication.value.$el.classList.add("passed")
   complicationTitle.value.classList.add("passed")
+  complication.value.$el.classList.remove("now")
+  complicationTitle.value.classList.remove("now")
+
   credits.value.$el.classList.add("now")
   creditsTitle.value.classList.add("now")
+  credits.value.$el.classList.remove("passed")
+  creditsTitle.value.classList.remove("passed")
+
+  result.value.$el.classList.remove("now")
+  resultTitle.value.classList.remove("now")
 }
 
 function finalResult() {
+  description.value.$el.classList.add( "passed")
+  descriptionTitle.value.classList.add( "passed")
+  description.value.$el.classList.remove( "now")
+  descriptionTitle.value.classList.remove( "now")
+
+  infos.value.$el.classList.add("passed")
+  infosTitle.value.classList.add("passed")
+  infos.value.$el.classList.remove("now")
+  infosTitle.value.classList.remove("now")
+
+  complication.value.$el.classList.add("passed")
+  complicationTitle.value.classList.add("passed")
+  complication.value.$el.classList.remove("now")
+  complicationTitle.value.classList.remove("now")
+
   credits.value.$el.classList.add("passed")
   creditsTitle.value.classList.add("passed")
+  credits.value.$el.classList.remove("now")
+  creditsTitle.value.classList.remove("now")
+
   result.value.$el.classList.add("now")
   resultTitle.value.classList.add("now")
 }
