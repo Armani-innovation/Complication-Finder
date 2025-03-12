@@ -1,34 +1,33 @@
 <script setup>
 import {reactive, ref} from "vue";
-import {useCompanyStore} from "./../stores/counter.js";
 import router from "@/router/index.js";
-
-const companyStore = useCompanyStore();
+import axios from "./../axios/axios.js"
 
 const data = reactive({
-  company: {
-    name: "",
-    registrationNumber: "",
-    nationalID: ""
-  }
+  company: {},
+  userid: sessionStorage.getItem("id"),
 })
 
 let companyName = ref("");
-let companyNationalID = ref("");
 let companyTrademark = ref("");
+let companyNationalID = ref("");
 
-let isFilled = ref(false);
+let errorMessage = ref(null);
 
 function savaAndNext() {
   if (!(companyName.value && companyNationalID.value && companyTrademark.value)) {
-    isFilled.value = true;
+    errorMessage.value = "لطفا تمام فیلد ها را پر کنید"
   } else {
-    isFilled.value = false;
-    data.company.name = companyName.value;
-    data.company.registrationNumber = companyNationalID.value;
-    data.company.nationalID = companyTrademark.value;
-    router.push("/domains");
-    companyStore.setCompany(data);
+    data.company['name'] = companyName.value;
+    data.company['registrationNumber'] = companyTrademark.value;
+    data.company['nationalID'] = companyNationalID.value;
+    axios.post("company/", data).then((res) => {
+      sessionStorage.setItem("nationalID", res.data.nationalID);
+      router.push("/domains");
+    })
+      .catch((err) => {
+        errorMessage.value = err;
+      })
   }
 }
 </script>
@@ -36,13 +35,16 @@ function savaAndNext() {
 <template>
   <div class="main">
     <h4>برای شروع عارضه یابی لطفا اطلاعات شرکتتون رو وارد کنین</h4>
+
     <ul>
       <li><input type="text" placeholder="نام شرکت" v-model="companyName"/></li>
       <li><input type="text" placeholder="شناسه ملی شرکت" v-model="companyNationalID"/></li>
       <li><input type="text" placeholder="شماره ثبت علامت تجاری" v-model="companyTrademark"/></li>
       <li><input type="text" placeholder="حوزه کاری شرکت"/></li>
     </ul>
-    <p class="error" v-if="isFilled">لطفا تمام فیلد ها رو پر کنین</p>
+
+    <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
+
     <RouterLink class="saveAndNext" @click="savaAndNext" to="">
       <button class="saveAndNext">
         ذخیره و بعدی
@@ -55,13 +57,6 @@ function savaAndNext() {
 .main {
   width: 70%;
   min-width: 300px;
-  height: auto;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  padding: 5vh 5vw;
-  margin: 5vh auto;
 }
 
 .main h4 {
@@ -85,50 +80,11 @@ function savaAndNext() {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 }
 
-.main ul li input {
-  font-family: "B Yekan", cursive;
-  outline: none;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  border: none;
-  box-sizing: border-box;
-  padding: 0 5%;
-  background-color: #f4f5f7;
-  font-size: 13px;
+.main ul li:hover {
+  background-color: #e0e0e0;
 }
 
-.main .error {
-  color: red;
-  margin-right: 3vw;
-}
-
-.main .saveAndNext {
-  width: 100%;
-  max-width: 200px;
-  height: 5vh;
-  border-radius: 10px;
-  border: 0;
-  margin: 5vh auto;
-  background-color: #0d6efd;
-  color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-family: "B Yekan", cursive;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-.main .saveAndNext:hover {
-  background-color: #0056b3;
-}
-
-.main .saveAndNext:active {
-  border: 2px solid #ffffff;
-}
 </style>

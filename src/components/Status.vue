@@ -179,6 +179,13 @@ function finalResult() {
       <li>
         <img class="svg" src="./../assets/svg-image-3.svg" alt="">
         <div class="icons">
+          <font-awesome-icon class="icon" icon="user"/>
+          <h4 class="">ثبت نام / ورود</h4>
+        </div>
+      </li>
+      <li>
+        <img class="svg" src="./../assets/svg-image-3.svg" alt="">
+        <div class="icons">
           <font-awesome-icon ref="infos" class="icon" icon="info"/>
           <h4 class="" ref="infosTitle">اطلاعات شرکت</h4>
         </div>
@@ -224,15 +231,13 @@ function finalResult() {
 .main ul {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5 , 1fr);
+  grid-template-columns: repeat(6 , 1fr);
   list-style: none;
   padding: 0;
 }
 
 .main ul li {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  cursor: default;
 }
 
 .main ul li .svg{
@@ -260,16 +265,6 @@ function finalResult() {
 .main ul li .now {
   opacity: 1;
   color: #4848ff;
-}
-
-.main ul li .now {
-  opacity: 1;
-  color: #4848ff;
-}
-
-.main ul li .passed {
-  opacity: 1;
-  color: green;
 }
 
 .main ul li .passed {

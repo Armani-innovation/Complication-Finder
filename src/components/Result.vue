@@ -1,93 +1,90 @@
 <script setup>
 import GaugeChart from './GaugeChart.vue'
 import RadarChart from "./RadarChart.vue";
-import {reactive, ref} from "vue";
+import axios from "@/axios/axios.js";
+import {ref} from "vue";
+// import {reactive, ref} from "vue";
 
-const finalResult = JSON.parse(localStorage.getItem("finalResult"))
-const domain = sessionStorage.getItem("domain");
-const scores = reactive([]);
+// const finalResult = JSON.parse(localStorage.getItem("finalResult"))
+// const domain = sessionStorage.getItem("domain");
+// const scores = reactive([]);
+//
 
-let improveSituations = ref(null);
+// const domainIndicators = [
+//   [
+//     "تعداد نیروی کار",
+//     "حفظ کارکنان",
+//     "بهره وری کارکنان",
+//     "سیستم ارزیابی عملکرد کارکنان",
+//     "سیستم آموزش کارکنان",
+//     "همکاری و کار تیمی",
+//     "آگاهی ارزشهای اخلاقی"
+//   ],
+//   [
+//     "جریان نقدی عملیاتی",
+//     "نسبت فعلی",
+//     "سرمایه در گردش",
+//     "نرخ سوزی سرمایه",
+//     "حاشیه سود خالص",
+//     "گردش حساب های پرداختنی",
+//     "مجموع هزینه عملکرد مالی",
+//     "نسبت هزینه فعالیت مالی",
+//     "گزارش خطاهای مالی",
+//     "انحراف بودجه",
+//     "رشد فروش"
+//   ],
+//   [
+//     "برندینگ",
+//     "شناخت بازار هدف",
+//     "سوابق فروش",
+//     "روش‌های فروش و مارکتینگ",
+//     "کانال‌های توزیع و فروش",
+//     "سهم بازار",
+//     "فعالیت‌های صادراتی"
+//   ],
+//   [
+//     "منابع تامین مالی",
+//     "تحمل ریسک"
+//   ],
+//   [
+//     "نمودار سازمانی",
+//     "سیستم مدیریت دانش و اطلاعات",
+//     "سیستم سازماندهی محل کار",
+//     "مدیریت استراتژی و چشم انداز",
+//     "تفویض اختیار"
+//   ],
+//   [
+//     "سیستم بازخورد",
+//     "امکانات",
+//     "حفظ مشتری"
+//   ],
+//   [
+//     "تولید ماهانه",
+//     "سیستم مدیریت تولید",
+//     "فناوری تولید",
+//     "تولید بازار محور",
+//     "بهره وری تولید",
+//     "استانداردهای ملی و بین المللی",
+//     "گارانتی",
+//     "سیستم کنترل کیفیت"
+//   ],
+//   [
+//     "بهبود محصول",
+//     "نوآوری"
+//   ],
+//   [
+//     "مزیت رقابتی"
+//   ],
+// ]
+//
+// for (const key in finalResult.results) {
+//   if (key != "OverallScore") {
+//     scores.push(finalResult.results[key]);
+//   }
+// }
+//
 
-const domainIndicators = [
-  [
-    "تعداد نیروی کار",
-    "حفظ کارکنان",
-    "بهره وری کارکنان",
-    "سیستم ارزیابی عملکرد کارکنان",
-    "سیستم آموزش کارکنان",
-    "همکاری و کار تیمی",
-    "آگاهی ارزشهای اخلاقی"
-  ],
-  [
-    "جریان نقدی عملیاتی",
-    "نسبت فعلی",
-    "سرمایه در گردش",
-    "نرخ سوزی سرمایه",
-    "حاشیه سود خالص",
-    "گردش حساب های پرداختنی",
-    "مجموع هزینه عملکرد مالی",
-    "نسبت هزینه فعالیت مالی",
-    "گزارش خطاهای مالی",
-    "انحراف بودجه",
-    "رشد فروش"
-  ],
-  [
-    "برندینگ",
-    "شناخت بازار هدف",
-    "سوابق فروش",
-    "روش‌های فروش و مارکتینگ",
-    "کانال‌های توزیع و فروش",
-    "سهم بازار",
-    "فعالیت‌های صادراتی"
-  ],
-  [
-    "منابع تامین مالی",
-    "تحمل ریسک"
-  ],
-  [
-    "نمودار سازمانی",
-    "سیستم مدیریت دانش و اطلاعات",
-    "سیستم سازماندهی محل کار",
-    "مدیریت استراتژی و چشم انداز",
-    "تفویض اختیار"
-  ],
-  [
-    "سیستم بازخورد",
-    "امکانات",
-    "حفظ مشتری"
-  ],
-  [
-    "تولید ماهانه",
-    "سیستم مدیریت تولید",
-    "فناوری تولید",
-    "تولید بازار محور",
-    "بهره وری تولید",
-    "استانداردهای ملی و بین المللی",
-    "گارانتی",
-    "سیستم کنترل کیفیت"
-  ],
-  [
-    "بهبود محصول",
-    "نوآوری"
-  ],
-  [
-    "مزیت رقابتی"
-  ],
-]
-
-for (const key in finalResult.results) {
-  if (key != "OverallScore") {
-    scores.push(finalResult.results[key]);
-  }
-}
-
-fetch("/improveSituation.json").then((res) => res.json())
-  .then((resData) => {
-      improveSituations.value = resData[getIndex(domain)]
-    }
-  )
-
+//
 function setIndex(index) {
   if (scores[index] >= 0 && scores[index] < 1) {
     return 1;
@@ -125,28 +122,85 @@ function getIndex(domain) {
   }
 }
 
-function getDomain(domain) {
-  switch (domain) {
-    case "human_resources" :
-      return "منابع انسانی";
-    case "financial_resources" :
-      return "منابع مالی";
-    case "sales_and_marketing" :
-      return "فروش و مارکتینگ";
-    case "capital_structure" :
-      return "ساختار سرمایه";
-    case "management_organizational_structure" :
-      return "ساختار مدیریتی و سازمانی";
-    case "customer_relationship_management" :
-      return "مدیریت ارتباط با مشتری";
-    case "manufacturing_and_production" :
-      return "ساخت و تولید";
-    case "research_and_development" :
-      return "تحقیق و توسعه";
-    case "product_competitiveness" :
-      return "رقابت پذیری محصول";
+//
+// function getDomain(domain) {
+//   switch (domain) {
+//     case "human_resources" :
+//       return "منابع انسانی";
+//     case "financial_resources" :
+//       return "منابع مالی";
+//     case "sales_and_marketing" :
+//       return "فروش و مارکتینگ";
+//     case "capital_structure" :
+//       return "ساختار سرمایه";
+//     case "management_organizational_structure" :
+//       return "ساختار مدیریتی و سازمانی";
+//     case "customer_relationship_management" :
+//       return "مدیریت ارتباط با مشتری";
+//     case "manufacturing_and_production" :
+//       return "ساخت و تولید";
+//     case "research_and_development" :
+//       return "تحقیق و توسعه";
+//     case "product_competitiveness" :
+//       return "رقابت پذیری محصول";
+//   }
+// }
+let improveSituations = ref(null);
+
+const info = {
+  userid: sessionStorage.getItem("id"),
+  nationalID: sessionStorage.getItem("nationalID"),
+}
+
+let data = ref({
+  company: {},
+  domain: "",
+  results: {}
+})
+
+let keys = ref([]);
+let scores = ref([]);
+
+
+function fetchResults() {
+  // axios.get("sales_and_marketing/", {params: info}).then((res) => {
+  //   data = {...res.data};
+  //   for (const resKey in data.results) {
+  //     if (resKey !== "overallScore") {
+  //       keys.push(resKey);
+  //       scores.push(data.results[resKey]);
+  //     }
+  //   }
+  // })
+  axios.get("sales_and_marketing/", { params: info }).then((res) => {
+    data.value = res.data;
+    updateChartData();
+  })
+}
+
+function updateChartData() {
+  keys.value = [];
+  scores.value = [];
+
+  for (const resKey in data.value.results) {
+    if (resKey !== "overallScore") {
+      keys.value.push(resKey);
+      scores.value.push(data.value.results[resKey]);
+    }
   }
 }
+
+function fetchImproveSituations() {
+  fetch("/improveSituation.json").then((res) => res.json())
+    .then((resData) => {
+        improveSituations.value = resData[getIndex(data.value.domain)]
+      }
+    )
+}
+
+fetchResults();
+fetchImproveSituations()
+
 </script>
 
 <template>
@@ -154,9 +208,9 @@ function getDomain(domain) {
     <div class="logo">
       <img src="../assets/logo.png" alt="">
     </div>
-    <h2> گزارش عارضه یابی {{ getDomain(domain) }} <br> <span>شرکت {{
-        finalResult.company.name
-      }}</span></h2>
+    <h2> گزارش عارضه یابی {{ data.domain }} <span>شرکت {{
+        data.company.name
+      }}</span> <br></h2>
     <div class="textAndChart">
       <p>
         رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت
@@ -180,10 +234,11 @@ function getDomain(domain) {
         <br>
         • بهبود جریان درآمد را عملی کند.
       </p>
-      <GaugeChart class="gaugeChart" :value="finalResult.results.OverallScore"></GaugeChart>
+      <GaugeChart class="gaugeChart" :value="data.results.overallScore"></GaugeChart>
+      <!--      <GaugeChart class="gaugeChart" value="3.5"></GaugeChart>-->
     </div>
 
-    <RadarChart :keys="domainIndicators[getIndex(domain)]" :values="scores">
+    <RadarChart :keys="keys" :values="scores">
     </RadarChart>
 
     <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>
@@ -223,14 +278,6 @@ function getDomain(domain) {
 .main {
   width: 80%;
   min-width: 300px;
-  height: auto;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  padding: 5vh 5vw;
-  position: relative;
-  margin: 5vh auto;
 }
 
 .main span {
@@ -288,33 +335,6 @@ function getDomain(domain) {
 .main .improveSituation div .gaugeChartPre {
   width: 25vw;
   aspect-ratio: 4/4;
-}
-
-.main .saveAndNext {
-  width: 100%;
-  max-width: 200px;
-  height: 5vh;
-  border-radius: 10px;
-  border: 0;
-  margin: 5vh auto;
-  background-color: #0d6efd;
-  color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-family: "B Yekan", cursive;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-.main .saveAndNext:hover {
-  background-color: #0056b3;
-}
-
-.main .saveAndNext:active {
-  border: 2px solid #ffffff;
 }
 
 .main .finalText {

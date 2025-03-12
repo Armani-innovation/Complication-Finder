@@ -31,7 +31,7 @@
       زیست بوم فناوری کشور، با استفاده از کارشناسان حوزه کسب و کار، با طراحی الگوی ارزیابی
       منحصربه‌فرد و تخصصی، در بهبود و توسعه شرکت‌ شما در کنارتان خواهد بود.
     </p>
-    <RouterLink class="saveAndNext" to="/CompanyInfo">
+    <RouterLink class="saveAndNext" to="/SignIn">
         شروع عارضه یابی
     </RouterLink>
   </div>
@@ -41,13 +41,6 @@
 .main {
   width: 70%;
   min-width: 300px;
-  height: auto;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  padding: 5vh 5vw;
-  margin: 5vh auto;
 }
 
 .main p {
@@ -62,25 +55,4 @@
   font-family: "B Yekan", cursive;
 }
 
-.main .saveAndNext {
-  width: 100%;
-  max-width: 200px;
-  height: 5vh;
-  border-radius: 10px;
-  border: 0;
-  margin: 2vh auto;
-  background-color: #0d6efd;
-  color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-family: "B Yekan", cursive;
-  box-sizing: border-box;
-}
-
-.main .saveAndNext:active {
-  border: 2px solid #ffffff;
-}
 </style>

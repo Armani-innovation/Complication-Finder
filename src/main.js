@@ -22,6 +22,8 @@ import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import {faFaceGrinTongueWink} from "@fortawesome/free-solid-svg-icons";
 import {faInfo} from "@fortawesome/free-solid-svg-icons";
 import {faHandshake} from "@fortawesome/free-solid-svg-icons";
+import {faStackExchange} from "@fortawesome/free-brands-svg-icons";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUsers);
 library.add(faCreditCard);
@@ -37,6 +39,8 @@ library.add(faMagnifyingGlass);
 library.add(faFaceGrinTongueWink);
 library.add(faInfo);
 library.add(faHandshake);
+library.add(faStackExchange);
+library.add(faUser)
 
 
 

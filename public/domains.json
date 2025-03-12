@@ -9,7 +9,8 @@
     "مدیریت ارتباط با مشتری",
     "ساخت و تولید",
     "تحقیق و توسعه",
-    "رقابت پذیری محصول"
+    "رقابت پذیری محصول",
+    "عارضه یابی کلی"
   ],
   "icons": [
     "users",
@@ -20,6 +21,7 @@
     "comments",
     "screwdriver-wrench",
     "magnifying-glass",
+    "face-grin-tongue-wink",
     "face-grin-tongue-wink"
   ]
 }

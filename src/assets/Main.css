@@ -1,7 +1,90 @@
+*{
+  font-family: "B Yekan", cursive;
+}
 body {
   margin: 0;
   padding: 0;
   background-color: #f4f5f7;
   font-family: "B Yekan", cursive;
   direction: rtl;
+}
+
+.main {
+  height: auto;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  padding: 5vh 5vw;
+  margin: 5vh auto;
+}
+
+.main h1 , h3 , h4 {
+  margin: 0;
+}
+
+.main .error {
+  color: red;
+  margin-right: 3vw;
+}
+
+.main ul li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 1vh;
+  transition: all 0.3s ease;
+}
+
+.main ul li input {
+  outline: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  border: none;
+  box-sizing: border-box;
+  padding: 0 5%;
+  background-color: #f4f5f7;
+  font-size: 13px;
+}
+
+.main ul li input:hover {
+  background-color: #e0e0e0;
+}
+
+.main ul li input:focus {
+  background-color: #e0e0e0;
+}
+
+.main .saveAndNext {
+  width: 100%;
+  max-width: 200px;
+  height: 5vh;
+  border-radius: 10px;
+  border: 0;
+  margin: 5vh auto;
+  background-color: #0d6efd;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.main .saveAndNext:hover {
+  background-color: #0056b3;
+}
+
+.main .saveAndNext:active {
+  border: 2px solid #ffffff;
+}
+
+.main .links {
+  text-decoration: none;
+  color: #0d6efd;
 }
