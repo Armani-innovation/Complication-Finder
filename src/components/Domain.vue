@@ -1,13 +1,16 @@
 <script setup>
 import {onMounted, reactive, ref, computed} from "vue";
 import axios from "@/axios/axios.js";
+import router from "@/router/index.js";
 
+let errMessage = ref("");
+let isLoading = ref(false);
 let domains = reactive({});
 let picked = ref(null);
 const selectedDomain = computed(() => picked.value);
 
 const data = {
-  id : sessionStorage.getItem("id"),
+  userid: sessionStorage.getItem("id"),
   nationalID: sessionStorage.getItem("nationalID"),
 }
 
@@ -19,41 +22,70 @@ function loadDomains() {
 
 function selectDomain(domain) {
   switch (domain) {
-    case "1" :
-      axios.put("human_resources/" , data) ;
+    case 1 :
+      sendRequest("human_resources");
       break;
-    case "2" :
-      axios.put("financial_resources/" , data) ;
+    case 2 :
+      sendRequest("financial_resources");
       break;
-    case "3" :
-      axios.put("sales_and_marketing/" , data) ;
+    case 3 :
+      sendRequest("sales_and_marketing");
       break;
-    case "4" :
-      axios.put("capital_structure/" , data) ;
+    case 4 :
+      sendRequest("capital_structure");
       break;
-    case "5" :
-      axios.put("management_organizational_structure/" , data) ;
+    case 5 :
+      sendRequest("management_organizational_structure");
       break;
-    case "6" :
-      axios.put("customer_relationship_management/" , data) ;
+    case 6 :
+      sendRequest("customer_relationship_management");
       break;
-    case "7" :
-      axios.put("manufacturing_and_production/" , data) ;
+    case 7 :
+      sendRequest("manufacturing_and_production");
       break;
-    case "8" :
-      axios.put("research_and_development/" , data) ;
+    case 8 :
+      sendRequest("research_and_development");
       break;
-    case "9" :
-      axios.put("product_competitiveness/" , data) ;
+    case 9 :
+      sendRequest("product_competitiveness");
       break;
   }
+}
+
+async function sendRequest(domain) {
+
+  const retries = 3 ;
+  const delay = 2000 ;
+  isLoading.value = true;
+
+  sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await axios.put(`${domain}/`, data);
+
+
+      isLoading.value = false;
+      return router.push("/questions");
+    } catch {
+
+      if (attempt === retries) {
+        isLoading.value = false;
+        errMessage.value = "خطایی رخ داده است. لطفا دوباره تلاش کنید.";
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
 }
 
 onMounted(loadDomains)
 </script>
 
 <template>
-  <div class="main">
+  <img v-if="isLoading" src="../assets/Animation.gif" alt=""/>
+  <div class="main" v-else>
     <p>{{ domains.question }}</p>
     <ul>
       <li v-for="(domain , index) in domains.options" :key="domain" :for="index">
@@ -64,9 +96,8 @@ onMounted(loadDomains)
         </label>
       </li>
     </ul>
-
-    <router-link class="saveAndNext" @click="selectDomain(selectedDomain)"
-                 :to="picked ? { name: 'Questions', params: { domain: selectedDomain } } : ''">
+    <p class="error" v-if="errMessage">{{ errMessage }}</p>
+    <router-link to="" class="saveAndNext" @click="selectDomain(selectedDomain)">
       ذخیره و بعدی
     </router-link>
   </div>

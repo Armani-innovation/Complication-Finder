@@ -26,7 +26,7 @@ function savaAndNext() {
       router.push("/domains");
     })
       .catch((err) => {
-        errorMessage.value = err;
+        console.log(err)
       })
   }
 }

@@ -5,6 +5,9 @@ import {useRoute} from 'vue-router'
 const description = ref(null);
 const descriptionTitle = ref(null);
 
+const user = ref(null);
+const userTitle = ref(null);
+
 const infos = ref(null)
 const infosTitle = ref(null)
 
@@ -23,6 +26,12 @@ watch(() => route.name, (newName) => {
   switch (newName) {
     case "Welcome" :
       welcome()
+      break;
+    case "SignIn" :
+      User()
+      break;
+    case "SignUp" :
+      User()
       break;
     case "CompanyInfo" :
       companyInfo()
@@ -48,6 +57,11 @@ function welcome() {
   description.value.$el.classList.remove( "passed")
   descriptionTitle.value.classList.remove( "passed")
 
+  user.value.$el.classList.remove( "now")
+  userTitle.value.classList.remove( "now")
+  user.value.$el.classList.remove( "passed")
+  userTitle.value.classList.remove( "passed")
+
   infos.value.$el.classList.remove("now")
   infosTitle.value.classList.remove("now")
   infos.value.$el.classList.remove("passed")
@@ -66,11 +80,47 @@ function welcome() {
   result.value.$el.classList.remove("now")
   resultTitle.value.classList.remove("now")
 }
+
+function User() {
+  description.value.$el.classList.add( "passed")
+  descriptionTitle.value.classList.add( "passed")
+  description.value.$el.classList.remove( "now")
+  descriptionTitle.value.classList.remove( "now")
+
+  user.value.$el.classList.add( "now")
+  userTitle.value.classList.add( "now")
+  user.value.$el.classList.remove( "passed")
+  userTitle.value.classList.remove( "passed")
+
+  infos.value.$el.classList.remove("now")
+  infosTitle.value.classList.remove("now")
+  infos.value.$el.classList.remove("passed")
+  infosTitle.value.classList.remove("passed")
+
+  complication.value.$el.classList.remove("now")
+  complicationTitle.value.classList.remove("now")
+  complication.value.$el.classList.remove("passed")
+  complicationTitle.value.classList.remove("passed")
+
+  credits.value.$el.classList.remove("now")
+  creditsTitle.value.classList.remove("now")
+  credits.value.$el.classList.remove("passed")
+  creditsTitle.value.classList.remove("passed")
+
+  result.value.$el.classList.remove("now")
+  resultTitle.value.classList.remove("now")
+}
+
 function companyInfo() {
   description.value.$el.classList.add( "passed")
   descriptionTitle.value.classList.add( "passed")
   description.value.$el.classList.remove( "now")
   descriptionTitle.value.classList.remove( "now")
+
+  user.value.$el.classList.add( "passed")
+  userTitle.value.classList.add( "passed")
+  user.value.$el.classList.remove( "now")
+  userTitle.value.classList.remove( "now")
 
   infos.value.$el.classList.add("now")
   infosTitle.value.classList.add("now")
@@ -97,6 +147,11 @@ function questions() {
   description.value.$el.classList.remove( "now")
   descriptionTitle.value.classList.remove( "now")
 
+  user.value.$el.classList.add( "passed")
+  userTitle.value.classList.add( "passed")
+  user.value.$el.classList.remove( "now")
+  userTitle.value.classList.remove( "now")
+
   infos.value.$el.classList.add("passed")
   infosTitle.value.classList.add("passed")
   infos.value.$el.classList.remove("now")
@@ -122,6 +177,11 @@ function payPage() {
   description.value.$el.classList.remove( "now")
   descriptionTitle.value.classList.remove( "now")
 
+  user.value.$el.classList.add( "passed")
+  userTitle.value.classList.add( "passed")
+  user.value.$el.classList.remove( "now")
+  userTitle.value.classList.remove( "now")
+
   infos.value.$el.classList.add("passed")
   infosTitle.value.classList.add("passed")
   infos.value.$el.classList.remove("now")
@@ -146,6 +206,11 @@ function finalResult() {
   descriptionTitle.value.classList.add( "passed")
   description.value.$el.classList.remove( "now")
   descriptionTitle.value.classList.remove( "now")
+
+  user.value.$el.classList.add( "passed")
+  userTitle.value.classList.add( "passed")
+  user.value.$el.classList.remove( "now")
+  userTitle.value.classList.remove( "now")
 
   infos.value.$el.classList.add("passed")
   infosTitle.value.classList.add("passed")
@@ -179,8 +244,8 @@ function finalResult() {
       <li>
         <img class="svg" src="./../assets/svg-image-3.svg" alt="">
         <div class="icons">
-          <font-awesome-icon class="icon" icon="user"/>
-          <h4 class="">ثبت نام / ورود</h4>
+          <font-awesome-icon ref="user" class="icon" icon="user"/>
+          <h4 ref="userTitle" class="">ثبت نام / ورود</h4>
         </div>
       </li>
       <li>
@@ -217,7 +282,7 @@ function finalResult() {
 
 <style scoped>
 .main {
-  width: 80%;
+  width: 90%;
   height: auto;
   display: flex;
   justify-content: center;

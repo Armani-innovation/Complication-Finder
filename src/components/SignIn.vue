@@ -1,37 +1,43 @@
 <script setup>
-import {reactive, ref} from "vue"
+import {inject, reactive, ref} from "vue"
 import axios from "@/axios/axios.js";
-import router from "@/router/index.js";
 import {jwtDecode} from "jwt-decode";
+import router from "@/router/index.js";
 
-let loginError = ref(null);
+const isLoading = ref(false);
+let errMessage = ref("");
 let formData = reactive({
   username: "",
   password: "",
 })
 
-function subform() {
-  axios.post("token/" , formData).then((res)=>{
-    localStorage.setItem("token", res.data.access)
-    // router.push("/domains")
-    decodeToken()
-  })
-}
-
-function decodeToken() {
-  const token = localStorage.getItem("token");
-  if (token) {
-    const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
+async function subform() {
+  try {
+    isLoading.value = true;
+    const res = await axios.post("token/", formData);
+    const token = res.data.access;
+    const decoded = jwtDecode(token);
+    sessionStorage.setItem("id", decoded.user_id);
+    const isCompany = await fetchUser();
+    isLoading.value = false;
+    if (isCompany) {
+      await router.push("/domains");
+    } else {
+      await router.push("/CompanyInfo");
+    }
+  } catch {
+    isLoading.value = false;
+    errMessage.value = "نام کاربری یا رمز عبور اشتباه است";
   }
 }
 
+const fetchUser = inject("fetchUser")
 </script>
 
 <template>
-  <div class="main">
+  <img v-if="isLoading" class="loader" alt="" src="./../assets/Animation.gif">
+  <div v-else class="main">
     <h1>ورود</h1>
-
     <ul>
       <li>
         <input
@@ -49,8 +55,8 @@ function decodeToken() {
       </li>
     </ul>
 
-    <div class="error" v-if="loginError">
-      <h3>{{loginError}}</h3>
+    <div class="error" v-if="errMessage">
+      <h3>{{ errMessage }}</h3>
     </div>
 
     <router-link to="/SignUp" class="links"

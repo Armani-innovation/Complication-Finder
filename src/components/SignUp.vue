@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref} from "vue"
+import {reactive, ref, inject} from "vue"
 import router from "@/router/index.js";
 import axios from "@/axios/axios.js";
 
@@ -10,34 +10,78 @@ let errorMessage = ref(null);
 let formData = reactive({});
 
 function handleEvent() {
+
+  if ((formData.name && formData.registrationNumber && formData.username && formData.password && formData.repeatPassword) || (formData.name && formData.username && formData.password && formData.repeatPassword)) {
   is_company.value ?
     handleCompany()
     :
     handleMentor()
+  }else {
+    errorMessage.value = "لطفا تمام فیلد ها را پر کنید.";
+  }
+
 }
 
-function handleCompany() {
-  formData["is_company"] = is_company.value;
-  axios.post("register/", formData).then((res) => {
-    sessionStorage.setItem("id", res.data.id)
-    sessionStorage.setItem("nationalID", res.data.username)
-    sessionStorage.setItem("fullName", res.data.name)
-    router.push("/domains")
-  }).catch((err) => {
-    errorMessage.value = err.message;
-  })
+async function handleCompany() {
+
+  const retries = 3;
+  const delay = 2000;
+  try {
+    formData["is_company"] = is_company.value;
+    let res;
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        res = await axios.post("register/", formData);
+        break;
+
+      } catch {
+
+        if (attempt === retries)
+          errorMessage.value = "خطایی رخ داد لطفا دوباره تلاش کنید.";
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+
+    sessionStorage.setItem("id", res.data.id);
+    sessionStorage.setItem("nationalID", res.data.username);
+
+    await fetchUser();
+
+    await router.push("/domains");
+  } catch (err) {
+    errorMessage.value = err.response.data.username[0];
+  }
 }
 
-function handleMentor() {
+async function handleMentor() {
+
+  const retries = 3;
   formData["is_company"] = is_company.value;
-  axios.post("register/", formData).then((res) => {
-    sessionStorage.setItem("id", res.data.id)
-    sessionStorage.setItem("fullName", res.data.name)
-    router.push("/CompanyInfo");
-  }).catch((err) => {
-    errorMessage.value = err;
-  })
+
+  let res;
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      res = await axios.post("register/", formData);
+      sessionStorage.setItem("id", res.data.id);
+      await fetchUser();
+      await router.push("/CompanyInfo");
+      break;
+    } catch (err) {
+      if (err.code === "ERR_NETWORK") {
+        if (attempt === retries) errorMessage.value = "درخواست با خطا مواجه شد لطفا دوباره تلاش کنید";
+      } else {
+        errorMessage.value = err.response.data.username[0] || err.response.data.error;
+        break;
+      }
+    }
+  }
+
 }
+
+const fetchUser = inject("fetchUser");
 
 </script>
 
@@ -72,6 +116,7 @@ function handleMentor() {
           v-model="formData['registrationNumber']"
           type="text"
           placeholder="شماره ثبت شرکت"
+          maxlength="11"
         />
       </li>
 
@@ -80,6 +125,7 @@ function handleMentor() {
           v-model="formData['username']"
           type="text"
           placeholder="شناسه ملی شرکت"
+          maxlength="4"
         />
       </li>
 
@@ -88,6 +134,7 @@ function handleMentor() {
           type="password"
           placeholder="رمز عبور"
           v-model="formData['password']"
+          minlength="8"
         />
       </li>
 
@@ -96,6 +143,7 @@ function handleMentor() {
           type="password"
           placeholder="تکرار رمز عبور"
           v-model="formData['repeatPassword']"
+          minlength="8"
         />
       </li>
     </ul>
@@ -114,6 +162,7 @@ function handleMentor() {
           v-model="formData['username']"
           type="text"
           placeholder="کد ملی"
+          maxlength="10"
         />
       </li>
 
@@ -122,6 +171,7 @@ function handleMentor() {
           type="password"
           placeholder="رمز عبور"
           v-model="formData['password']"
+          minlength="8"
         />
       </li>
 
@@ -130,6 +180,7 @@ function handleMentor() {
           type="password"
           placeholder="تکرار رمز عبور"
           v-model="formData['repeatPassword']"
+          minlength="8"
         />
       </li>
     </ul>

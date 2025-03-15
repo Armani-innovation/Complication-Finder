@@ -2,89 +2,49 @@
 import GaugeChart from './GaugeChart.vue'
 import RadarChart from "./RadarChart.vue";
 import axios from "@/axios/axios.js";
-import {ref} from "vue";
-// import {reactive, ref} from "vue";
+import {ref, reactive, watch} from "vue";
 
-// const finalResult = JSON.parse(localStorage.getItem("finalResult"))
-// const domain = sessionStorage.getItem("domain");
-// const scores = reactive([]);
-//
+const domain = JSON.parse(sessionStorage.getItem("domain"));
 
-// const domainIndicators = [
-//   [
-//     "تعداد نیروی کار",
-//     "حفظ کارکنان",
-//     "بهره وری کارکنان",
-//     "سیستم ارزیابی عملکرد کارکنان",
-//     "سیستم آموزش کارکنان",
-//     "همکاری و کار تیمی",
-//     "آگاهی ارزشهای اخلاقی"
-//   ],
-//   [
-//     "جریان نقدی عملیاتی",
-//     "نسبت فعلی",
-//     "سرمایه در گردش",
-//     "نرخ سوزی سرمایه",
-//     "حاشیه سود خالص",
-//     "گردش حساب های پرداختنی",
-//     "مجموع هزینه عملکرد مالی",
-//     "نسبت هزینه فعالیت مالی",
-//     "گزارش خطاهای مالی",
-//     "انحراف بودجه",
-//     "رشد فروش"
-//   ],
-//   [
-//     "برندینگ",
-//     "شناخت بازار هدف",
-//     "سوابق فروش",
-//     "روش‌های فروش و مارکتینگ",
-//     "کانال‌های توزیع و فروش",
-//     "سهم بازار",
-//     "فعالیت‌های صادراتی"
-//   ],
-//   [
-//     "منابع تامین مالی",
-//     "تحمل ریسک"
-//   ],
-//   [
-//     "نمودار سازمانی",
-//     "سیستم مدیریت دانش و اطلاعات",
-//     "سیستم سازماندهی محل کار",
-//     "مدیریت استراتژی و چشم انداز",
-//     "تفویض اختیار"
-//   ],
-//   [
-//     "سیستم بازخورد",
-//     "امکانات",
-//     "حفظ مشتری"
-//   ],
-//   [
-//     "تولید ماهانه",
-//     "سیستم مدیریت تولید",
-//     "فناوری تولید",
-//     "تولید بازار محور",
-//     "بهره وری تولید",
-//     "استانداردهای ملی و بین المللی",
-//     "گارانتی",
-//     "سیستم کنترل کیفیت"
-//   ],
-//   [
-//     "بهبود محصول",
-//     "نوآوری"
-//   ],
-//   [
-//     "مزیت رقابتی"
-//   ],
-// ]
-//
-// for (const key in finalResult.results) {
-//   if (key != "OverallScore") {
-//     scores.push(finalResult.results[key]);
-//   }
-// }
-//
+const data = {
+  userid: sessionStorage.getItem("id"),
+  nationalID: sessionStorage.getItem("nationalID")
+}
 
-//
+let isLoading = ref(true);
+
+let finalResults = reactive({})
+const scores = reactive([]);
+const keys = reactive([]);
+let companyName = ref("");
+let companyDomain = ref("");
+let overallScore = ref(0);
+
+let improveSituations = ref(null);
+
+axios.get(`${domain[0]}/`, {params: data}).then((response) => {
+  Object.assign(finalResults, response.data)
+  isLoading.value = false;
+})
+
+watch(finalResults, (finalResultsFetch)=>{
+  for (const key in finalResultsFetch.results) {
+    if (key !== "overallScore") {
+      scores.push(finalResultsFetch.results[key]);
+      keys.push(key)
+    }
+  }
+  companyName.value = finalResultsFetch.company.name;
+  companyDomain.value = finalResultsFetch.domain;
+  overallScore.value = finalResultsFetch.results.overallScore;
+})
+
+fetch("/improveSituation.json").then((res) => res.json())
+  .then((resData) => {
+    improveSituations.value = resData[(domain[1])-1];
+    }
+  )
+
 function setIndex(index) {
   if (scores[index] >= 0 && scores[index] < 1) {
     return 1;
@@ -99,118 +59,16 @@ function setIndex(index) {
   }
 }
 
-function getIndex(domain) {
-  switch (domain) {
-    case "human_resources" :
-      return 0;
-    case "financial_resources" :
-      return 1;
-    case "sales_and_marketing" :
-      return 2;
-    case "capital_structure" :
-      return 3;
-    case "management_organizational_structure" :
-      return 4;
-    case "customer_relationship_management" :
-      return 5;
-    case "manufacturing_and_production" :
-      return 6;
-    case "research_and_development" :
-      return 7;
-    case "product_competitiveness" :
-      return 8;
-  }
-}
-
-//
-// function getDomain(domain) {
-//   switch (domain) {
-//     case "human_resources" :
-//       return "منابع انسانی";
-//     case "financial_resources" :
-//       return "منابع مالی";
-//     case "sales_and_marketing" :
-//       return "فروش و مارکتینگ";
-//     case "capital_structure" :
-//       return "ساختار سرمایه";
-//     case "management_organizational_structure" :
-//       return "ساختار مدیریتی و سازمانی";
-//     case "customer_relationship_management" :
-//       return "مدیریت ارتباط با مشتری";
-//     case "manufacturing_and_production" :
-//       return "ساخت و تولید";
-//     case "research_and_development" :
-//       return "تحقیق و توسعه";
-//     case "product_competitiveness" :
-//       return "رقابت پذیری محصول";
-//   }
-// }
-let improveSituations = ref(null);
-
-const info = {
-  userid: sessionStorage.getItem("id"),
-  nationalID: sessionStorage.getItem("nationalID"),
-}
-
-let data = ref({
-  company: {},
-  domain: "",
-  results: {}
-})
-
-let keys = ref([]);
-let scores = ref([]);
-
-
-function fetchResults() {
-  // axios.get("sales_and_marketing/", {params: info}).then((res) => {
-  //   data = {...res.data};
-  //   for (const resKey in data.results) {
-  //     if (resKey !== "overallScore") {
-  //       keys.push(resKey);
-  //       scores.push(data.results[resKey]);
-  //     }
-  //   }
-  // })
-  axios.get("sales_and_marketing/", { params: info }).then((res) => {
-    data.value = res.data;
-    updateChartData();
-  })
-}
-
-function updateChartData() {
-  keys.value = [];
-  scores.value = [];
-
-  for (const resKey in data.value.results) {
-    if (resKey !== "overallScore") {
-      keys.value.push(resKey);
-      scores.value.push(data.value.results[resKey]);
-    }
-  }
-}
-
-function fetchImproveSituations() {
-  fetch("/improveSituation.json").then((res) => res.json())
-    .then((resData) => {
-        improveSituations.value = resData[getIndex(data.value.domain)]
-      }
-    )
-}
-
-fetchResults();
-fetchImproveSituations()
-
 </script>
 
 <template>
-  <div class="main">
+  <div class="main" v-if="!isLoading">
     <div class="logo">
       <img src="../assets/logo.png" alt="">
     </div>
-    <h2> گزارش عارضه یابی {{ data.domain }} <span>شرکت {{
-        data.company.name
-      }}</span> <br></h2>
+    <h2>گزارش عارضه یابی {{companyDomain}} <br>
+    <span> شرکت {{companyName}} </span>
+    </h2>
     <div class="textAndChart">
       <p>
         رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت
@@ -234,14 +92,13 @@ fetchImproveSituations()
         <br>
         • بهبود جریان درآمد را عملی کند.
       </p>
-      <GaugeChart class="gaugeChart" :value="data.results.overallScore"></GaugeChart>
-      <!--      <GaugeChart class="gaugeChart" value="3.5"></GaugeChart>-->
+      <GaugeChart class="gaugeChart" :value="overallScore"></GaugeChart>
     </div>
 
-    <RadarChart :keys="keys" :values="scores">
-    </RadarChart>
+    <RadarChart :keys="keys" :values="scores"></RadarChart>
 
     <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>
+
     <div class="improveSituation" v-for="(improveSituation , index) in improveSituations"
          :key="index">
       <h4>{{ improveSituation[0] }}</h4>
@@ -267,6 +124,8 @@ fetchImproveSituations()
       تماس حاصل نمایید.
     </p>
   </div>
+
+  <img v-else src="./../assets/Animation.gif" alt="">
 </template>
 
 <style scoped>

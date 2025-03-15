@@ -4,8 +4,9 @@ import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 
 let isLoading = ref(false);
+let questionLoading = ref(false);
 
-const props = defineProps(["domain"]);
+const domain = JSON.parse(sessionStorage.getItem("domain"));
 
 let questions = reactive([]);
 let questionsKey = reactive([]);
@@ -25,15 +26,15 @@ let data = reactive({
 });
 
 function fetchQuestions() {
-  if (Number(props.domain) !== 10) {
+  if (Number(domain[1]) !== 10) {
     fetch("/questions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[props.domain].name ;
-      for (const dataKey in resData[props.domain].questions) {
-        questions.push(resData[props.domain].questions[dataKey])
+      domainTitle.value = resData[domain[1]].name ;
+      for (const dataKey in resData[domain[1]].questions) {
+        questions.push(resData[domain[1]].questions[dataKey])
         questionsKey.push(dataKey);
       }
-      for (const dataKey in resData[props.domain].options) {
-        options.push(resData[props.domain].options[dataKey])
+      for (const dataKey in resData[domain[1]].options) {
+        options.push(resData[domain[1]].options[dataKey])
       }
     })
   } else {
@@ -52,42 +53,21 @@ function fetchQuestions() {
   }
 }
 
-function getDomain(domainNum) {
-  switch (domainNum) {
-    case "1" :
-      return "human_resources";
-    case "2" :
-      return "financial_resources";
-    case "3" :
-      return "sales_and_marketing";
-    case "4" :
-      return "capital_structure";
-    case "5" :
-      return "management_organizational_structure";
-    case "6" :
-      return "customer_relationship_management";
-    case "7" :
-      return "manufacturing_and_production";
-    case "8" :
-      return "research_and_development";
-    case "9" :
-      return "product_competitiveness";
-  }
-}
-
 function updateQuestion() {
+  questionLoading.value = true;
   if (questionCounter.value === questions.length - 1) {
     data[`${questionsKey[questionCount.value]}`] = selectedOption.value;
     isLoading.value = true;
-    axios.put(`${getDomain(props.domain)}/`, data).then(() => {
+    axios.put(`${domain[0]}/`, data).then(() => {
       router.push("/PayPage")
       isLoading.value = false;
     });
   } else {
     data[`${questionsKey[questionCount.value]}`] = selectedOption.value;
-    axios.put(`${getDomain(props.domain)}/`, data).then(() => {
+    axios.put(`${domain[0]}/`, data).then(() => {
       questionCount.value++;
       picked.value = null;
+      questionLoading.value = false;
     });
   }
 }
@@ -98,13 +78,14 @@ fetchQuestions();
 <template>
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
-    <p>{{ questions[questionCounter] }}</p>
-    <ul>
+    <p v-if="!questionLoading">{{ questions[questionCounter] }}</p>
+    <ul v-if="!questionLoading">
       <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
         <input type="radio" name="option" :id="index" :value="Number(index)+1" v-model="picked"/>
         <label :for="index">{{ option }}</label>
       </li>
     </ul>
+    <img v-else class="loader" src="./../assets/Animation.gif" alt="">
     <button class="saveAndNext" @click="updateQuestion" :disabled="!picked">
       ذخیره و بعدی
     </button>
