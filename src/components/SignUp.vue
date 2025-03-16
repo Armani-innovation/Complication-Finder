@@ -94,11 +94,11 @@ const fetchUser = inject("fetchUser");
     <div class="options">
       <div>
         <input type="radio" name="personType" id="mentor" :value="false" v-model="is_company">
-        <label for="mentor">مشاور</label>
+        <label for="mentor">حقیقی</label>
       </div>
       <div>
         <input type="radio" name="personType" id="company" :value="true" v-model="is_company">
-        <label for="company">شرکت</label>
+        <label for="company">حقوقی</label>
       </div>
     </div>
 
@@ -116,7 +116,7 @@ const fetchUser = inject("fetchUser");
           v-model="formData['registrationNumber']"
           type="text"
           placeholder="شماره ثبت شرکت"
-          maxlength="11"
+          maxlength="4"
         />
       </li>
 
@@ -125,7 +125,7 @@ const fetchUser = inject("fetchUser");
           v-model="formData['username']"
           type="text"
           placeholder="شناسه ملی شرکت"
-          maxlength="4"
+          maxlength="11"
         />
       </li>
 
@@ -197,8 +197,9 @@ const fetchUser = inject("fetchUser");
 
 <style scoped>
 .main {
-  width: 50%;
+  width: 40%;
   min-width: 300px;
+  text-align: center;
 }
 
 .main h4 {
@@ -213,6 +214,7 @@ const fetchUser = inject("fetchUser");
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #DAD9D9;
 }
 
 .main ul li {
@@ -226,13 +228,14 @@ const fetchUser = inject("fetchUser");
 
 .main .options {
   display: flex;
+  justify-content: center;
 }
 
 .main .options div {
   width: 12%;
   height: 4vh;
   border-radius: 10px;
-  margin: 1vh 1vw;
+  margin: 1vh 0;
   background-color: #f4f5f7;
   display: flex;
   align-items: center;

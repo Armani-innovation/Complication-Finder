@@ -5,6 +5,8 @@ import router from "@/router/index.js";
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
+let lastQuestion = ref(false);
+let firstQuestion = ref(true);
 
 const domain = JSON.parse(sessionStorage.getItem("domain"));
 
@@ -28,7 +30,7 @@ let data = reactive({
 function fetchQuestions() {
   if (Number(domain[1]) !== 10) {
     fetch("/questions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[domain[1]].name ;
+      domainTitle.value = resData[domain[1]].name;
       for (const dataKey in resData[domain[1]].questions) {
         questions.push(resData[domain[1]].questions[dataKey])
         questionsKey.push(dataKey);
@@ -39,7 +41,7 @@ function fetchQuestions() {
     })
   } else {
     fetch("/questions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[6].name ;
+      domainTitle.value = resData[6].name;
       for (const key in resData) {
         for (const keyKey in resData[key].questions) {
           questions.push(resData[key].questions[keyKey]);
@@ -53,23 +55,44 @@ function fetchQuestions() {
   }
 }
 
-function updateQuestion() {
-  questionLoading.value = true;
-  if (questionCounter.value === questions.length - 1) {
-    data[`${questionsKey[questionCount.value]}`] = selectedOption.value;
-    isLoading.value = true;
-    axios.put(`${domain[0]}/`, data).then(() => {
-      router.push("/PayPage")
-      isLoading.value = false;
-    });
+async function nextQuestion() {
+  firstQuestion.value = false;
+  if ((questionCounter.value === questions.length - 1)) {
+    lastQuestion.value = true;
   } else {
+    questionLoading.value = true;
     data[`${questionsKey[questionCount.value]}`] = selectedOption.value;
-    axios.put(`${domain[0]}/`, data).then(() => {
+    await axios.put(`${domain[0]}/`, data).then(() => {
       questionCount.value++;
       picked.value = null;
       questionLoading.value = false;
     });
+    window.scrollTo({
+      top: window.innerHeight / 2,
+      behavior: 'smooth',
+    });
   }
+}
+
+function prevQuestion() {
+  if (questionCount.value !== 0) {
+    questionLoading.value = true;
+    questionCount.value--;
+    picked.value = null;
+    data[`${questionsKey[questionCount.value]}`] = selectedOption.value;
+    questionLoading.value = false;
+  } else {
+    firstQuestion.value = true;
+  }
+}
+
+function sendLastQuestion() {
+  data[`${questionsKey[questionCount.value]}`] = selectedOption.value;
+  isLoading.value = true;
+  axios.put(`${domain[0]}/`, data).then(() => {
+    router.push("/PayPage")
+    isLoading.value = false;
+  });
 }
 
 fetchQuestions();
@@ -81,14 +104,26 @@ fetchQuestions();
     <p v-if="!questionLoading">{{ questions[questionCounter] }}</p>
     <ul v-if="!questionLoading">
       <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
-        <input type="radio" name="option" :id="index" :value="Number(index)+1" v-model="picked"/>
+        <input @change="nextQuestion" type="radio" name="option" :id="index"
+               :value="Number(index)+1" v-model="picked"/>
         <label :for="index">{{ option }}</label>
       </li>
     </ul>
+
     <img v-else class="loader" src="./../assets/Animation.gif" alt="">
-    <button class="saveAndNext" @click="updateQuestion" :disabled="!picked">
-      ذخیره و بعدی
-    </button>
+
+    <div class="buttons">
+
+      <button @click="prevQuestion" v-if="!firstQuestion" class="prevQuestion"
+      :style="{ margin : lastQuestion ? '0' : '5vh 0'}">
+        سوال قبلی
+      </button>
+
+      <button class="saveAndNext" v-if="lastQuestion" @click="sendLastQuestion">
+        ارسال پاسخ ها
+      </button>
+
+    </div>
   </div>
   <img v-else class="loader" src="./../assets/Animation.gif" alt="">
 </template>
@@ -142,6 +177,18 @@ fetchQuestions();
   color: green;
   font-weight: bold;
   transition: ease 100ms;
+}
+
+.main .buttons {
+  display: flex;
+  align-items: center;
+}
+
+.main .buttons .prevQuestion{
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  color: #0d6efd;
 }
 
 @media screen and (max-width: 992px) {

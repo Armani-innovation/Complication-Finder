@@ -37,13 +37,16 @@ provide("fetchUser", fetchUser);
 
 <template>
   <div class="container">
-    <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
+    <div class="header">
+      <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
+    </div>
     <div class="userName" v-if="name">
       <img src="./assets/user.png" alt="">
       <h3>{{ name }}</h3>
     </div>
     <Status class="status"/>
     <RouterView/>
+    <img src="./assets/logo1.png" alt="">
   </div>
 </template>
 
@@ -52,15 +55,32 @@ provide("fetchUser", fetchUser);
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: center;
+}
+
+.container .header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container img{
+  aspect-ratio: 1 / 1.1;
+  width: 6vw;
+  position: absolute;
+  left: 5vw;
+  bottom: 5vh;
 }
 
 .container .title {
   margin: 5vh 0;
   text-align: center;
+  color: white;
 }
 
 .container .userName {
-  width: 80%;
+  width: 90%;
   display: flex;
   align-items: center;
 }
@@ -68,7 +88,7 @@ provide("fetchUser", fetchUser);
   border-radius: 50%;
   width: 4vw;
   aspect-ratio: 1/1;
-  margin: 0 1vw;
+  margin: 0 ;
 }
 
 @media screen and (max-width: 480px) {

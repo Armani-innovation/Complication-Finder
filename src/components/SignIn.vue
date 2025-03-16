@@ -21,8 +21,16 @@ async function subform() {
     const isCompany = await fetchUser();
     isLoading.value = false;
     if (isCompany) {
+      const id = sessionStorage.getItem("id");
+      await axios.get("register/", { params: { id } }).then((res) => {
+        sessionStorage.setItem("nationalID", res.data.username);
+      })
       await router.push("/domains");
     } else {
+      const id = sessionStorage.getItem("id");
+      await axios.get("register/", { params: { id } }).then((res) => {
+        sessionStorage.setItem("nationalID", res.data.username);
+      })
       await router.push("/CompanyInfo");
     }
   } catch {
@@ -59,20 +67,21 @@ const fetchUser = inject("fetchUser")
       <h3>{{ errMessage }}</h3>
     </div>
 
-    <router-link to="/SignUp" class="links"
-    >هنوز ثبت نام نکرده اید ؟
-    </router-link>
-
     <router-link to="" class="saveAndNext" @click="subform">
       ورود
+    </router-link>
+
+    <router-link to="/SignUp" class="links"
+    >هنوز ثبت نام نکرده اید ؟
     </router-link>
   </div>
 </template>
 
 <style scoped>
 .main {
-  width: 50%;
+  width: 40%;
   min-width: 300px;
+  text-align: center;
 }
 
 .main ul {

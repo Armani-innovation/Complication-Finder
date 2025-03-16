@@ -4,6 +4,9 @@ import RadarChart from "./RadarChart.vue";
 import axios from "@/axios/axios.js";
 import {ref, reactive, watch} from "vue";
 
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+
 const domain = JSON.parse(sessionStorage.getItem("domain"));
 
 const data = {
@@ -27,7 +30,7 @@ axios.get(`${domain[0]}/`, {params: data}).then((response) => {
   isLoading.value = false;
 })
 
-watch(finalResults, (finalResultsFetch)=>{
+watch(finalResults, (finalResultsFetch) => {
   for (const key in finalResultsFetch.results) {
     if (key !== "overallScore") {
       scores.push(finalResultsFetch.results[key]);
@@ -37,11 +40,12 @@ watch(finalResults, (finalResultsFetch)=>{
   companyName.value = finalResultsFetch.company.name;
   companyDomain.value = finalResultsFetch.domain;
   overallScore.value = finalResultsFetch.results.overallScore;
+
 })
 
 fetch("/improveSituation.json").then((res) => res.json())
   .then((resData) => {
-    improveSituations.value = resData[(domain[1])-1];
+      improveSituations.value = resData[(domain[1]) - 1];
     }
   )
 
@@ -59,15 +63,41 @@ function setIndex(index) {
   }
 }
 
+const generatePDF = async () => {
+  const element = document.getElementById("pdf-content");
+
+  if (!element) return;
+
+  const canvas = await html2canvas(element, { scale: 3 });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const imgWidth = 210;
+  const pageHeight = 297;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let yPosition = 0;
+
+  while (yPosition < imgHeight) {
+    pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
+    yPosition += pageHeight;
+
+    if (yPosition < imgHeight) {
+      pdf.addPage();
+    }
+  }
+
+  pdf.save(` گزارش عارضه یابی ${companyDomain.value} شرکت ${companyName.value} .pdf`);
+};
+
 </script>
 
 <template>
-  <div class="main" v-if="!isLoading">
+  <div id="pdf-content" class="main" v-if="!isLoading">
     <div class="logo">
       <img src="../assets/logo.png" alt="">
     </div>
-    <h2>گزارش عارضه یابی {{companyDomain}} <br>
-    <span> شرکت {{companyName}} </span>
+    <h2>گزارش عارضه یابی {{ companyDomain }} <br>
+      <span> شرکت {{ companyName }} </span>
     </h2>
     <div class="textAndChart">
       <p>
@@ -114,18 +144,17 @@ function setIndex(index) {
       ادامه عارضه یابی
     </router-link>
     <p class="finalText">
-      شما میتوانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ
+      شما می‌توانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ
       شرکت
-      دانش بنیان شبکه نوآوری آرمانی با شماره های
+      دانش بنیان شبکه نوآوری آرمانی با شماره‌های
       <a href="tel:+982332300357">32300357-023</a>
       یا
-      <br>
       <a href="tel:+989046504331">09046504331</a>
       تماس حاصل نمایید.
     </p>
   </div>
-
   <img v-else src="./../assets/Animation.gif" alt="">
+  <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
 </template>
 
 <style scoped>
@@ -137,6 +166,8 @@ function setIndex(index) {
 .main {
   width: 80%;
   min-width: 300px;
+  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url("./../assets/logo.png") no-repeat center center;
+  background-size: contain;
 }
 
 .main span {
@@ -242,4 +273,5 @@ function setIndex(index) {
     height: auto;
   }
 }
+
 </style>

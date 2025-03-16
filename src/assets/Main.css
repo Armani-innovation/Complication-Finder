@@ -4,15 +4,16 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #f4f5f7;
-  font-family: "B Yekan", cursive;
   direction: rtl;
+  background: url("./1.gif");
+  background-size: cover;
+  position: relative;
 }
 
 .main {
   height: auto;
-  background-color: #ffffff;
-  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 60px;
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   padding: 5vh 5vw;
@@ -63,7 +64,7 @@ body {
   background-color: #e0e0e0;
 }
 
-.main .saveAndNext {
+.saveAndNext {
   width: 100%;
   max-width: 200px;
   height: 5vh;
@@ -71,6 +72,8 @@ body {
   border: 0;
   margin: 5vh auto;
   background-color: #0d6efd;
+  background: url("./Artboard 1.png");
+  background-size: cover;
   color: #ffffff;
   cursor: pointer;
   display: flex;
@@ -81,15 +84,21 @@ body {
   box-sizing: border-box;
 }
 
-.main .saveAndNext:hover {
+.saveAndNext:hover {
   background-color: #0056b3;
 }
 
-.main .saveAndNext:active {
+.saveAndNext:active {
   border: 2px solid #ffffff;
 }
 
 .main .links {
   text-decoration: none;
-  color: #0d6efd;
+  color: #0022FF;
+}
+
+@media only print {
+  body {
+    display: none !important;
+  }
 }
