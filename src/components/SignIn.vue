@@ -79,9 +79,10 @@ const fetchUser = inject("fetchUser")
 
 <style scoped>
 .main {
-  width: 40%;
+  width: 30%;
   min-width: 300px;
   text-align: center;
+  margin-top: 30vh;
 }
 
 .main ul {
@@ -95,7 +96,7 @@ const fetchUser = inject("fetchUser")
 }
 
 .main ul li {
-  width: 50%;
+  width: 90%;
   height: 5vh;
   margin: 1vh 0;
   background-color: #f4f5f7;

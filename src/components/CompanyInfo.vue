@@ -57,6 +57,7 @@ function savaAndNext() {
 .main {
   width: 70%;
   min-width: 300px;
+  margin-top: 35vh;
 }
 
 .main h4 {

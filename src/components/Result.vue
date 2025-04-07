@@ -158,15 +158,10 @@ const generatePDF = async () => {
 </template>
 
 <style scoped>
-@font-face {
-  font-family: BYekan;
-  src: url("./../assets/BYekan+.ttf");
-}
-
 .main {
   width: 80%;
   min-width: 300px;
-  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url("./../assets/logo.png") no-repeat center center;
+  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url("./../assets/logo.png") repeat-y center center;
   background-size: contain;
 }
 

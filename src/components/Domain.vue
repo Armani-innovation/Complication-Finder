@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, reactive, ref, computed} from "vue";
+import {onMounted, reactive, ref, computed, provide} from "vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 
@@ -49,11 +49,14 @@ function selectDomain(domain) {
     case 9 :
       sendRequest("product_competitiveness");
       break;
+    case 10:
+      router.push("/questions");
+      sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
+      break;
   }
 }
 
 async function sendRequest(domain) {
-
   const retries = 3 ;
   const delay = 2000 ;
   isLoading.value = true;
@@ -63,9 +66,8 @@ async function sendRequest(domain) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       await axios.put(`${domain}/`, data);
-
-
       isLoading.value = false;
+      provide("questionCount" , 1)
       return router.push("/questions");
     } catch {
 
@@ -98,7 +100,7 @@ onMounted(loadDomains)
     </ul>
     <p class="error" v-if="errMessage">{{ errMessage }}</p>
     <router-link to="" class="saveAndNext" @click="selectDomain(selectedDomain)">
-      ذخیره و بعدی
+      شروع عارضه یابی
     </router-link>
   </div>
 </template>
@@ -107,6 +109,7 @@ onMounted(loadDomains)
 .main {
   width: 50%;
   min-width: 300px;
+  margin-top: 30vh;
 }
 
 .main ul {

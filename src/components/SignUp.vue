@@ -12,11 +12,11 @@ let formData = reactive({});
 function handleEvent() {
 
   if ((formData.name && formData.registrationNumber && formData.username && formData.password && formData.repeatPassword) || (formData.name && formData.username && formData.password && formData.repeatPassword)) {
-  is_company.value ?
-    handleCompany()
-    :
-    handleMentor()
-  }else {
+    is_company.value ?
+      handleCompany()
+      :
+      handleMentor()
+  } else {
     errorMessage.value = "لطفا تمام فیلد ها را پر کنید.";
   }
 
@@ -91,18 +91,19 @@ const fetchUser = inject("fetchUser");
     <h1>ثبت نام</h1>
 
     <h4>نقش شما</h4>
+
     <div class="options">
-      <div>
+      <div :class="{mentor : !is_company}">
         <input type="radio" name="personType" id="mentor" :value="false" v-model="is_company">
         <label for="mentor">حقیقی</label>
       </div>
-      <div>
+      <div :class="{company : is_company}">
         <input type="radio" name="personType" id="company" :value="true" v-model="is_company">
         <label for="company">حقوقی</label>
       </div>
     </div>
 
-    <ul v-if="is_company">
+    <ul v-if="is_company" :class="{companyUl : is_company}">
       <li>
         <input
           v-model="formData['name']"
@@ -200,6 +201,9 @@ const fetchUser = inject("fetchUser");
   width: 40%;
   min-width: 300px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30vh;
 }
 
 .main h4 {
@@ -207,19 +211,28 @@ const fetchUser = inject("fetchUser");
 }
 
 .main ul {
-  width: 100%;
+  width: 70%;
+  height: 45vh;
   list-style: none;
-  margin: 6vh auto 5vh auto;
+  margin: 0 auto 5vh auto;
   padding-right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   background-color: #DAD9D9;
+  border-radius: 30px 0 30px 30px;
+  transition: all ease 300ms;
+  z-index: 1;
+}
+
+.main .companyUl {
+  border-radius: 0 30px 30px 30px;
 }
 
 .main ul li {
-  height: 5vh;
-  width: 50%;
+  height: 6vh;
+  width: 80%;
   margin: 1vh 0;
   background-color: #f4f5f7;
   padding: 0;
@@ -227,19 +240,46 @@ const fetchUser = inject("fetchUser");
 }
 
 .main .options {
+  position: relative;
+  width: 70%;
+  height: 10vh;
   display: flex;
   justify-content: center;
+  background-color: white;
+  margin: 0 auto;
+  z-index: 0;
+  background-color: rgba(0, 0, 0 ,0);
+}
+
+.main .options::before {
+  position: absolute;
+  content: "";
+  bottom: -30px;
+  width: 100%;
+  height: 30px;
+  background-color: #f4f5f7;
 }
 
 .main .options div {
-  width: 12%;
-  height: 4vh;
-  border-radius: 10px;
-  margin: 1vh 0;
-  background-color: #f4f5f7;
+  width: 50%;
+  border-radius: 30px 30px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all ease 300ms;
+  background-color: #f4f5f7;
+}
+
+.main .options .company {
+  background-color: #DAD9D9;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.main .options .mentor {
+  background-color: #DAD9D9;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .main .options div input {
@@ -253,6 +293,7 @@ const fetchUser = inject("fetchUser");
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  font-size: 1vw;
 }
 
 .main .options div input:checked + label {

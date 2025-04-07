@@ -2,18 +2,22 @@
 import {provide, ref} from "vue";
 import Status from "@/components/Status.vue";
 import axios from "@/axios/axios.js";
+import router from "@/router/index.js";
 
 const name = ref("")
+let isSignedIn = ref(false);
+let profileRouted = ref(false);
 
 async function fetchUser() {
 
-  const delay = 2000 ;
-  const retries = 3 ;
+  isSignedIn.value = true;
+  const delay = 2000;
+  const retries = 3;
   const id = sessionStorage.getItem("id");
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const res = await axios.get("register/", { params: { id } });
+      const res = await axios.get("register/", {params: {id}});
       name.value = res.data.name;
       return res.data.is_company;
     } catch {
@@ -28,30 +32,48 @@ async function fetchUser() {
 
 }
 
-if (sessionStorage.getItem("id")){
+if (sessionStorage.getItem("id")) {
   fetchUser();
 }
 
+function routeProfile() {
+  router.push('/Profile')
+  showStatus()
+}
+
+function showStatus() {
+  profileRouted.value = !profileRouted.value;
+}
+
 provide("fetchUser", fetchUser);
+provide("showStatus", showStatus);
 </script>
 
 <template>
   <div class="container">
+
+    <video class="background-video" autoplay loop muted playsinline>
+      <source src="./assets/1.mp4" type="video/mp4"/>
+      مرورگر شما از ویدئوی HTML5 پشتیبانی نمی‌کند.
+    </video>
+
     <div class="header">
+      <div class="empty" v-if="!isSignedIn"></div>
+      <div class="userName" v-if="name" @click="routeProfile">
+        <h3>{{ name }}</h3>
+      </div>
       <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
+      <div class="empty"></div>
     </div>
-    <div class="userName" v-if="name">
-      <img src="./assets/user.png" alt="">
-      <h3>{{ name }}</h3>
-    </div>
-    <Status class="status"/>
+    <Status v-if="!profileRouted" class="status"/>
     <RouterView/>
-    <img src="./assets/logo1.png" alt="">
+    <img class="logo" src="./assets/logo1.png" alt="">
   </div>
 </template>
 
 <style scoped>
 .container {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -62,33 +84,61 @@ provide("fetchUser", fetchUser);
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  top: 0;
+  position: fixed;
+  border-radius: 15px;
 }
 
-.container img{
+.container .header h1{
+  margin: 0;
+}
+
+.container .logo {
   aspect-ratio: 1 / 1.1;
   width: 6vw;
   position: absolute;
   left: 5vw;
   bottom: 5vh;
+  z-index: 1;
 }
 
 .container .title {
-  margin: 5vh 0;
   text-align: center;
   color: white;
 }
 
-.container .userName {
-  width: 90%;
+.container .header .userName {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
-.container .userName img {
+
+.container .header .userName h3 {
+  color: white;
+  margin-right: 1vw;
+}
+
+.container .header .userName img {
   border-radius: 50%;
   width: 4vw;
   aspect-ratio: 1/1;
-  margin: 0 ;
+  margin: 0;
+}
+
+.container .header .empty {
+  width: 10vw;
+}
+
+.background-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
 
 @media screen and (max-width: 480px) {

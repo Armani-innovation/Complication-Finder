@@ -41,6 +41,8 @@
 .main {
   width: 70%;
   min-width: 300px;
+  margin-top: 30vh;
+  z-index: 0;
 }
 
 .main p {

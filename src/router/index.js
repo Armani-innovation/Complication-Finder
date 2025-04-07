@@ -9,6 +9,7 @@ import CompanyInfo from "@/components/CompanyInfo.vue";
 import SignIn from "@/components/SignIn.vue";
 import SignUp from "@/components/SignUp.vue";
 import FullComplication from "@/components/FullComplication.vue";
+import Profile from "@/components/Profile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,10 +19,11 @@ const router = createRouter({
     { name: "SignUp", component: SignUp, path: "/SignUp"},
     { name: "CompanyInfo", component: CompanyInfo, path: "/CompanyInfo"},
     { name: "Domain", component: Domain, path: "/domains"},
-    { name: "Questions", component: Question, path: "/questions/" },
+    { name: "Questions", component: Question, path: "/questions"},
     { name: "PayPage", component: PayPage, path: "/PayPage"},
     { name: "Result", component: Result, path: "/result" },
     { name: "FullComplication", component: FullComplication, path: "/FullComplication" },
+    { name: "Profile", component: Profile, path: "/Profile" },
   ],
 });
 
