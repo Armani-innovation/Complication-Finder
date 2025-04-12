@@ -60,6 +60,7 @@ provide("showStatus", showStatus);
     <div class="header">
       <div class="empty" v-if="!isSignedIn"></div>
       <div class="userName" v-if="name" @click="routeProfile">
+        <font-awesome-icon class="icon" icon="user" />
         <h3>{{ name }}</h3>
       </div>
       <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
@@ -78,16 +79,19 @@ provide("showStatus", showStatus);
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  z-index: -1;
 }
 
 .container .header {
-  width: 100%;
+  margin: 0 auto;
+  width: 70%;
+  height: 8vh;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   top: 0;
   position: fixed;
-  border-radius: 15px;
+  background-color: white;
 }
 
 .container .header h1{
@@ -105,17 +109,22 @@ provide("showStatus", showStatus);
 
 .container .title {
   text-align: center;
-  color: white;
+  color: black;
 }
 
 .container .header .userName {
   display: flex;
   align-items: center;
   cursor: pointer;
+  margin-right: 3vw;
+}
+
+.container .header .userName .icon{
+  font-size: 16px;
 }
 
 .container .header .userName h3 {
-  color: white;
+  color: black;
   margin-right: 1vw;
 }
 

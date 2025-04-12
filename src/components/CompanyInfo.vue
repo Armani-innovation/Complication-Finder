@@ -1,23 +1,28 @@
 <script setup>
 import {reactive, ref} from "vue";
 import router from "@/router/index.js";
-import axios from "./../axios/axios.js"
+import axios from "./../axios/axios.js";
+import {useNumOfPersons} from "@/stores/counter.js";
 
 const data = reactive({
   company: {},
   userid: sessionStorage.getItem("id"),
 })
 
+const store = useNumOfPersons()
+
 let companyName = ref("");
 let companyTrademark = ref("");
 let companyNationalID = ref("");
+let companyMembers = ref(null);
 
 let errorMessage = ref(null);
 
 function savaAndNext() {
-  if (!(companyName.value && companyNationalID.value && companyTrademark.value)) {
+  if (!(companyName.value && companyNationalID.value && companyTrademark.value && companyMembers.value)) {
     errorMessage.value = "لطفا تمام فیلد ها را پر کنید"
   } else {
+    store.setNumOfPersons(companyMembers.value) ;
     data.company['name'] = companyName.value;
     data.company['registrationNumber'] = companyTrademark.value;
     data.company['nationalID'] = companyNationalID.value;
@@ -41,6 +46,7 @@ function savaAndNext() {
       <li><input type="text" placeholder="شناسه ملی شرکت" v-model="companyNationalID"/></li>
       <li><input type="text" placeholder="شماره ثبت علامت تجاری" v-model="companyTrademark"/></li>
       <li><input type="text" placeholder="حوزه کاری شرکت"/></li>
+      <li><input type="text" placeholder="تعداد اعضای شرکت" v-model="companyMembers"/></li>
     </ul>
 
     <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
@@ -68,7 +74,7 @@ function savaAndNext() {
   width: 100%;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   justify-content: center;
   margin: 6vh auto 2vh auto;
   padding-bottom: 10vh;

@@ -39,6 +39,10 @@ async function subform() {
   }
 }
 
+function loginWithEnter(event) {
+  if (event.key === "Enter") subform();
+}
+
 const fetchUser = inject("fetchUser")
 </script>
 
@@ -59,6 +63,7 @@ const fetchUser = inject("fetchUser")
           v-model="formData.password"
           type="password"
           placeholder="رمز عبور"
+          @keyup="loginWithEnter"
         />
       </li>
     </ul>

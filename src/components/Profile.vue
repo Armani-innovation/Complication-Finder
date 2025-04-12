@@ -1,5 +1,7 @@
 <script setup>
+import {inject} from "vue";
 
+const showStatus = inject("showStatus")
 </script>
 
 <template>
@@ -30,7 +32,7 @@
       <div>1</div>
     </div>
     <div class="backwardLink">
-      <router-link class="backward" to="/domains">
+      <router-link class="backward" to="/domains" @click="showStatus">
         بازگشت
       </router-link>
     </div>

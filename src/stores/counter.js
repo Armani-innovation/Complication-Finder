@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import {reactive, ref} from "vue";
 
 export const useCompanyStore = defineStore("companyStore", () => {
   const company = reactive({});
@@ -19,4 +19,14 @@ export const useResultStore = defineStore("resultStore", () => {
   }
 
   return { result, setResult };
+})
+
+export const useNumOfPersons = defineStore("numOfPersons", ()=>{
+  const numOfPersons = ref(0);
+
+  const setNumOfPersons = (newNumOfPersons) => {
+    numOfPersons.value = newNumOfPersons;
+  }
+
+  return { numOfPersons, setNumOfPersons };
 })

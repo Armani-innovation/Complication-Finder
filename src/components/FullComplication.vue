@@ -7,7 +7,7 @@
 // let options = reactive([]);
 //
 // function fetchQuestions() {
-//   fetch("/questions.json").then((res) => res.json()).then((resData) => {
+//   fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
 //     for (const dataKey in resData[].questions) {
 //       questions.push(resData[].questions[dataKey])
 //       questionsKey.push(dataKey);

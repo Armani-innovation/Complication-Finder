@@ -3,12 +3,15 @@ import {computed, inject, onMounted, reactive, ref} from "vue";
 import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 import Pagination from "@/components/Pagination.vue";
+import {useNumOfPersons} from "@/stores/counter.js";
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
 let lastQuestion = ref(false);
 let firstQuestion = ref(true);
+// let questionDescription = ref("");
 
+const numOfUsers = useNumOfPersons().numOfPersons;
 const domain = JSON.parse(sessionStorage.getItem("domain"));
 
 let questions = reactive([]);
@@ -29,9 +32,44 @@ let data = reactive({
 });
 
 function fetchQuestions() {
-  console.log("fetched questions");
-  if (Number(domain[1]) !== 10) {
-    fetch("/questions.json").then((res) => res.json()).then((resData) => {
+  // if (Number(domain[1]) !== 10) {
+  //   fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+  //     domainTitle.value = resData[domain[1]].name;
+  //     for (const dataKey in resData[domain[1]].questions) {
+  //       questions.push(resData[domain[1]].questions[dataKey])
+  //       questionsKey.push(dataKey);
+  //     }
+  //     for (const dataKey in resData[domain[1]].options) {
+  //       options.push(resData[domain[1]].options[dataKey])
+  //     }
+  //   })
+  // } else {
+  //   fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+  //     for (const key in resData) {
+  //
+  //       for (const keyKey in resData[key].questions) {
+  //         questions.push(resData[key].questions[keyKey]);
+  //         questionsKey.push(keyKey);
+  //       }
+  //       for (const keyKey in resData[key].options) {
+  //         options.push(resData[key].options[keyKey])
+  //       }
+  //     }
+  //   })
+  // }
+  if (numOfUsers <= 10) {
+    fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+      domainTitle.value = resData[domain[1]].name;
+      for (const dataKey in resData[domain[1]].questions) {
+        questions.push(resData[domain[1]].questions[dataKey])
+        questionsKey.push(dataKey);
+      }
+      for (const dataKey in resData[domain[1]].options) {
+        options.push(resData[domain[1]].options[dataKey])
+      }
+    })
+  } else if (numOfUsers > 10 && numOfUsers <= 50) {
+    fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
       domainTitle.value = resData[domain[1]].name;
       for (const dataKey in resData[domain[1]].questions) {
         questions.push(resData[domain[1]].questions[dataKey])
@@ -42,26 +80,24 @@ function fetchQuestions() {
       }
     })
   } else {
-    fetch("/questions.json").then((res) => res.json()).then((resData) => {
-      for (const key in resData) {
-
-        for (const keyKey in resData[key].questions) {
-          questions.push(resData[key].questions[keyKey]);
-          questionsKey.push(keyKey);
-        }
-        for (const keyKey in resData[key].options) {
-          options.push(resData[key].options[keyKey])
-        }
+    fetch("/lgCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+      domainTitle.value = resData[domain[1]].name;
+      for (const dataKey in resData[domain[1]].questions) {
+        questions.push(resData[domain[1]].questions[dataKey])
+        questionsKey.push(dataKey);
+      }
+      for (const dataKey in resData[domain[1]].options) {
+        options.push(resData[domain[1]].options[dataKey])
       }
     })
   }
 }
 
-function goToQuestion(index) {
-  questionHistory.push(questionCount.value);
-  questionCount.value = index;
-  picked.value = null;
-}
+// function goToQuestion(index) {
+//   questionHistory.push(questionCount.value);
+//   questionCount.value = index;
+//   picked.value = null;
+// }
 
 async function nextQuestion() {
   firstQuestion.value = false;
@@ -97,7 +133,7 @@ function sendLastQuestion() {
 }
 
 
-onMounted(()=>{
+onMounted(() => {
   fetchQuestions();
   questionCounter.value = inject("questionCount")
 })
@@ -106,7 +142,13 @@ onMounted(()=>{
 <template>
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
-    <p v-if="!questionLoading">{{ questions[questionCounter] }}</p>
+    <div class="questionBar">
+      <p v-if="!questionLoading">{{ questions[questionCounter] }}</p>
+<!--      <div class="icon">-->
+<!--        <font-awesome-icon icon="question"/>-->
+<!--      </div>-->
+      <a href="">مقاله مربوطه</a>
+    </div>
     <ul v-if="!questionLoading">
       <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
         <input @change="nextQuestion" type="radio" name="option" :id="index"
@@ -122,12 +164,12 @@ onMounted(()=>{
       <Pagination
         :questionCount="questionCount"
         :totalQuestions="questions.length"
-        :goToQuestion="goToQuestion"
       />
 
-      <button class="saveAndNext" v-if="!lastQuestion && !firstQuestion">
-        ذخیره پاسخ ها
-      </button>
+      <!--        :goToQuestion="goToQuestion"-->
+      <!--      <button class="saveAndNext" v-if="!lastQuestion && !firstQuestion">-->
+      <!--        ذخیره پاسخ ها-->
+      <!--      </button>-->
 
       <button class="saveAndNext" v-if="lastQuestion" @click="sendLastQuestion">
         ارسال پاسخ ها
@@ -149,8 +191,90 @@ onMounted(()=>{
   color: red;
 }
 
-.main p {
+.main .questionBar {
+  display: flex;
+  align-items: start;
+}
+
+.main .questionBar p {
   margin-top: 0;
+}
+/*
+.main .questionBar .icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: max-content;
+  margin: 0 1vw;
+  padding: 2px 5px;
+  border: 1px solid white;
+  color: white;
+  background-color: lightgray;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.main .questionBar .icon::before {
+  position: absolute;
+  content: "";
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+  background-color: #0d6efd;
+  bottom: -12px;
+  transform: rotateZ(315deg);
+  cursor: default;
+  transition: 200ms all ease;
+  pointer-events: none;
+}
+
+.main .questionBar .icon::after {
+  position: absolute;
+  content: "v-bind(questionDescription)";
+  width: max-content;
+  max-width: 300px;
+  height: max-content;
+  background-color: #0d6efd;
+  bottom: -45px;
+  padding: 1vh 1vw;
+  cursor: default;
+  color: white;
+  border-radius: 15px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 200ms all ease;
+}
+
+.main .questionBar .icon:hover::before {
+  opacity: 1;
+}
+
+.main .questionBar .icon:hover::after {
+  opacity: 1;
+}
+*/
+.main .questionBar a {
+  text-decoration: none;
+  color: #0056b3;
+  position: relative;
+  margin-right: 1vw;
+}
+
+.main .questionBar a::after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 2px;
+  background-color: #0056b3;
+  bottom: 0;
+  right: 50%;
+  transition: 200ms all ease;
+}
+
+.main .questionBar a:hover::after {
+  width: 100%;
+  right: 0;
 }
 
 .main ul {

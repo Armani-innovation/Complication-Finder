@@ -33,14 +33,13 @@ const endEllipsis = computed(() => displayedQuestions.value[displayedQuestions.v
 
 <template>
   <div class="pagination">
-    <button @click="goToQuestion(0)" :class="{ active: questionCount === 0 }">1</button>
+    <button :class="{ active: questionCount === 0 }">1</button>
 
     <span v-if="startEllipsis">...</span>
 
     <button
       v-for="index in displayedQuestions"
       :key="index"
-      @click="goToQuestion(index)"
       :class="{ active: questionCount === index }"
     >
       {{ index + 1 }}
@@ -48,7 +47,7 @@ const endEllipsis = computed(() => displayedQuestions.value[displayedQuestions.v
 
     <span v-if="endEllipsis">...</span>
 
-    <button @click="goToQuestion(totalQuestions - 1)" :class="{ active: questionCount === totalQuestions - 1 }">
+    <button :class="{ active: questionCount === totalQuestions - 1 }">
       {{ totalQuestions }}
     </button>
   </div>
@@ -66,7 +65,6 @@ const endEllipsis = computed(() => displayedQuestions.value[displayedQuestions.v
 .pagination button {
   background: none;
   border: 1px solid white;
-  cursor: pointer;
   color: white;
   padding: 8px 12px;
   font-size: 16px;

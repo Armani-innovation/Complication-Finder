@@ -24,6 +24,9 @@ import {faInfo} from "@fortawesome/free-solid-svg-icons";
 import {faHandshake} from "@fortawesome/free-solid-svg-icons";
 import {faStackExchange} from "@fortawesome/free-brands-svg-icons";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {faQuestion} from "@fortawesome/free-solid-svg-icons";
+import {faCopyright} from "@fortawesome/free-solid-svg-icons";
+import {faChartLine} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUsers);
 library.add(faCreditCard);
@@ -41,7 +44,9 @@ library.add(faInfo);
 library.add(faHandshake);
 library.add(faStackExchange);
 library.add(faUser)
-
+library.add(faQuestion)
+library.add(faCopyright)
+library.add(faChartLine)
 
 
 const app = createApp(App)

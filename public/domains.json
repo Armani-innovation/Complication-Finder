@@ -2,26 +2,16 @@
   "question": "در چه حوزه ای میخواهید عارضه یابی را انجام دهید ؟",
   "options": [
     "منابع انسانی",
-    "منابع مالی",
     "فروش و مارکتینگ",
-    "ساختار سرمایه",
-    "ساختار مدیریتی و سازمانی",
-    "مدیریت ارتباط با مشتری",
-    "ساخت و تولید",
-    "تحقیق و توسعه",
-    "رقابت پذیری محصول",
-    "عارضه یابی کلی"
+    "ساختار سازمانی",
+    "برندینگ",
+    "تحلیل صورت های مالی"
   ],
   "icons": [
     "users",
-    "coins",
     "money-bill-trend-up",
-    "building-columns",
     "building-ngo",
-    "comments",
-    "screwdriver-wrench",
-    "magnifying-glass",
-    "face-grin-tongue-wink",
-    "face-grin-tongue-wink"
+    "copyright",
+    "chart-line"
   ]
 }

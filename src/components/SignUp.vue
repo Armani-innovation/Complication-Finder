@@ -2,11 +2,13 @@
 import {reactive, ref, inject} from "vue"
 import router from "@/router/index.js";
 import axios from "@/axios/axios.js";
+import {useNumOfPersons} from "@/stores/counter.js";
+
+const store = useNumOfPersons()
 
 const is_company = ref(false);
-
+let companyMembers = ref(null);
 let errorMessage = ref(null);
-
 let formData = reactive({});
 
 function handleEvent() {
@@ -46,6 +48,7 @@ async function handleCompany() {
 
     sessionStorage.setItem("id", res.data.id);
     sessionStorage.setItem("nationalID", res.data.username);
+    store.setNumOfPersons(companyMembers.value);
 
     await fetchUser();
 
@@ -132,6 +135,14 @@ const fetchUser = inject("fetchUser");
 
       <li>
         <input
+          v-model="companyMembers"
+          type="text"
+          placeholder="تعداد کارمندان شرکت"
+        />
+      </li>
+
+      <li>
+        <input
           type="password"
           placeholder="رمز عبور"
           v-model="formData['password']"
@@ -204,6 +215,7 @@ const fetchUser = inject("fetchUser");
   display: flex;
   flex-direction: column;
   margin-top: 30vh;
+  z-index: 0;
 }
 
 .main h4 {
@@ -212,7 +224,7 @@ const fetchUser = inject("fetchUser");
 
 .main ul {
   width: 70%;
-  height: 45vh;
+  height: 50vh;
   list-style: none;
   margin: 0 auto 5vh auto;
   padding-right: 0;
@@ -223,7 +235,7 @@ const fetchUser = inject("fetchUser");
   background-color: #DAD9D9;
   border-radius: 30px 0 30px 30px;
   transition: all ease 300ms;
-  z-index: 1;
+  z-index: 3;
 }
 
 .main .companyUl {
@@ -247,7 +259,7 @@ const fetchUser = inject("fetchUser");
   justify-content: center;
   background-color: white;
   margin: 0 auto;
-  z-index: 0;
+  z-index: 3;
   background-color: rgba(0, 0, 0 ,0);
 }
 
