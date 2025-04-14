@@ -3,10 +3,11 @@ import {provide, ref} from "vue";
 import Status from "@/components/Status.vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const name = ref("")
 let isSignedIn = ref(false);
-let profileRouted = ref(false);
 
 async function fetchUser() {
 
@@ -38,15 +39,9 @@ if (sessionStorage.getItem("id")) {
 
 function routeProfile() {
   router.push('/Profile')
-  showStatus()
-}
-
-function showStatus() {
-  profileRouted.value = !profileRouted.value;
 }
 
 provide("fetchUser", fetchUser);
-provide("showStatus", showStatus);
 </script>
 
 <template>
@@ -57,7 +52,7 @@ provide("showStatus", showStatus);
       مرورگر شما از ویدئوی HTML5 پشتیبانی نمی‌کند.
     </video>
 
-    <div class="header">
+    <div class="header" v-if="route.name !== 'Profile'">
       <div class="empty" v-if="!isSignedIn"></div>
       <div class="userName" v-if="name" @click="routeProfile">
         <font-awesome-icon class="icon" icon="user" />
@@ -66,9 +61,9 @@ provide("showStatus", showStatus);
       <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
       <div class="empty"></div>
     </div>
-    <Status v-if="!profileRouted" class="status"/>
+    <Status v-if="route.name !== 'Profile'" class="status"/>
     <RouterView/>
-    <img class="logo" src="./assets/logo1.png" alt="">
+    <img class="logo" src="./assets/images/logo1.png" alt="">
   </div>
 </template>
 
@@ -85,13 +80,14 @@ provide("showStatus", showStatus);
 .container .header {
   margin: 0 auto;
   width: 70%;
-  height: 8vh;
+  height: 75px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   top: 0;
   position: fixed;
   background-color: white;
+  color: black;
 }
 
 .container .header h1{
@@ -109,7 +105,7 @@ provide("showStatus", showStatus);
 
 .container .title {
   text-align: center;
-  color: black;
+  font-size: 28px;
 }
 
 .container .header .userName {
@@ -120,12 +116,12 @@ provide("showStatus", showStatus);
 }
 
 .container .header .userName .icon{
-  font-size: 16px;
+  font-size: 22px;
 }
 
 .container .header .userName h3 {
-  color: black;
   margin-right: 1vw;
+  font-size: 20px;
 }
 
 .container .header .userName img {
@@ -150,9 +146,50 @@ provide("showStatus", showStatus);
   z-index: -1;
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 1024px) {
+  .container .header {
+    width: 85%;
+  }
+  .container .title {
+    font-size: 26px;
+  }
+}
+
+@media screen and (max-width: 768px) {
   .status {
     display: none;
   }
+  .container .header {
+    width: 100%;
+    background: none;
+    color: white;
+    top: 2vh;
+  }
+  .container .title {
+    font-size: 20px;
+  }
+  .container .header .userName h3 {
+    font-size: 14px;
+  }
+  .container .header .userName .icon {
+    font-size: 26px;
+  }
 }
+
+@media screen and (max-width: 480px) {
+  .container .title {
+    font-size: 16px;
+  }
+  .container .header .userName {
+    margin-left: 2vw;
+  }
+  .container .header .userName h3{
+    display: none;
+
+  }
+  .container .header .userName .icon {
+    font-size: 20px;
+  }
+}
+
 </style>

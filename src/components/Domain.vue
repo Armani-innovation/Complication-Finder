@@ -26,32 +26,16 @@ function selectDomain(domain) {
       sendRequest("human_resources");
       break;
     case 2 :
-      sendRequest("financial_resources");
-      break;
-    case 3 :
       sendRequest("sales_and_marketing");
       break;
+    case 3 :
+      sendRequest("sales_and_marketing")
+      break;
     case 4 :
-      sendRequest("capital_structure");
-      break;
-    case 5 :
-      sendRequest("management_organizational_structure");
-      break;
-    case 6 :
-      sendRequest("customer_relationship_management");
-      break;
-    case 7 :
-      sendRequest("manufacturing_and_production");
-      break;
-    case 8 :
       sendRequest("research_and_development");
       break;
-    case 9 :
-      sendRequest("product_competitiveness");
-      break;
-    case 10:
-      router.push("/questions");
-      sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
+    case 5 :
+
       break;
   }
 }
@@ -86,7 +70,7 @@ onMounted(loadDomains)
 </script>
 
 <template>
-  <img v-if="isLoading" src="../assets/Animation.gif" alt=""/>
+  <img v-if="isLoading" src="../assets/images/Animation.gif" alt=""/>
   <div class="main" v-else>
     <p>{{ domains.question }}</p>
     <ul>
@@ -109,7 +93,7 @@ onMounted(loadDomains)
 .main {
   width: 50%;
   min-width: 300px;
-  margin-top: 30vh;
+  margin-top: 75px;
 }
 
 .main ul {
@@ -117,7 +101,7 @@ onMounted(loadDomains)
   height: auto;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   justify-content: center;
   grid-gap: 2vh 1vw;
   margin: 0 auto;
@@ -155,6 +139,26 @@ onMounted(loadDomains)
 
 .main ul li label .icon {
   margin: 0 0.5vw;
+}
+
+@media screen and (max-width: 480px) {
+  .main {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .main {
+    width: 50%;
+  }
 }
 
 </style>

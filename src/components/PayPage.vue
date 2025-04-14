@@ -49,10 +49,4 @@
   cursor: pointer;
   padding: 1vh;
 }
-
-@media screen and (max-width: 900px) {
-  .main {
-    width: 90%;
-  }
-}
 </style>

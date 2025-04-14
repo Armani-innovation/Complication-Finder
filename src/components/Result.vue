@@ -94,7 +94,7 @@ const generatePDF = async () => {
 <template>
   <div id="pdf-content" class="main" v-if="!isLoading">
     <div class="logo">
-      <img src="../assets/logo.png" alt="">
+      <img src="../assets/images/logo.png" alt="">
     </div>
     <h2>گزارش عارضه یابی {{ companyDomain }} <br>
       <span> شرکت {{ companyName }} </span>
@@ -153,7 +153,7 @@ const generatePDF = async () => {
       تماس حاصل نمایید.
     </p>
   </div>
-  <img v-else src="./../assets/Animation.gif" alt="">
+  <img v-else src="../assets/images/Animation.gif" alt="">
   <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
 </template>
 
@@ -161,8 +161,10 @@ const generatePDF = async () => {
 .main {
   width: 80%;
   min-width: 300px;
-  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url("./../assets/logo.png") repeat-y center center;
+  background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.95)), url("../assets/images/logo.png") repeat-y center center;
   background-size: contain;
+  margin-top: 32vh;
+  z-index: 0;
 }
 
 .main span {
@@ -231,42 +233,4 @@ const generatePDF = async () => {
   color: black;
   text-decoration: none;
 }
-
-@media screen and (max-width: 768px) {
-  .main .textAndChart {
-    flex-direction: column;
-    margin: 0;
-  }
-
-  .main .textAndChart p {
-    width: 100%;
-  }
-
-  .main .gaugeChart {
-    width: 55vw;
-    height: 50vh;
-    margin: 0 auto;
-  }
-
-  .main .improveSituation div {
-    flex-direction: column;
-  }
-
-  .main .improveSituation div pre {
-    width: 100%;
-  }
-
-  .main .improveSituation div .gaugeChartPre {
-    width: 50vw;
-    height: auto;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .main .improveSituation div .gaugeChartPre {
-    width: 70vw;
-    height: auto;
-  }
-}
-
 </style>

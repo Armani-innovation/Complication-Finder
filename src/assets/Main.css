@@ -1,5 +1,10 @@
+@font-face {
+  font-family: 'BYekan';
+  src: url("@/assets/fonts/BYekan.woff") format("woff");
+}
+
 *{
-  font-family: "B Yekan", cursive;
+  font-family: 'BYekan', serif;
 }
 
 body {
@@ -7,10 +12,6 @@ body {
   padding: 0;
   direction: rtl;
   position: relative;
-}
-
-::-webkit-scrollbar{
-  display: none;
 }
 
 .main {
@@ -71,7 +72,7 @@ body {
   border: 0;
   margin: 5vh auto;
   background-color: #0d6efd;
-  background: url("./Artboard 1.png");
+  background: url("images/Artboard 1.png");
   background-size: cover;
   color: #ffffff;
   cursor: pointer;

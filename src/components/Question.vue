@@ -3,7 +3,7 @@ import {computed, inject, onMounted, reactive, ref} from "vue";
 import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 import Pagination from "@/components/Pagination.vue";
-import {useNumOfPersons} from "@/stores/counter.js";
+// import {useNumOfPersons} from "@/stores/counter.js";
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
@@ -11,7 +11,7 @@ let lastQuestion = ref(false);
 let firstQuestion = ref(true);
 // let questionDescription = ref("");
 
-const numOfUsers = useNumOfPersons().numOfPersons;
+// const numOfUsers = useNumOfPersons().numOfPersons;
 const domain = JSON.parse(sessionStorage.getItem("domain"));
 
 let questions = reactive([]);
@@ -57,40 +57,40 @@ function fetchQuestions() {
   //     }
   //   })
   // }
-  if (numOfUsers <= 10) {
-    fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[domain[1]].name;
-      for (const dataKey in resData[domain[1]].questions) {
-        questions.push(resData[domain[1]].questions[dataKey])
-        questionsKey.push(dataKey);
-      }
-      for (const dataKey in resData[domain[1]].options) {
-        options.push(resData[domain[1]].options[dataKey])
-      }
-    })
-  } else if (numOfUsers > 10 && numOfUsers <= 50) {
-    fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[domain[1]].name;
-      for (const dataKey in resData[domain[1]].questions) {
-        questions.push(resData[domain[1]].questions[dataKey])
-        questionsKey.push(dataKey);
-      }
-      for (const dataKey in resData[domain[1]].options) {
-        options.push(resData[domain[1]].options[dataKey])
-      }
-    })
-  } else {
-    fetch("/lgCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[domain[1]].name;
-      for (const dataKey in resData[domain[1]].questions) {
-        questions.push(resData[domain[1]].questions[dataKey])
-        questionsKey.push(dataKey);
-      }
-      for (const dataKey in resData[domain[1]].options) {
-        options.push(resData[domain[1]].options[dataKey])
-      }
-    })
-  }
+  // if (numOfUsers <= 10) {
+  //   fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+  //     domainTitle.value = resData[domain[1]].name;
+  //     for (const dataKey in resData[domain[1]].questions) {
+  //       questions.push(resData[domain[1]].questions[dataKey])
+  //       questionsKey.push(dataKey);
+  //     }
+  //     for (const dataKey in resData[domain[1]].options) {
+  //       options.push(resData[domain[1]].options[dataKey])
+  //     }
+  //   })
+  // } else if (numOfUsers > 10 && numOfUsers <= 50) {
+  //   fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+  //     domainTitle.value = resData[domain[1]].name;
+  //     for (const dataKey in resData[domain[1]].questions) {
+  //       questions.push(resData[domain[1]].questions[dataKey])
+  //       questionsKey.push(dataKey);
+  //     }
+  //     for (const dataKey in resData[domain[1]].options) {
+  //       options.push(resData[domain[1]].options[dataKey])
+  //     }
+  //   })
+  // } else {
+  //   fetch("/lgCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+  //     domainTitle.value = resData[domain[1]].name;
+  //     for (const dataKey in resData[domain[1]].questions) {
+  //       questions.push(resData[domain[1]].questions[dataKey])
+  //       questionsKey.push(dataKey);
+  //     }
+  //     for (const dataKey in resData[domain[1]].options) {
+  //       options.push(resData[domain[1]].options[dataKey])
+  //     }
+  //   })
+  // }
 }
 
 // function goToQuestion(index) {
@@ -157,9 +157,13 @@ onMounted(() => {
       </li>
     </ul>
 
-    <img v-else class="loader" src="./../assets/Animation.gif" alt="">
+    <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
 
     <div class="buttons">
+
+      <button class="saveAndNext" v-if="lastQuestion" @click="sendLastQuestion">
+        ارسال پاسخ ها
+      </button>
 
       <Pagination
         :questionCount="questionCount"
@@ -171,13 +175,9 @@ onMounted(() => {
       <!--        ذخیره پاسخ ها-->
       <!--      </button>-->
 
-      <button class="saveAndNext" v-if="lastQuestion" @click="sendLastQuestion">
-        ارسال پاسخ ها
-      </button>
-
     </div>
   </div>
-  <img v-else class="loader" src="./../assets/Animation.gif" alt="">
+  <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
 </template>
 
 <style scoped>
@@ -259,9 +259,10 @@ onMounted(() => {
   color: #0056b3;
   position: relative;
   margin-right: 1vw;
+  z-index: 0;
 }
 
-.main .questionBar a::after {
+.main .questionBar a::before {
   position: absolute;
   content: "";
   width: 0;
@@ -272,7 +273,7 @@ onMounted(() => {
   transition: 200ms all ease;
 }
 
-.main .questionBar a:hover::after {
+.main .questionBar a:hover::before {
   width: 100%;
   right: 0;
 }
@@ -350,9 +351,4 @@ onMounted(() => {
   border-radius: 5px;
 }
 
-@media screen and (max-width: 992px) {
-  .main {
-    width: 90%;
-  }
-}
 </style>

@@ -41,7 +41,7 @@
 .main {
   width: 70%;
   min-width: 300px;
-  margin-top: 30vh;
+  margin-top: 240px;
   z-index: 0;
 }
 

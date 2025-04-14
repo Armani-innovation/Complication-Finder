@@ -214,8 +214,9 @@ const fetchUser = inject("fetchUser");
   text-align: center;
   display: flex;
   flex-direction: column;
-  margin-top: 30vh;
+  margin-top: 240px;
   z-index: 0;
+  background-color: white;
 }
 
 .main h4 {
@@ -223,7 +224,7 @@ const fetchUser = inject("fetchUser");
 }
 
 .main ul {
-  width: 70%;
+  width: 90%;
   height: 50vh;
   list-style: none;
   margin: 0 auto 5vh auto;
@@ -253,14 +254,14 @@ const fetchUser = inject("fetchUser");
 
 .main .options {
   position: relative;
-  width: 70%;
+  width: 90%;
   height: 10vh;
   display: flex;
   justify-content: center;
   background-color: white;
   margin: 0 auto;
   z-index: 3;
-  background-color: rgba(0, 0, 0 ,0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .main .options::before {
@@ -305,11 +306,29 @@ const fetchUser = inject("fetchUser");
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  font-size: 1vw;
 }
 
 .main .options div input:checked + label {
   color: #0056b3;
 }
 
+@media screen and (max-width: 480px) {
+  .main {
+    width: 95%;
+    margin-top: 15vh;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    width: 70%;
+    margin-top: 15vh;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .main {
+    width: 50%;
+  }
+}
 </style>

@@ -47,7 +47,7 @@ const fetchUser = inject("fetchUser")
 </script>
 
 <template>
-  <img v-if="isLoading" class="loader" alt="" src="./../assets/Animation.gif">
+  <img v-if="isLoading" class="loader" alt="" src="../assets/images/Animation.gif">
   <div v-else class="main">
     <h1>ورود</h1>
     <ul>
@@ -87,7 +87,7 @@ const fetchUser = inject("fetchUser")
   width: 30%;
   min-width: 300px;
   text-align: center;
-  margin-top: 30vh;
+  margin-top: 105px;
 }
 
 .main ul {
@@ -106,6 +106,12 @@ const fetchUser = inject("fetchUser")
   margin: 1vh 0;
   background-color: #f4f5f7;
   padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    margin-top: 0;
+  }
 }
 
 </style>
