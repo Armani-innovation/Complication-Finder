@@ -87,7 +87,7 @@ const fetchUser = inject("fetchUser")
   width: 30%;
   min-width: 300px;
   text-align: center;
-  margin-top: 105px;
+  margin-top: 150px;
 }
 
 .main ul {
@@ -106,6 +106,10 @@ const fetchUser = inject("fetchUser")
   margin: 1vh 0;
   background-color: #f4f5f7;
   padding: 0;
+}
+
+.main .error {
+  margin: 0 auto;
 }
 
 @media screen and (max-width: 768px) {

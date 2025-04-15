@@ -1,9 +1,32 @@
 <script setup>
 import router from "@/router/index.js";
+import {useRoute} from "vue-router";
+import {watch} from "vue";
+import {onMounted} from "vue";
+import axios from "../axios/axios.js";
+
+const nationalID = sessionStorage.getItem("nationalID");
+
+function fetchInfos(){
+  axios.get("dashboard/All" , {params:{nationalID}}).then(res=>{
+    console.log(res)
+  })
+}
+
+const route = useRoute();
+console.log(route.name);
+
+watch(() => route.name, (newName) => {
+  console.log(newName);
+})
 
 function backward() {
   router.back()
 }
+
+onMounted(()=>{
+  fetchInfos()
+})
 </script>
 
 <template>

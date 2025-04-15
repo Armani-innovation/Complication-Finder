@@ -101,7 +101,7 @@ onMounted(loadDomains)
   height: auto;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3 , 1fr);
   justify-content: center;
   grid-gap: 2vh 1vw;
   margin: 0 auto;
@@ -141,23 +141,33 @@ onMounted(loadDomains)
   margin: 0 0.5vw;
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 1279px) {
   .main {
-    width: 100%;
-    margin-top: 0;
+    width: 70%;
+    margin-top: 150px;
+  }
+  .main ul {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media screen and (max-width: 768px) {
   .main {
-    width: 100%;
-    margin-top: 0;
+    width: 75%;
+    margin-top: 50px;
+  }
+  .main ul {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 480px) {
   .main {
-    width: 50%;
+    width: 80%;
+    margin-top: 0;
+  }
+  .main ul {
+    grid-template-columns: 1fr;
   }
 }
 

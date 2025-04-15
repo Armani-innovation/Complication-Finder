@@ -13,6 +13,7 @@ const route = useRoute();
 let status = ref("حوزه عارضه یابی");
 
 watch(() => route.name, (newName) => {
+  console.log(newName);
   switch (newName) {
     case "Welcome" :
       welcome()
@@ -250,9 +251,10 @@ function finalResult() {
   opacity: 1;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1279px) {
   .main {
     width: 85%;
+    top: 59px;
   }
   .main ul li .title {
     font-size: 1.4vw;
@@ -260,7 +262,9 @@ function finalResult() {
 }
 
 @media screen and (max-width: 768px) {
-
+  .main {
+    top: 40px;
+  }
 }
 
 @media screen and (max-width: 480px) {

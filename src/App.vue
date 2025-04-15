@@ -95,7 +95,6 @@ provide("fetchUser", fetchUser);
 }
 
 .container .logo {
-  aspect-ratio: 1 / 1.1;
   width: 6vw;
   position: absolute;
   left: 5vw;
@@ -146,9 +145,10 @@ provide("fetchUser", fetchUser);
   z-index: -1;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1279px) {
   .container .header {
     width: 85%;
+    height: 60px;
   }
   .container .title {
     font-size: 26px;
@@ -156,17 +156,11 @@ provide("fetchUser", fetchUser);
 }
 
 @media screen and (max-width: 768px) {
-  .status {
-    display: none;
-  }
   .container .header {
-    width: 100%;
-    background: none;
-    color: white;
-    top: 2vh;
+    height: 50px;
   }
   .container .title {
-    font-size: 20px;
+    font-size: 3vw;
   }
   .container .header .userName h3 {
     font-size: 14px;
@@ -177,6 +171,15 @@ provide("fetchUser", fetchUser);
 }
 
 @media screen and (max-width: 480px) {
+  .status {
+    display: none;
+  }
+  .container .header {
+    width: 100%;
+    background: none;
+    color: white;
+    top: 2vh;
+  }
   .container .title {
     font-size: 16px;
   }
