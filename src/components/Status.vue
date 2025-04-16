@@ -11,6 +11,7 @@ const credits = ref(null);
 const result = ref(null);
 const route = useRoute();
 let status = ref("حوزه عارضه یابی");
+const id = sessionStorage.getItem("userId");
 
 watch(() => route.name, (newName) => {
   console.log(newName);
@@ -171,19 +172,23 @@ function finalResult() {
         <img ref="user" src="../assets/icons/SignIn-Up.svg" alt="">
         <h4 class="title" ref="userTitle">ثبت نام / ورود</h4>
       </li>
-      <li class="" ref="infos" @click="router.push('/domains')">
+      <li class="" ref="infos"
+          @click="user.value.classList.contains('passed') ? router.push('/domains') : '' ">
         <img ref="infos" src="../assets/icons/Domains.svg" alt="">
         <h4 class="title" ref="infosTitle"> {{ status }} </h4>
       </li>
-      <li class="" ref="complication" @click="router.push('/questions')">
+      <li class="" ref="complication"
+          @click="infos.value.classList.contains('passed') ? router.push('/questions') : '' ">
         <img ref="complication" src="../assets/icons/Questions.svg" alt="">
         <h4 class="title" ref="complicationTitle">سوالات عارضه یابی</h4>
       </li>
-      <li class="" ref="credits" @click="router.push('/PayPage')">
+      <li :style="id ? 'cursor: pointer' : 'cursor: default'" class="" ref="credits"
+          @click="complication.value.classList.contains('passed') ? router.push('/PayPage') : '' ">
         <img ref="credits" src="../assets/icons/PayPage.svg" alt="">
         <h4 class="title" ref="creditsTitle">پرداخت</h4>
       </li>
-      <li class="" ref="result" @click="router.push('/result')">
+      <li :style="id ? 'cursor: pointer' : 'cursor: default'" class="" ref="result"
+          @click="credits.value.classList.contains('passed') ? router.push('/result') : '' ">
         <img ref="result" src="../assets/icons/Results.svg" alt="">
         <h4 class="title" ref="resultTitle">گزارش نهایی</h4>
       </li>
@@ -230,7 +235,7 @@ function finalResult() {
   font-size: 1vw;
 }
 
-.main ul li img{
+.main ul li img {
   width: 85%;
 }
 
@@ -256,6 +261,7 @@ function finalResult() {
     width: 85%;
     top: 59px;
   }
+
   .main ul li .title {
     font-size: 1.4vw;
   }

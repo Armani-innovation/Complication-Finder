@@ -41,12 +41,11 @@
 .main {
   width: 70%;
   min-width: 300px;
-  margin-top: 240px;
-  z-index: 0;
 }
 
 .main p {
   text-align: justify;
+  z-index: 100;
 }
 
 .main h4, .main h3 {
