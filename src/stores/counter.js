@@ -1,32 +1,48 @@
-import { defineStore } from "pinia";
-import {reactive, ref} from "vue";
+import {defineStore} from "pinia";
+import {ref} from "vue";
+//
+// export const useCompanyStore = defineStore("companyStore", () => {
+//   const company = reactive({});
+//
+//   const setCompany = (newData) => {
+//     Object.assign(company, newData);
+//   };
+//
+//   return { company, setCompany };
+// });
+//
+// export const useResultStore = defineStore("resultStore", () => {
+//   const result = reactive({});
+//
+//   const setResult = (newData) => {
+//     Object.assign(result, newData);
+//   }
+//
+//   return { result, setResult };
+// })
+// export const useheight = defineStore("height", () => {
+//
+//   const numOfHeight = ref(0);
+//
+//   const setHeight = (newHeight) => {
+//     numOfHeight.value += newHeight;
+//     console.log(numOfHeight.value)
+//   }
+//
+//   const getHeight = () => {
+//     return numOfHeight.value ;
+//   }
+//
+//   return {numOfHeight, setHeight};
+// })
 
-export const useCompanyStore = defineStore("companyStore", () => {
-  const company = reactive({});
-
-  const setCompany = (newData) => {
-    Object.assign(company, newData);
-  };
-
-  return { company, setCompany };
-});
-
-export const useResultStore = defineStore("resultStore", () => {
-  const result = reactive({});
-
-  const setResult = (newData) => {
-    Object.assign(result, newData);
-  }
-
-  return { result, setResult };
-})
-
-export const useNumOfPersons = defineStore("numOfPersons", ()=>{
+export const useNumOfPersons = defineStore("numOfPersons", () => {
   const numOfPersons = ref(0);
 
   const setNumOfPersons = (newNumOfPersons) => {
     numOfPersons.value = newNumOfPersons;
   }
 
-  return { numOfPersons, setNumOfPersons };
+  return {numOfPersons, setNumOfPersons};
 })
+

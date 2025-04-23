@@ -3,19 +3,20 @@ import {computed, inject, onMounted, reactive, ref} from "vue";
 import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 import Pagination from "@/components/Pagination.vue";
-import {useNumOfPersons} from "@/stores/counter.js";
+import OptionInfo from "@/components/OptionInfo.vue";
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
 let lastQuestion = ref(false);
 let firstQuestion = ref(true);
 
-const numOfUsers = useNumOfPersons().numOfPersons;
 const domain = JSON.parse(sessionStorage.getItem("domain"));
+const size = sessionStorage.getItem("size");
 
 let questions = reactive([]);
 let questionsKey = reactive([]);
 let options = reactive([]);
+let optionsInfo = reactive([]);
 let domainTitle = ref(null)
 let questionHistory = reactive([]);
 
@@ -28,23 +29,26 @@ const selectedOption = computed(() => picked.value || 1);
 let data = reactive({
   userid: sessionStorage.getItem("id"),
   nationalID: sessionStorage.getItem("nationalID"),
+  answer: {}
 });
 
 function fetchQuestions() {
-  if (Number(domain[1]) !== 10) {
-    fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData[domain[1]].name;
-      for (const dataKey in resData[domain[1]].questions) {
-        questions.push(resData[domain[1]].questions[dataKey])
+  if (domain[1] === 4) {
+    fetch("/OrganizationalStructureQuestions.json").then((res) => res.json()).then((resData) => {
+      domainTitle.value = resData.name;
+      for (const dataKey in resData.questions) {
+        questions.push(resData.questions[dataKey])
         questionsKey.push(dataKey);
       }
-      for (const dataKey in resData[domain[1]].options) {
-        options.push(resData[domain[1]].options[dataKey])
+      for (const dataKey in resData.options) {
+        options.push(resData.options[dataKey])
+      }
+      for (const dataKey in resData.infos) {
+        optionsInfo.push(resData.infos[dataKey])
       }
     })
   } else {
-
-    if (numOfUsers <= 10) {
+    if (size === "کوچک") {
       fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
         domainTitle.value = resData[domain[1]].name;
         for (const dataKey in resData[domain[1]].questions) {
@@ -54,8 +58,11 @@ function fetchQuestions() {
         for (const dataKey in resData[domain[1]].options) {
           options.push(resData[domain[1]].options[dataKey])
         }
+        for (const dataKey in resData[domain[1]].infos) {
+          optionsInfo.push(resData[domain[1]].infos[dataKey])
+        }
       })
-    } else if (numOfUsers > 10 && numOfUsers <= 50) {
+    } else if (size === "متوسط") {
       fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
         domainTitle.value = resData[domain[1]].name;
         for (const dataKey in resData[domain[1]].questions) {
@@ -64,6 +71,9 @@ function fetchQuestions() {
         }
         for (const dataKey in resData[domain[1]].options) {
           options.push(resData[domain[1]].options[dataKey])
+        }
+        for (const dataKey in resData[domain[1]].infos) {
+          optionsInfo.push(resData[domain[1]].infos[dataKey])
         }
       })
     } else {
@@ -76,6 +86,9 @@ function fetchQuestions() {
         for (const dataKey in resData[domain[1]].options) {
           options.push(resData[domain[1]].options[dataKey])
         }
+        for (const dataKey in resData[domain[1]].infos) {
+          optionsInfo.push(resData[domain[1]].infos[dataKey])
+        }
       })
     }
   }
@@ -86,7 +99,8 @@ async function nextQuestion() {
 
   if (questionHistory.length > 0) {
     questionLoading.value = true;
-    data[`${questionsKey[questionCounter.value]}`] = selectedOption.value;
+    data.answer[`${questionsKey[questionCounter.value]}`] = `${options[questionCounter.value][selectedOption.value - 1]}`;
+    data.answer[`${questionsKey[questionCounter.value]}Num`] = selectedOption.value
     await axios.put(`${domain[0]}/`, data).then(() => {
       questionCount.value = questionHistory.pop();
       picked.value = null;
@@ -96,7 +110,8 @@ async function nextQuestion() {
     lastQuestion.value = true;
   } else {
     questionLoading.value = true;
-    data[`${questionsKey[questionCounter.value]}`] = selectedOption.value;
+    data.answer[`${questionsKey[questionCounter.value]}`] = `${selectedOption.value}.${options[questionCounter.value][selectedOption.value - 1]}`;
+    data.answer[`${questionsKey[questionCounter.value]}Num`] = selectedOption.value
     await axios.put(`${domain[0]}/`, data).then(() => {
       questionCount.value++;
       picked.value = null;
@@ -106,7 +121,8 @@ async function nextQuestion() {
 }
 
 function sendLastQuestion() {
-  data[`${questionsKey[questionCounter.value]}`] = selectedOption.value;
+  data.answer[`${questionsKey[questionCounter.value]}`] = `${selectedOption.value}.${options[questionCounter.value][selectedOption.value - 1]}`;
+  data.answer[`${questionsKey[questionCounter.value]}Num`] = selectedOption.value
   isLoading.value = true;
   axios.put(`${domain[0]}/`, data).then(() => {
     router.push("/PayPage")
@@ -133,6 +149,7 @@ onMounted(() => {
         <input @change="nextQuestion" type="radio" name="option" :id="index"
                :value="Number(index)+1" v-model="picked"/>
         <label :for="index">{{ option }}</label>
+        <OptionInfo :optionInfo="optionsInfo[questionCount][index]"/>
       </li>
     </ul>
 
@@ -158,7 +175,10 @@ onMounted(() => {
 .main {
   width: 70%;
   min-width: 300px;
-  margin-top: 30vh;
+}
+
+.main h3 {
+  margin-bottom: 2vh;
 }
 
 .main .domain {
@@ -166,15 +186,17 @@ onMounted(() => {
 }
 
 .main .questionBar {
-  display: flex;
-  align-items: start;
+  width: 100%;
+  margin-bottom: 2vh;
 }
 
 .main .questionBar p {
   margin-top: 0;
+  display: inline;
 }
 
 .main .questionBar a {
+  display: inline;
   text-decoration: none;
   color: #0056b3;
   position: relative;
@@ -239,6 +261,8 @@ onMounted(() => {
   transition: ease 100ms;
 }
 
+
+/*
 .main .buttons .prevQuestion {
   background: none;
   border: none;
@@ -270,5 +294,46 @@ onMounted(() => {
   font-weight: bold;
   border-radius: 5px;
 }
+*/
+@media screen and (max-width: 1279px) {
+  .main {
+    width: 95%;
+  }
+}
 
+@media screen and (max-width: 768px) {
+  .main h3 {
+    font-size: 18px;
+  }
+
+  .main .questionBar p {
+    font-size: 14px;
+  }
+
+  .main .questionBar a {
+    font-size: 14px;
+  }
+
+  .main ul li label {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .main h3 {
+    font-size: 16px;
+  }
+
+  .main .questionBar p {
+    font-size: 12px;
+  }
+
+  .main .questionBar a {
+    font-size: 12px;
+  }
+
+  .main ul li label {
+    font-size: 12px;
+  }
+}
 </style>

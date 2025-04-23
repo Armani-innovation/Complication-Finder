@@ -2,14 +2,21 @@
 import {reactive, ref, inject} from "vue"
 import router from "@/router/index.js";
 import axios from "@/axios/axios.js";
-import {useNumOfPersons} from "@/stores/counter.js";
 
-const store = useNumOfPersons()
-
+const isLoading = ref(false);
 const is_company = ref(false);
-let companyMembers = ref(null);
 let errorMessage = ref(null);
-let formData = reactive({});
+
+let formData = reactive({
+  is_company: false,
+  name: "",
+  username: "",
+  password: "",
+  repeatPassword: "",
+  registrationNumber: "",
+  size: "",
+  company_domain: "",
+});
 
 function handleEvent() {
 
@@ -19,56 +26,52 @@ function handleEvent() {
       :
       handleMentor()
   } else {
+    isLoading.value = false;
     errorMessage.value = "لطفا تمام فیلد ها را پر کنید.";
   }
 
 }
 
 async function handleCompany() {
-
+  isLoading.value = true;
   const retries = 3;
-  const delay = 2000;
   try {
-    formData["is_company"] = is_company.value;
+    formData.is_company = is_company.value;
+    sessionStorage.setItem("size", formData.size);
     let res;
-
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         res = await axios.post("register/", formData);
+        console.log(res)
         break;
-
-      } catch {
-
+      } catch(error) {
         if (attempt === retries)
-          errorMessage.value = "خطایی رخ داد لطفا دوباره تلاش کنید.";
-
-        await new Promise((resolve) => setTimeout(resolve, delay));
+          errorMessage.value = error.response.data || "خطایی رخ داد لطفا دوباره امتحان کنید";
       }
     }
-
     sessionStorage.setItem("id", res.data.id);
     sessionStorage.setItem("nationalID", res.data.username);
-    store.setNumOfPersons(companyMembers.value);
-
     await fetchUser();
-
     await router.push("/domains");
   } catch (err) {
+    isLoading.value = false;
     errorMessage.value = err.response.data.username[0];
   }
+  isLoading.value = false;
 }
 
 async function handleMentor() {
 
+  isLoading.value = true;
   const retries = 3;
-  formData["is_company"] = is_company.value;
+  formData.is_company = is_company.value;
 
   let res;
-
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       res = await axios.post("register/", formData);
       sessionStorage.setItem("id", res.data.id);
+      sessionStorage.setItem("nationalID", res.data.username);
       await fetchUser();
       await router.push("/CompanyInfo");
       break;
@@ -81,7 +84,7 @@ async function handleMentor() {
       }
     }
   }
-
+  isLoading.value = false;
 }
 
 const fetchUser = inject("fetchUser");
@@ -89,7 +92,8 @@ const fetchUser = inject("fetchUser");
 </script>
 
 <template>
-  <div class="main">
+  <img v-if="isLoading" class="loader" alt="" src="../assets/images/Animation.gif">
+  <div v-else class="main">
 
     <h1>ثبت نام</h1>
 
@@ -109,7 +113,7 @@ const fetchUser = inject("fetchUser");
     <ul v-if="is_company" :class="{companyUl : is_company}">
       <li>
         <input
-          v-model="formData['name']"
+          v-model="formData.name"
           type="text"
           placeholder="نام شرکت"
         />
@@ -117,7 +121,7 @@ const fetchUser = inject("fetchUser");
 
       <li>
         <input
-          v-model="formData['registrationNumber']"
+          v-model="formData.registrationNumber"
           type="text"
           placeholder="شماره ثبت شرکت"
           maxlength="4"
@@ -126,7 +130,7 @@ const fetchUser = inject("fetchUser");
 
       <li>
         <input
-          v-model="formData['username']"
+          v-model="formData.username"
           type="text"
           placeholder="شناسه ملی شرکت"
           maxlength="11"
@@ -134,18 +138,26 @@ const fetchUser = inject("fetchUser");
       </li>
 
       <li>
-        <input
-          v-model="companyMembers"
-          type="text"
-          placeholder="تعداد کارمندان شرکت"
-        />
+        <select v-model="formData.company_domain" required>
+          <option value="" class="null" disabled selected>حوزه کاری شرکت</option>
+          <option value="تجاری_سازی">تجاری سازی</option>
+        </select>
+      </li>
+
+      <li>
+        <select v-model="formData.size" required>
+          <option value="" class="null" disabled selected>تعداد اعضای شرکت</option>
+          <option value="کوچک">زیر 15 نفر</option>
+          <option value="متوسط">15 تا 50 نفر</option>
+          <option value="بزرگ">بیش از 50 نفر</option>
+        </select>
       </li>
 
       <li>
         <input
           type="password"
           placeholder="رمز عبور"
-          v-model="formData['password']"
+          v-model="formData.password"
           minlength="8"
         />
       </li>
@@ -154,7 +166,7 @@ const fetchUser = inject("fetchUser");
         <input
           type="password"
           placeholder="تکرار رمز عبور"
-          v-model="formData['repeatPassword']"
+          v-model="formData.repeatPassword"
           minlength="8"
         />
       </li>
@@ -163,7 +175,7 @@ const fetchUser = inject("fetchUser");
     <ul v-else>
       <li>
         <input
-          v-model="formData['name']"
+          v-model="formData.name"
           type="text"
           placeholder="نام و نام خانوادگی"
         />
@@ -171,7 +183,7 @@ const fetchUser = inject("fetchUser");
 
       <li>
         <input
-          v-model="formData['username']"
+          v-model="formData.username"
           type="text"
           placeholder="کد ملی"
           maxlength="10"
@@ -182,7 +194,7 @@ const fetchUser = inject("fetchUser");
         <input
           type="password"
           placeholder="رمز عبور"
-          v-model="formData['password']"
+          v-model="formData.password"
           minlength="8"
         />
       </li>
@@ -191,7 +203,7 @@ const fetchUser = inject("fetchUser");
         <input
           type="password"
           placeholder="تکرار رمز عبور"
-          v-model="formData['repeatPassword']"
+          v-model="formData.repeatPassword"
           minlength="8"
         />
       </li>
@@ -199,7 +211,7 @@ const fetchUser = inject("fetchUser");
 
     <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
 
-    <router-link to="/SignIn" class="links">ثبت نام کرده اید ؟</router-link>
+    <router-link to="/SignIn" class="links" id="isSignUp">ثبت نام کرده اید ؟</router-link>
 
     <router-link to="" class="saveAndNext" @click="handleEvent">
       ثبت نام
@@ -214,7 +226,6 @@ const fetchUser = inject("fetchUser");
   text-align: center;
   display: flex;
   flex-direction: column;
-  margin-top: 240px;
   z-index: 0;
   background-color: white;
 }
@@ -225,7 +236,7 @@ const fetchUser = inject("fetchUser");
 
 .main ul {
   width: 90%;
-  height: 50vh;
+  min-height: 45vh;
   list-style: none;
   margin: 0 auto 5vh auto;
   padding-right: 0;
@@ -241,21 +252,34 @@ const fetchUser = inject("fetchUser");
 
 .main .companyUl {
   border-radius: 0 30px 30px 30px;
+  min-height: 60vh;
+}
+
+.main .companyUl li {
+  margin: 1.5vh 0;
 }
 
 .main ul li {
   height: 6vh;
   width: 80%;
-  margin: 1vh 0;
+  margin: 1.5vh 0;
   background-color: #f4f5f7;
   padding: 0;
   transition: all ease 300ms;
 }
 
+.main ul li input {
+  background-color: white;
+}
+
+.main ul li input:hover {
+  background-color: #b9b9b9;
+}
+
 .main .options {
   position: relative;
   width: 90%;
-  height: 10vh;
+  min-height: 10vh;
   display: flex;
   justify-content: center;
   background-color: white;
@@ -312,23 +336,19 @@ const fetchUser = inject("fetchUser");
   color: #0056b3;
 }
 
+.main .saveAndNext {
+  min-height: 5vh;
+}
+
 @media screen and (max-width: 480px) {
-  .main {
-    width: 95%;
-    margin-top: 15vh;
-  }
+
 }
 
 @media screen and (max-width: 768px) {
-  .main {
-    width: 70%;
-    margin-top: 15vh;
-  }
+
 }
 
 @media screen and (max-width: 1024px) {
-  .main {
-    width: 50%;
-  }
+
 }
 </style>

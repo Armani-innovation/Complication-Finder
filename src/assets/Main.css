@@ -15,19 +15,39 @@ body {
 }
 
 .main {
-  max-height: 60vh;
+  max-height: 62vh;
   overflow-y: auto;
   background-color: rgba(255, 255, 255, 0.75);
   border-radius: 40px;
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   padding: 2vh 3vw;
-  margin: 0 auto;
+  margin: 5vh auto 0 auto;
 }
 
-.main .loader {
+.main::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 20px;
+  margin-bottom: 5vh;
+  margin-top: 5vh;
+}
+
+.main::-webkit-scrollbar-thumb {
+  background: #bbbbbb;
+  border-radius: 20px;
+}
+
+.main::-webkit-scrollbar-thumb:hover {
+  background: gray;
+}
+
+.loader {
   margin: 0 auto;
-  display: block;
+  width: 10%;
 }
 
 .main h1 , h3 , h4 {
@@ -93,13 +113,66 @@ body {
   border: 2px solid #ffffff;
 }
 
-.main .links {
+.links {
   text-decoration: none;
   color: #0022FF;
+}
+
+
+.main ul li select {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 10px;
+  outline: none;
+  box-sizing: border-box;
+  padding: 0 5%;
+}
+
+.main ul li select:required:invalid {
+  color: gray;
+}
+
+.main ul li select option {
+  border: 0;
+  outline: none;
+  width: 90%;
+}
+
+.main ul li select .null {
+  display: none;
+}
+
+.main ul li select option {
+  color: black;
 }
 
 @media only print {
   body {
     display: none !important;
+  }
+}
+
+@media screen and (max-width: 1279px) {
+  .main {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    width: 75%;
+  }
+  .main ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .main {
+    max-height: max-content;
+  }
+  .main ul {
+    grid-template-columns: repeat(1, 1fr);
   }
 }

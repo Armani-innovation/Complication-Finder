@@ -8,7 +8,7 @@ import axios from "../axios/axios.js";
 const nationalID = sessionStorage.getItem("nationalID");
 
 function fetchInfos(){
-  axios.get("dashboard/All" , {params:{nationalID}}).then(res=>{
+  axios.get("dashboard/All" , {params : {nationalID}}).then(res=>{
     console.log(res)
   })
 }
@@ -45,7 +45,9 @@ onMounted(()=>{
 
 <style scoped>
 .main {
+  top: 5vh;
   width: 75%;
+  max-height: 90vh;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   background-color: white;
@@ -78,7 +80,7 @@ onMounted(()=>{
 }
 
 .main .content {
-  height: 70vh;
+  height: 65vh;
   grid-column: 4/13;
   border: 1px solid;
 }

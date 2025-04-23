@@ -11,10 +11,8 @@ const credits = ref(null);
 const result = ref(null);
 const route = useRoute();
 let status = ref("حوزه عارضه یابی");
-const id = sessionStorage.getItem("userId");
 
 watch(() => route.name, (newName) => {
-  console.log(newName);
   switch (newName) {
     case "Welcome" :
       welcome()
@@ -172,23 +170,19 @@ function finalResult() {
         <img ref="user" src="../assets/icons/SignIn-Up.svg" alt="">
         <h4 class="title" ref="userTitle">ثبت نام / ورود</h4>
       </li>
-      <li class="" ref="infos"
-          @click="user.value.classList.contains('passed') ? router.push('/domains') : '' ">
+      <li style="cursor: default" class="" ref="infos">
         <img ref="infos" src="../assets/icons/Domains.svg" alt="">
         <h4 class="title" ref="infosTitle"> {{ status }} </h4>
       </li>
-      <li class="" ref="complication"
-          @click="infos.value.classList.contains('passed') ? router.push('/questions') : '' ">
+      <li style="cursor: default" class="" ref="complication">
         <img ref="complication" src="../assets/icons/Questions.svg" alt="">
         <h4 class="title" ref="complicationTitle">سوالات عارضه یابی</h4>
       </li>
-      <li :style="id ? 'cursor: pointer' : 'cursor: default'" class="" ref="credits"
-          @click="complication.value.classList.contains('passed') ? router.push('/PayPage') : '' ">
+      <li style="cursor: default" class="" ref="credits">
         <img ref="credits" src="../assets/icons/PayPage.svg" alt="">
         <h4 class="title" ref="creditsTitle">پرداخت</h4>
       </li>
-      <li :style="id ? 'cursor: pointer' : 'cursor: default'" class="" ref="result"
-          @click="credits.value.classList.contains('passed') ? router.push('/result') : '' ">
+      <li style="cursor: default" class="" ref="result">
         <img ref="result" src="../assets/icons/Results.svg" alt="">
         <h4 class="title" ref="resultTitle">گزارش نهایی</h4>
       </li>
@@ -204,13 +198,10 @@ function finalResult() {
   justify-content: center;
   align-items: center;
   background-color: white;
-  border-radius: 0;
-  border-bottom-right-radius: 60px;
-  border-bottom-left-radius: 60px;
+  border-radius: 0 0 60px 60px;
   padding: 0;
-  top: 74px;
-  position: fixed;
   box-shadow: 0 0 rgba(0, 0, 0, 0);
+  margin: 0 auto;
 }
 
 .main ul {
@@ -258,18 +249,13 @@ function finalResult() {
 
 @media screen and (max-width: 1279px) {
   .main {
-    width: 85%;
-    top: 59px;
-  }
-
-  .main ul li .title {
-    font-size: 1.4vw;
+    width: 90%;
   }
 }
 
 @media screen and (max-width: 768px) {
   .main {
-    top: 40px;
+    width: 100%;
   }
 }
 

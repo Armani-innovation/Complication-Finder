@@ -12,7 +12,7 @@ const displayedQuestions = computed(() => {
   let total = props.totalQuestions;
   let range = [];
 
-  if (total <= 7) {
+  if (total <= 5) {
     return [...Array(total).keys()];
   }
 

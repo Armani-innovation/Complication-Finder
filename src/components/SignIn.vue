@@ -33,9 +33,10 @@ async function subform() {
       })
       await router.push("/CompanyInfo");
     }
-  } catch {
+  } catch(err) {
+    console.log(err)
     isLoading.value = false;
-    errMessage.value = "نام کاربری یا رمز عبور اشتباه است";
+    errMessage.value = err.response.data.detail || "نام کاربری یا رمز عبور اشتباه است";
   }
 }
 
@@ -87,7 +88,6 @@ const fetchUser = inject("fetchUser")
   width: 30%;
   min-width: 300px;
   text-align: center;
-  margin-top: 150px;
 }
 
 .main ul {
@@ -111,11 +111,4 @@ const fetchUser = inject("fetchUser")
 .main .error {
   margin: 0 auto;
 }
-
-@media screen and (max-width: 768px) {
-  .main {
-    margin-top: 0;
-  }
-}
-
 </style>

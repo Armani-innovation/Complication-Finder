@@ -1,5 +1,4 @@
 <script setup>
-
 </script>
 
 <template>
@@ -52,8 +51,15 @@
   margin: 0;
 }
 
-.main pre {
-  font-family: "B Yekan", cursive;
+@media screen and (max-width: 1279px) {
+  .main {
+    width: 95%;
+  }
 }
 
+@media screen and (max-width: 768px) {
+  .main {
+    width: 100%;
+  }
+}
 </style>

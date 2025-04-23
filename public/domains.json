@@ -3,15 +3,15 @@
   "options": [
     "منابع انسانی",
     "فروش و مارکتینگ",
-    "ساختار سازمانی",
     "برندینگ",
-    "تحلیل صورت های مالی"
+    "ساختار سازمانی",
+    "مالی"
   ],
   "icons": [
     "users",
     "money-bill-trend-up",
-    "building-ngo",
     "copyright",
+    "building-ngo",
     "chart-line"
   ]
 }

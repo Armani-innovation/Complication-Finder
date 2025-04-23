@@ -10,6 +10,7 @@ import SignIn from "@/components/SignIn.vue";
 import SignUp from "@/components/SignUp.vue";
 import FullComplication from "@/components/FullComplication.vue";
 import Profile from "@/components/Profile.vue";
+import FinancialComplications from "@/components/FinancialComplications.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,7 @@ const router = createRouter({
     { name: "Result", component: Result, path: "/result" },
     { name: "FullComplication", component: FullComplication, path: "/FullComplication" },
     { name: "Profile", component: Profile, path: "/Profile" },
+    { name: "FinancialComplications", component: FinancialComplications, path: "/FinancialComplications" },
   ],
 });
 

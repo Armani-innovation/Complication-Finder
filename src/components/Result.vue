@@ -68,7 +68,7 @@ const generatePDF = async () => {
 
   if (!element) return;
 
-  const canvas = await html2canvas(element, { scale: 3 });
+  const canvas = await html2canvas(element, {scale: 3});
   const imgData = canvas.toDataURL("image/png");
   const pdf = new jsPDF("p", "mm", "a4");
   const imgWidth = 210;
@@ -152,18 +152,18 @@ const generatePDF = async () => {
       <a href="tel:+989046504331">09046504331</a>
       تماس حاصل نمایید.
     </p>
+    <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
   </div>
-  <img v-else src="../assets/images/Animation.gif" alt="">
-  <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
+  <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
 </template>
 
 <style scoped>
 .main {
-  width: 80%;
+  max-height: max-content;
+  width: 75%;
   min-width: 300px;
   background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.95)), url("../assets/images/logo.png") repeat-y center center;
   background-size: contain;
-  margin-top: 32vh;
   z-index: 0;
 }
 

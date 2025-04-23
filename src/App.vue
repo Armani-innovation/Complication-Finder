@@ -5,6 +5,7 @@ import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 import {useRoute} from "vue-router";
 
+const header = ref(null);
 const route = useRoute();
 const name = ref("")
 let isSignedIn = ref(false);
@@ -52,10 +53,10 @@ provide("fetchUser", fetchUser);
       مرورگر شما از ویدئوی HTML5 پشتیبانی نمی‌کند.
     </video>
 
-    <div class="header" v-if="route.name !== 'Profile'">
+    <div class="header" v-if="route.name !== 'Profile'" ref="header">
       <div class="empty" v-if="!isSignedIn"></div>
       <div class="userName" v-if="name" @click="routeProfile">
-        <font-awesome-icon class="icon" icon="user" />
+        <font-awesome-icon class="icon" icon="user"/>
         <h3>{{ name }}</h3>
       </div>
       <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
@@ -69,12 +70,10 @@ provide("fetchUser", fetchUser);
 
 <style scoped>
 .container {
+  position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
   flex-direction: column;
-  justify-content: center;
-  z-index: -1;
 }
 
 .container .header {
@@ -84,13 +83,11 @@ provide("fetchUser", fetchUser);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  top: 0;
-  position: fixed;
   background-color: white;
   color: black;
 }
 
-.container .header h1{
+.container .header h1 {
   margin: 0;
 }
 
@@ -114,7 +111,7 @@ provide("fetchUser", fetchUser);
   margin-right: 3vw;
 }
 
-.container .header .userName .icon{
+.container .header .userName .icon {
   font-size: 22px;
 }
 
@@ -147,51 +144,55 @@ provide("fetchUser", fetchUser);
 
 @media screen and (max-width: 1279px) {
   .container .header {
-    width: 85%;
-    height: 60px;
+    width: 90%;
   }
-  .container .title {
-    font-size: 26px;
+
+  .container .header h1 {
+    font-size: 24px;
+  }
+
+  .container .header .userName .icon {
+    font-size: 20px;
+  }
+
+  .container .header .userName h3 {
+    font-size: 18px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .container .header {
-    height: 50px;
+    width: 100%;
   }
-  .container .title {
-    font-size: 3vw;
+
+  .container .header h1 {
+    font-size: 20px;
   }
-  .container .header .userName h3 {
-    font-size: 14px;
-  }
+
   .container .header .userName .icon {
-    font-size: 26px;
+    font-size: 18px;
+  }
+
+  .container .header .userName h3 {
+    font-size: 16px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .status {
-    display: none;
-  }
   .container .header {
-    width: 100%;
-    background: none;
-    color: white;
-    top: 2vh;
+    height: 40px;
   }
-  .container .title {
-    font-size: 16px;
-  }
-  .container .header .userName {
-    margin-left: 2vw;
-  }
-  .container .header .userName h3{
-    display: none;
 
+  .container .header h1 {
+    font-size: 13px;
   }
+
   .container .header .userName .icon {
-    font-size: 20px;
+    font-size: 11px;
+  }
+
+  .container .header .userName h3 {
+    font-size: 9px;
   }
 }
 

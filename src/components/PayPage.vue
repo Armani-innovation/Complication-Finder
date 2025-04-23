@@ -18,7 +18,6 @@
 .main {
   width: 50%;
   min-width: 300px;
-  margin-top: 35vh;
 }
 
 .main pre {

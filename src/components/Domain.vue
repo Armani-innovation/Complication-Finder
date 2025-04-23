@@ -12,6 +12,8 @@ const selectedDomain = computed(() => picked.value);
 const data = {
   userid: sessionStorage.getItem("id"),
   nationalID: sessionStorage.getItem("nationalID"),
+  answer : { "" : "" },
+  size : sessionStorage.getItem("size"),
 }
 
 function loadDomains() {
@@ -29,13 +31,15 @@ function selectDomain(domain) {
       sendRequest("sales_and_marketing");
       break;
     case 3 :
-      sendRequest("sales_and_marketing")
+      sendRequest("branding")
       break;
     case 4 :
-      sendRequest("research_and_development");
+      sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
+      router.push("/questions")
       break;
     case 5 :
-
+      sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
+      router.push("/FinancialComplications")
       break;
   }
 }
@@ -70,7 +74,7 @@ onMounted(loadDomains)
 </script>
 
 <template>
-  <img v-if="isLoading" src="../assets/images/Animation.gif" alt=""/>
+  <img v-if="isLoading" class="loader" src="../assets/images/Animation.gif" alt=""/>
   <div class="main" v-else>
     <p>{{ domains.question }}</p>
     <ul>
@@ -93,7 +97,6 @@ onMounted(loadDomains)
 .main {
   width: 50%;
   min-width: 300px;
-  margin-top: 75px;
 }
 
 .main ul {
@@ -143,18 +146,13 @@ onMounted(loadDomains)
 
 @media screen and (max-width: 1279px) {
   .main {
-    width: 70%;
-    margin-top: 150px;
-  }
-  .main ul {
-    grid-template-columns: repeat(2, 1fr);
+    width: 75%;
   }
 }
 
 @media screen and (max-width: 768px) {
   .main {
     width: 75%;
-    margin-top: 50px;
   }
   .main ul {
     grid-template-columns: repeat(2, 1fr);
@@ -163,11 +161,10 @@ onMounted(loadDomains)
 
 @media screen and (max-width: 480px) {
   .main {
-    width: 80%;
-    margin-top: 0;
+    max-height: max-content;
   }
   .main ul {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
