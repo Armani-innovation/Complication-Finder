@@ -11,8 +11,7 @@ const domain = JSON.parse(sessionStorage.getItem("domain"));
 
 const data = {
   userid: sessionStorage.getItem("id"),
-  nationalID: sessionStorage.getItem("nationalID"),
-  size: sessionStorage.getItem("size"),
+  nationalID: sessionStorage.getItem("nationalID")
 }
 
 let isLoading = ref(true);
@@ -29,7 +28,6 @@ let improveSituations = ref(null);
 axios.get(`${domain[0]}/`, {params: data}).then((response) => {
   Object.assign(finalResults, response.data)
   isLoading.value = false;
-  console.log(response)
 })
 
 watch(finalResults, (finalResultsFetch) => {
@@ -45,12 +43,6 @@ watch(finalResults, (finalResultsFetch) => {
 
 })
 
-fetch("/improveSituation.json").then((res) => res.json())
-  .then((resData) => {
-      improveSituations.value = resData[(domain[1]) - 1];
-    }
-  )
-
 function setIndex(index) {
   if (scores[index] >= 0 && scores[index] < 1) {
     return 1;
@@ -58,10 +50,8 @@ function setIndex(index) {
     return 2;
   } else if (scores[index] >= 2 && scores[index] < 3) {
     return 3;
-  } else if (scores[index] >= 3 && scores[index] < 4) {
+  } else if (scores[index] >= 3 && scores[index] <= 4) {
     return 4;
-  } else if (scores[index] >= 4 && scores[index] <= 5) {
-    return 5;
   }
 }
 

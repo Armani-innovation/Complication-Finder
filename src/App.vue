@@ -2,13 +2,12 @@
 import {provide, ref} from "vue";
 import Status from "@/components/Status.vue";
 import axios from "@/axios/axios.js";
-import router from "@/router/index.js";
 import {useRoute} from "vue-router";
+import router from "@/router/index.js";
 
-const header = ref(null);
+let isSignedIn = ref(false);
 const route = useRoute();
 const name = ref("")
-let isSignedIn = ref(false);
 
 async function fetchUser() {
 
@@ -42,7 +41,13 @@ function routeProfile() {
   router.push('/Profile')
 }
 
-provide("fetchUser", fetchUser);
+function handleUpdater() {
+  isSignedIn.value = false;
+  sessionStorage.clear()
+  router.push("/signin")
+}
+
+provide("fetchUser" , fetchUser)
 </script>
 
 <template>
@@ -53,17 +58,19 @@ provide("fetchUser", fetchUser);
       مرورگر شما از ویدئوی HTML5 پشتیبانی نمی‌کند.
     </video>
 
-    <div class="header" v-if="route.name !== 'Profile'" ref="header">
+    <div class="header" v-if="route.name !== 'Profile' && route.name !== 'ComplicationHistory'"
+         ref="header">
       <div class="empty" v-if="!isSignedIn"></div>
-      <div class="userName" v-if="name" @click="routeProfile">
+      <div class="userName" v-if="isSignedIn" @click="routeProfile">
         <font-awesome-icon class="icon" icon="user"/>
         <h3>{{ name }}</h3>
       </div>
       <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
       <div class="empty"></div>
     </div>
-    <Status v-if="route.name !== 'Profile'" class="status"/>
-    <RouterView/>
+
+    <Status v-if="route.name !== 'Profile' && route.name !== 'ComplicationHistory'" class="status"/>
+    <RouterView @updateSignIn="handleUpdater" @fetchUser="fetchUser" />
     <img class="logo" src="./assets/images/logo1.png" alt="">
   </div>
 </template>
@@ -74,6 +81,19 @@ provide("fetchUser", fetchUser);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.container .logo {
+  width: 6vw;
+  position: absolute;
+  left: 5vw;
+  bottom: 5vh;
+  z-index: 1;
+}
+
+.container .title {
+  text-align: center;
+  font-size: 28px;
 }
 
 .container .header {
@@ -89,19 +109,6 @@ provide("fetchUser", fetchUser);
 
 .container .header h1 {
   margin: 0;
-}
-
-.container .logo {
-  width: 6vw;
-  position: absolute;
-  left: 5vw;
-  bottom: 5vh;
-  z-index: 1;
-}
-
-.container .title {
-  text-align: center;
-  font-size: 28px;
 }
 
 .container .header .userName {

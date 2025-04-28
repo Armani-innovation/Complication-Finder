@@ -9,11 +9,11 @@ let domains = reactive({});
 let picked = ref(null);
 const selectedDomain = computed(() => picked.value);
 
-const data = {
+const Data = {
   userid: sessionStorage.getItem("id"),
   nationalID: sessionStorage.getItem("nationalID"),
-  answer : { "" : "" },
   size : sessionStorage.getItem("size"),
+  answer : { "" : "" },
 }
 
 function loadDomains() {
@@ -38,8 +38,9 @@ function selectDomain(domain) {
       router.push("/questions")
       break;
     case 5 :
-      sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
-      router.push("/FinancialComplications")
+      // sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
+      // router.push("/FinancialComplications")
+      sendRequest("financial");
       break;
   }
 }
@@ -53,10 +54,10 @@ async function sendRequest(domain) {
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      await axios.put(`${domain}/`, data);
+      await axios.put(`${domain}/`, Data);
       isLoading.value = false;
       provide("questionCount" , 1)
-      return router.push("/questions");
+      return router.push({name : "Questions" , query : {questionNum : 0}});
     } catch {
 
       if (attempt === retries) {

@@ -1,5 +1,21 @@
 <script setup>
+import axios from "@/axios/axios.js";
 
+let data = {
+  net_sales : "" ,
+  net_profit_period : "" ,
+  total_assets_end_period : "" ,
+  average_assets_year : "" ,
+  equity_end_period : "" ,
+  financial_expenses : "" ,
+  sales_change_percentage : ""
+}
+
+function sendValues() {
+  axios.put("financial/" , data).then(response => {
+    console.log(response)
+  })
+}
 </script>
 
 <template>
@@ -7,15 +23,15 @@
   <h3>عارضه یابی مالی</h3>
   <p>لطفا به سوالات زیر با توجه به صورت سود و زیان و ترازنامه سال مالی گذشته پاسخ دهید: (مقادیر را به عدد و به واحد ریال وارد کنید)</p>
   <div class="questions">
-    <input type="text" placeholder="میزان فروش خالص (درآمد کل)">
-    <input type="text" placeholder="سود خالص دوره (پس از کسر همه هزینه‌ها، مالیات و بهره)">
-    <input type="text" placeholder="مجموع دارایی‌ها در پایان دوره">
-    <input type="text" placeholder="مقدار میانگین دارایی‌ها طی سال (در صورت دسترسی)">
-    <input type="text" placeholder="حقوق صاحبان سهام در پایان دوره">
-    <input type="text" placeholder="میزان هزینه‌های مالی (بهره وام‌ها و بدهی‌ها)">
-    <input type="text" placeholder="درصد تغییر فروش نسبت به سال قبل (اگر اطلاع داری)">
+    <input v-model="data.net_sales" type="text" placeholder="میزان فروش خالص (درآمد کل)">
+    <input v-model="data.net_profit_period" type="text" placeholder="سود خالص دوره (پس از کسر همه هزینه‌ها، مالیات و بهره)">
+    <input v-model="data.total_assets_end_period" type="text" placeholder="مجموع دارایی‌ها در پایان دوره">
+    <input v-model="data.average_assets_year" type="text" placeholder="مقدار میانگین دارایی‌ها طی سال (در صورت دسترسی)">
+    <input v-model="data.equity_end_period" type="text" placeholder="حقوق صاحبان سهام در پایان دوره">
+    <input v-model="data.financial_expenses" type="text" placeholder="میزان هزینه‌های مالی (بهره وام‌ها و بدهی‌ها)">
+    <input v-model="data.sales_change_percentage" type="text" placeholder="درصد تغییر فروش نسبت به سال قبل (اگر اطلاع داری)">
   </div>
-  <button class="saveAndNext">
+  <button class="saveAndNext" @click="sendValues">
     ارسال مقادیر
   </button>
 </div>

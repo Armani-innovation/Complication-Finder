@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {reactive , ref} from "vue";
 //
 // export const useCompanyStore = defineStore("companyStore", () => {
 //   const company = reactive({});
@@ -35,14 +35,26 @@ import {ref} from "vue";
 //
 //   return {numOfHeight, setHeight};
 // })
+//
+// export const useNumOfPersons = defineStore("numOfPersons", () => {
+//   const numOfPersons = ref(0);
+//
+//   const setNumOfPersons = (newNumOfPersons) => {
+//     numOfPersons.value = newNumOfPersons;
+//   }
+//
+//   return {numOfPersons, setNumOfPersons};
+// })
 
-export const useNumOfPersons = defineStore("numOfPersons", () => {
-  const numOfPersons = ref(0);
+export const storeHistory = defineStore("history-store", ()=>{
+  const historyArr = reactive([]);
+  const historyDomain = ref(0) ;
 
-  const setNumOfPersons = (newNumOfPersons) => {
-    numOfPersons.value = newNumOfPersons;
+  const setHistory = (history , domain) => {
+    Object.assign(historyArr, history);
+    historyDomain.value = domain;
   }
 
-  return {numOfPersons, setNumOfPersons};
+  return {setHistory , historyArr , historyDomain}
 })
 

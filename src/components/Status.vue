@@ -11,6 +11,7 @@ const credits = ref(null);
 const result = ref(null);
 const route = useRoute();
 let status = ref("حوزه عارضه یابی");
+let isSignedIn = ref(false);
 
 watch(() => route.name, (newName) => {
   switch (newName) {
@@ -157,10 +158,12 @@ function finalResult() {
 
   result.value.classList.add("now")
 }
+
 </script>
 
 <template>
   <div class="main">
+
     <ul>
       <li class="" ref="description" @click="router.push('/')">
         <img ref="description" src="../assets/icons/Description.svg" alt="">
@@ -195,6 +198,7 @@ function finalResult() {
   width: 70%;
   height: auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: white;
@@ -202,6 +206,21 @@ function finalResult() {
   padding: 0;
   box-shadow: 0 0 rgba(0, 0, 0, 0);
   margin: 0 auto;
+}
+
+.main .header {
+  margin: 0 auto;
+  width: 70%;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  color: black;
+}
+
+.main .header h1 {
+  margin: 0;
 }
 
 .main ul {

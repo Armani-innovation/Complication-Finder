@@ -2,8 +2,11 @@
 import {computed, inject, onMounted, reactive, ref} from "vue";
 import axios from "../axios/axios.js";
 import router from "@/router/index.js";
+import {useRoute} from "vue-router";
 import Pagination from "@/components/Pagination.vue";
 import OptionInfo from "@/components/OptionInfo.vue";
+
+const route = useRoute();
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
@@ -22,6 +25,7 @@ let questionHistory = reactive([]);
 
 let questionCount = ref(0);
 const questionCounter = computed(() => questionCount.value);
+questionCount.value = route.query.questionNum;
 
 let picked = ref(null);
 const selectedOption = computed(() => picked.value || 1);
@@ -29,6 +33,7 @@ const selectedOption = computed(() => picked.value || 1);
 let data = reactive({
   userid: sessionStorage.getItem("id"),
   nationalID: sessionStorage.getItem("nationalID"),
+  size ,
   answer: {}
 });
 
@@ -48,7 +53,7 @@ function fetchQuestions() {
       }
     })
   } else {
-    if (size === "کوچک") {
+    if (size === "small") {
       fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
         domainTitle.value = resData[domain[1]].name;
         for (const dataKey in resData[domain[1]].questions) {
@@ -62,7 +67,7 @@ function fetchQuestions() {
           optionsInfo.push(resData[domain[1]].infos[dataKey])
         }
       })
-    } else if (size === "متوسط") {
+    } else if (size === "medium") {
       fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
         domainTitle.value = resData[domain[1]].name;
         for (const dataKey in resData[domain[1]].questions) {
@@ -195,7 +200,8 @@ onMounted(() => {
   display: inline;
 }
 
-.main .questionBar a {
+
+a {
   display: inline;
   text-decoration: none;
   color: #0056b3;
@@ -204,7 +210,7 @@ onMounted(() => {
   z-index: 0;
 }
 
-.main .questionBar a::before {
+a::before {
   position: absolute;
   content: "";
   width: 0;
@@ -215,7 +221,7 @@ onMounted(() => {
   transition: 200ms all ease;
 }
 
-.main .questionBar a:hover::before {
+a:hover::before {
   width: 100%;
   right: 0;
 }

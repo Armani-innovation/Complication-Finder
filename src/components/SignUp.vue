@@ -44,11 +44,12 @@ async function handleCompany() {
         res = await axios.post("register/", formData);
         console.log(res)
         break;
-      } catch(error) {
+      } catch (error) {
         if (attempt === retries)
           errorMessage.value = error.response.data || "خطایی رخ داد لطفا دوباره امتحان کنید";
       }
     }
+    sessionStorage.setItem("is_company", true)
     sessionStorage.setItem("id", res.data.id);
     sessionStorage.setItem("nationalID", res.data.username);
     await fetchUser();
@@ -70,8 +71,9 @@ async function handleMentor() {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       res = await axios.post("register/", formData);
+      sessionStorage.setItem("is_company", false)
       sessionStorage.setItem("id", res.data.id);
-      sessionStorage.setItem("nationalID", res.data.username);
+      sessionStorage.setItem("username", res.data.username);
       await fetchUser();
       await router.push("/CompanyInfo");
       break;
@@ -79,7 +81,7 @@ async function handleMentor() {
       if (err.code === "ERR_NETWORK") {
         if (attempt === retries) errorMessage.value = "درخواست با خطا مواجه شد لطفا دوباره تلاش کنید";
       } else {
-        errorMessage.value = err.response.data.username[0] || err.response.data.error;
+        errorMessage.value = err.response.data || err.response.data || "درخواست با خطا مواجه شد لطفا دوباره تلاش کنید";
         break;
       }
     }
@@ -140,16 +142,16 @@ const fetchUser = inject("fetchUser");
       <li>
         <select v-model="formData.company_domain" required>
           <option value="" class="null" disabled selected>حوزه کاری شرکت</option>
-          <option value="تجاری_سازی">تجاری سازی</option>
+          <option value="تجاری سازی">تجاری سازی</option>
         </select>
       </li>
 
       <li>
         <select v-model="formData.size" required>
           <option value="" class="null" disabled selected>تعداد اعضای شرکت</option>
-          <option value="کوچک">زیر 15 نفر</option>
-          <option value="متوسط">15 تا 50 نفر</option>
-          <option value="بزرگ">بیش از 50 نفر</option>
+          <option value="small">زیر 15 نفر</option>
+          <option value="medium">15 تا 50 نفر</option>
+          <option value="large">بیش از 50 نفر</option>
         </select>
       </li>
 

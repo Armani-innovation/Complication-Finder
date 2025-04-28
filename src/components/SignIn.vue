@@ -18,18 +18,21 @@ async function subform() {
     const token = res.data.access;
     const decoded = jwtDecode(token);
     sessionStorage.setItem("id", decoded.user_id);
-    const isCompany = await fetchUser();
+    const isCompany = await fetchUser()
     isLoading.value = false;
     if (isCompany) {
       const id = sessionStorage.getItem("id");
       await axios.get("register/", { params: { id } }).then((res) => {
-        sessionStorage.setItem("nationalID", res.data.username);
+        sessionStorage.setItem("nationalID", res.data.nationalID);
+        sessionStorage.setItem("is_company" , res.data.is_company);
+        sessionStorage.setItem("size" , res.data.size);
       })
       await router.push("/domains");
     } else {
       const id = sessionStorage.getItem("id");
       await axios.get("register/", { params: { id } }).then((res) => {
-        sessionStorage.setItem("nationalID", res.data.username);
+        sessionStorage.setItem("username", res.data.username);
+        sessionStorage.setItem("is_company" , res.data.is_company)
       })
       await router.push("/CompanyInfo");
     }

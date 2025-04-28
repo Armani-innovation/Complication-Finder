@@ -7,6 +7,27 @@
   font-family: 'BYekan', serif;
 }
 
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 20px;
+  margin-bottom: 5vh;
+  margin-top: 5vh;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #bbbbbb;
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: gray;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -23,26 +44,6 @@ body {
   box-sizing: border-box;
   padding: 2vh 3vw;
   margin: 5vh auto 0 auto;
-}
-
-.main::-webkit-scrollbar {
-  width: 10px;
-}
-
-.main::-webkit-scrollbar-track {
-  background: white;
-  border-radius: 20px;
-  margin-bottom: 5vh;
-  margin-top: 5vh;
-}
-
-.main::-webkit-scrollbar-thumb {
-  background: #bbbbbb;
-  border-radius: 20px;
-}
-
-.main::-webkit-scrollbar-thumb:hover {
-  background: gray;
 }
 
 .loader {

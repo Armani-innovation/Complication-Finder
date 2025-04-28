@@ -23,7 +23,9 @@ function savaAndNext() {
     errorMessage.value = "لطفا تمام فیلد ها را پر کنید"
   } else {
     isLoading.value = true;
-    axios.post("company/", data).then((res) => {
+    sessionStorage.setItem("size", data.company.size);
+    sessionStorage.setItem("nationalID", data.company.nationalID);
+    axios.post("company/", data).then(() => {
       router.push("/domains");
       isLoading.value = false;
     })
@@ -42,7 +44,8 @@ function savaAndNext() {
 
     <ul>
       <li><input type="text" placeholder="نام شرکت" v-model="data.company.name"/></li>
-      <li><input maxlength="11" type="text" placeholder="شناسه ملی شرکت" v-model="data.company.nationalID"/></li>
+      <li><input maxlength="11" type="text" placeholder="شناسه ملی شرکت"
+                 v-model="data.company.nationalID"/></li>
       <li><input maxlength="4" type="text" placeholder="شماره ثبت علامت تجاری"
                  v-model="data.company.registrationNumber"/></li>
       <li>
@@ -53,9 +56,9 @@ function savaAndNext() {
       </li>
       <li><select v-model="data.company.size" required>
         <option class="null" value="" disabled selected>تعداد اعضای شرکت</option>
-        <option value="1">زیر 15 نفر</option>
-        <option value="2">15 تا 50 نفر</option>
-        <option value="3">بیش از 50 نفر</option>
+        <option value="small">زیر 15 نفر</option>
+        <option value="medium">15 تا 50 نفر</option>
+        <option value="large">بیش از 50 نفر</option>
       </select></li>
     </ul>
 
