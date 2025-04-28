@@ -25,7 +25,7 @@ console.log(questionnaire)
 console.log(questions)
 
 async function nextQuestion(index) {
-  questionCounter.value++;
+  questionCount.value++;
   const res = await axios.post(`questionnaire/${questionnaire}/answer/` , {
     nationalID ,
     question : questions.question.name ,
@@ -41,102 +41,13 @@ function sendLastQuestion() {
   router.push("/PayPage")
 }
 
-//
-// let data = reactive({
-//   nationalID: sessionStorage.getItem("nationalID"),
-//   question: "" ,
-//   option : ""
-// });
-//
-// function sendQuestion() {
-//
-// }
-// const selectedOption = computed(() => picked.value || 1);
-
-// let firstQuestion = ref(true)
-// let questions = reactive([]);
-// let questionsKey = reactive([]);
-// let options = reactive([]);
-// let optionsInfo = reactive([]);
-// let domainTitle = ref(null)
-// let questionHistory = reactive([]);
-// questionCount.value = route.query.questionNum;
-// function fetchQuestions() {
-//   if (domain[1] === 4) {
-//     fetch("/OrganizationalStructureQuestions.json").then((res) => res.json()).then((resData) => {
-//       domainTitle.value = resData.name;
-//       for (const dataKey in resData.questions) {
-//         questions.push(resData.questions[dataKey])
-//         questionsKey.push(dataKey);
-//       }
-//       for (const dataKey in resData.options) {
-//         options.push(resData.options[dataKey])
-//       }
-//       for (const dataKey in resData.infos) {
-//         optionsInfo.push(resData.infos[dataKey])
-//       }
-//     })
-//   } else {
-//     if (size === "small") {
-//       fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-//         domainTitle.value = resData[domain[1]].name;
-//         for (const dataKey in resData[domain[1]].questions) {
-//           questions.push(resData[domain[1]].questions[dataKey])
-//           questionsKey.push(dataKey);
-//         }
-//         for (const dataKey in resData[domain[1]].options) {
-//           options.push(resData[domain[1]].options[dataKey])
-//         }
-//         for (const dataKey in resData[domain[1]].infos) {
-//           optionsInfo.push(resData[domain[1]].infos[dataKey])
-//         }
-//       })
-//     } else if (size === "medium") {
-//       fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-//         domainTitle.value = resData[domain[1]].name;
-//         for (const dataKey in resData[domain[1]].questions) {
-//           questions.push(resData[domain[1]].questions[dataKey])
-//           questionsKey.push(dataKey);
-//         }
-//         for (const dataKey in resData[domain[1]].options) {
-//           options.push(resData[domain[1]].options[dataKey])
-//         }
-//         for (const dataKey in resData[domain[1]].infos) {
-//           optionsInfo.push(resData[domain[1]].infos[dataKey])
-//         }
-//       })
-//     } else {
-//       fetch("/lgCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-//         domainTitle.value = resData[domain[1]].name;
-//         for (const dataKey in resData[domain[1]].questions) {
-//           questions.push(resData[domain[1]].questions[dataKey])
-//           questionsKey.push(dataKey);
-//         }
-//         for (const dataKey in resData[domain[1]].options) {
-//           options.push(resData[domain[1]].options[dataKey])
-//         }
-//         for (const dataKey in resData[domain[1]].infos) {
-//           optionsInfo.push(resData[domain[1]].infos[dataKey])
-//         }
-//       })
-//     }
-//   }
-// }
-//
-//
-//
-//
-// onMounted(() => {
-//   fetchQuestions();
-//   questionCounter.value = inject("questionCount")
-// })
 </script>
 
 <template>
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-      <p v-if="!questionLoading">{{ questions.question.text }}</p>
+      <p v-if="!questionLoading"> {{questionCounter+1}}.{{ questions.question.text }}</p>
       <a href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
@@ -157,7 +68,7 @@ function sendLastQuestion() {
       </button>
 
       <Pagination
-        :questionCount="questionCount"
+        :questionCount="questionCounter"
         :totalQuestions="questions.number_of_questions"
       />
 

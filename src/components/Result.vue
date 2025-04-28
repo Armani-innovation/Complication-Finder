@@ -1,7 +1,8 @@
 <script setup>
-import GaugeChart from "@/components/GaugeChart.vue";
 // import RadarChart from "./RadarChart.vue";
 // import {ref, reactive, watch} from "vue";
+// import {ref} from "vue"
+import GaugeChart from "@/components/GaugeChart.vue";
 import axios from "@/axios/axios.js";
 import {reactive, ref} from "vue"
 
@@ -11,7 +12,7 @@ import html2canvas from "html2canvas";
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 const nationalID = sessionStorage.getItem("nationalID");
 
-let isLoading = ref(true);
+let isLoading = ref(false);
 
 let result = reactive({})
 
@@ -50,131 +51,87 @@ const generatePDF = async () => {
   pdf.save(`گزارش عارضه یابی .pdf`);
 };
 
-// async function fetchResult() {
-//   console.log("fetched result");
-//   const res = await axios.get(`questionnaire/${questionnaire}/report/`, {params: nationalID})
-//   console.log(res.data)
-// }
-
-// const domain = JSON.parse(sessionStorage.getItem("domain"));
-//
-// const data = {
-//   userid: sessionStorage.getItem("id"),
-//   nationalID: sessionStorage.getItem("nationalID"),
-//   size: sessionStorage.getItem("size"),
-// }
-
-//
-// let finalResults = reactive({})
-// const scores = reactive([]);
-// const keys = reactive([]);
-// let companyName = ref("");
-// let companyDomain = ref("");
-// let overallScore = ref(0);
-//
-// let improveSituations = ref(null);
-//
-// axios.get(`${domain[0]}/`, {params: data}).then((response) => {
-//   Object.assign(finalResults, response.data)
-//   isLoading.value = false;
-//   console.log(response)
-// })
-//
-// watch(finalResults, (finalResultsFetch) => {
-//   for (const key in finalResultsFetch.results) {
-//     if (key !== "overallScore") {
-//       scores.push(finalResultsFetch.results[key]);
-//       keys.push(key)
-//     }
-//   }
-//   companyName.value = finalResultsFetch.company.name;
-//   companyDomain.value = finalResultsFetch.domain;
-//   overallScore.value = finalResultsFetch.results.overallScore;
-//
-// })
-//
-// fetch("/improveSituation.json").then((res) => res.json())
-//   .then((resData) => {
-//       improveSituations.value = resData[(domain[1]) - 1];
-//     }
-//   )
-
-// function setIndex(index) {
-//   if (scores[index] >= 0 && scores[index] < 1) {
-//     return 1;
-//   } else if (scores[index] >= 1 && scores[index] < 2) {
-//     return 2;
-//   } else if (scores[index] >= 2 && scores[index] < 3) {
-//     return 3;
-//   } else if (scores[index] >= 3 && scores[index] < 4) {
-//     return 4;
-//   } else if (scores[index] >= 4 && scores[index] <= 5) {
-//     return 5;
-//   }
-// }
-// fetchResult()
-
 </script>
 
 <template>
   <div id="pdf-content" class="main" v-if="!isLoading">
-    <!--    <h2>گزارش عارضه یابی {{ companyDomain }} <br>-->
-    <!--      <span> شرکت {{ companyName }} </span>-->
-    <!--    </h2>-->
-<!--        <div class="textAndChart">-->
-<!--          <p>-->
-<!--            رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت-->
-<!--            توجه-->
-<!--            به-->
-<!--            بازاریابی و فروش نسبت به چند سال گذشته دو چندان گردد. لزوم برنامه ریزی منظم و رعایت اصول-->
-<!--            بازاریابی و فروش از عوامل حیاتی حفظ و نگه داشت جایگاه کسب و کارها در دنیای امروز است.-->
-<!--            باتوجه-->
-<!--            به اهمیت این واحد، لازم است معیار های استاندارد برای سنجش فرآیندهای فروش و مارکتینگ طراحی-->
-<!--            و-->
-<!--            وضعیت چگونگی انجام کار هر یک مشخص شود.-->
-<!--            KPI های فروش شاخص‌های برجسته‌ای هستند که به یک رهبر فروش، مدیر فروش و تیم فروش کمک می‌کنند-->
-<!--            تا-->
-<!--            میزان پیشرفت خود را در رسیدن به اهداف فروش و اهداف سازمانی تعیین کنند. یک واحد فروش موفق،-->
-<!--            به-->
-<!--            داده‌های فروش صحیح دسترسی دارد. با استفاده از KPI، بخش فروش شما می‌تواند:-->
-<!--            <br>-->
-<!--            • پیشرفت خود را در دستیابی به اهداف پیگیری کند.-->
-<!--            <br>-->
-<!--            • فرآیند شناسایی، جذب و نگهداشت مشتریان خود را بهینه کند.-->
-<!--            <br>-->
-<!--            • بهبود جریان درآمد را عملی کند.-->
-<!--          </p>-->
-<!--          <GaugeChart class="gaugeChart" :value="overallScore"></GaugeChart>-->
-<!--        </div>-->
 
-    <div class="textAndChart">
-      <p>
-        {{result.messages}}
-      </p>
-      <GaugeChart class="gaugeChart" :value="result.overallscore"></GaugeChart>
-    </div>
-
-    <!--    <RadarChart :keys="keys" :values="scores"></RadarChart>-->
-
-    <!--    <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>-->
-
-    <!--    <div class="improveSituation" v-for="(improveSituation , index) in improveSituations"-->
-    <!--         :key="index">-->
-    <!--      <h4>{{ improveSituation[0] }}</h4>-->
-    <!--      <div>-->
-    <!--        <pre>-->
-    <!--        {{ improveSituation[setIndex(index)] }}-->
-    <!--        </pre>-->
-    <!--        <GaugeChart class="gaugeChartPre" :value="scores[index]"></GaugeChart>-->
-    <!--      </div>-->
-    <!--      <hr style="height: 2px; background-color: black">-->
-    <!--    </div>-->
     <div class="logo">
       <img src="../assets/images/logo.png" alt="">
     </div>
+
+    <div class="finalResult">
+
+      <div class="text">
+        <pre>
+          {{ result.messages }}
+        </pre>
+        <!--        <pre>-->
+        <!--          &lt;!&ndash;        {{result.messages}}&ndash;&gt;-->
+        <!--          "### تحلیل عارضه‌یابی برندینگ شرکت SMALL در حوزه مربوط به هویت برند:-->
+
+        <!--          وضعیت فعلی:-->
+        <!--          شرکت SMALL هویت برند خود را به‌طور واضح تعریف کرده است و با مشتریان خود همخوانی دارد، اما-->
+        <!--          کارکنان شرکت از هویت برند آگاهی ندارند.-->
+
+        <!--          نقاط قوت:-->
+        <!--          - تعریف و ارتباط هویت برند با مشتریان-->
+        <!--          - شناخت خودشناسی و ارزش‌های برند توسط مشتریان-->
+
+        <!--          ضعف:-->
+        <!--          - عدم آگاهی کارکنان از هویت برند-->
+        <!--          - احتمال کاهش ارتباط بین داخلی و خارجی شرکت-->
+
+        <!--          فرصت‌های بهبود:-->
+        <!--          1. آموزش و آگاهی‌رسانی کارکنان از هویت برند.-->
+        <!--          2. ارتقاء ارتباط داخلی شرکت برای بهبود فرایندها.-->
+
+        <!--          پیشنهادات بهبود:-->
+        <!--          1. برگزاری جلسات آموزشی برای کارکنان در مورد هویت برند.-->
+        <!--          2. ایجاد یک سیستم ارتباطی موثر بین مدیران و کارکنان.-->
+        <!--          3. ترویج مشارکت کارکنان در ایجاد و اجرای هویت برند.-->
+
+        <!--          به طور مثال: می‌توانید با برگزاری جلسات آموزشی ماهیت و ارزش‌های برند را برای کارکنان توضیح-->
+        <!--          دهید. این اقدام می‌تواند باعث افزایش آگاهی کارکنان از برند و افزایش مشارکت آن‌ها در-->
+        <!--          فعالیت‌های برندینگ شود.-->
+
+        <!--          ### تحلیل عارضه‌یابی برندینگ شرکت SMALL در حوزه مربوط به آگاهی از برند:-->
+
+        <!--          وضعیت فعلی:-->
+        <!--          شرکت SMALL تنها مشتریان قدیمی خود را به خوبی شناخته و بر برخی شبکه‌ها فعالیت دارد.-->
+
+        <!--          نقاط قوت:-->
+        <!--          - آشنایی مشتریان قدیمی با برند-->
+        <!--          - حضور در برخی شبکه‌ها برای جذب مشتریان جدید-->
+
+        <!--          ضعف:-->
+        <!--          - عدم آشنایی کلیه مشتریان با برند-->
+        <!--          - محدودیت فعالیت در برخی شبکه‌ها-->
+
+        <!--          فرصت‌های بهبود:-->
+        <!--          1. گسترش دسترسی به مشتریان جدید از طریق شبکه‌های مختلف.-->
+        <!--          2. تقویت آگاهی کلیه مشتریان از برند.-->
+
+        <!--          پیشنهادات بهبود:-->
+        <!--          1. ایجاد حضور فعال در شبکه‌های دیجیتالی بیشتر.-->
+        <!--          2. برگزاری رویدادها و کمپین‌های تبلیغاتی برای جذب مشتریان جدید.-->
+        <!--          3. ایجاد بخشی در وبسایت برای آموزش و ارتباط با مشتریان.-->
+
+        <!--          به طور مثال: با ایجاد حضور فعال در شبکه‌های اجتماعی و به‌روزرسانی محتواها، می‌توانید دسترسی-->
+        <!--          به مشتریان جدید را افزایش داده و آگاهی آن‌ها را از برند بالا ببرید."-->
+        <!--        </pre>-->
+      </div>
+
+      <div class="charts">
+        <GaugeChart class="gaugeChart" :value="3.5"></GaugeChart>
+      </div>
+
+    </div>
+
     <router-link class="saveAndNext" to="/domains">
       ادامه عارضه یابی
     </router-link>
+
     <p class="finalText">
       شما می‌توانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و مارکتینگ
       شرکت
@@ -184,6 +141,7 @@ const generatePDF = async () => {
       <a href="tel:+989046504331">09046504331</a>
       تماس حاصل نمایید.
     </p>
+
     <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
   </div>
   <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
@@ -199,13 +157,8 @@ const generatePDF = async () => {
   z-index: 0;
 }
 
-.main span {
-  font-size: 18px;
-}
-
 .main .logo {
   width: 7vw;
-  aspect-ratio: 4/4;
   display: flex;
   justify-content: start;
 }
@@ -215,23 +168,22 @@ const generatePDF = async () => {
   height: 100%;
 }
 
-.main p {
-  width: 50%;
+.main pre {
+  width: 100%;
   text-align: justify;
 }
 
-.main .textAndChart {
+.main .finalResult {
   width: 100%;
-  display: flex;
-  margin-bottom: 15vh;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.main .gaugeChart {
-  width: 35vw;
-  height: auto;
-  margin: 0 auto;
+.main .finalResult .charts {
+  height: max-content;
 }
 
+/*
 .main h3 {
   color: #0056b3;
 }
@@ -255,7 +207,7 @@ const generatePDF = async () => {
   width: 25vw;
   aspect-ratio: 4/4;
 }
-
+*/
 .main .finalText {
   width: 100%;
   text-align: center;
