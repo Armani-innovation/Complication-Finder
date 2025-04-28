@@ -6,6 +6,7 @@ import axios from "./../axios/axios.js";
 let isLoading = ref(false);
 
 const data = reactive({
+  userid: sessionStorage.getItem("id"),
   company: {
     name: "",
     registrationNumber: "",
@@ -13,26 +14,28 @@ const data = reactive({
     size: "",
     company_domain: "",
   },
-  userid: sessionStorage.getItem("id"),
 })
 
 let errorMessage = ref(null);
 
-function savaAndNext() {
+async function savaAndNext() {
   if (!(data.company.name && data.company.registrationNumber && data.company.nationalID && data.company.company_domain && data.company.size)) {
     errorMessage.value = "لطفا تمام فیلد ها را پر کنید"
   } else {
     isLoading.value = true;
-    sessionStorage.setItem("size", data.company.size);
-    sessionStorage.setItem("nationalID", data.company.nationalID);
-    axios.post("company/", data).then(() => {
-      router.push("/domains");
+
+    try {
+      const res = await axios.post("company/", data);
+
+      sessionStorage.setItem("size", res.data.size[0]);
+      sessionStorage.setItem("nationalID", res.data.nationalID);
+      sessionStorage.setItem("company_domain", res.data.company_domain);
+
+      await router.push("/domains");
+    } catch (error) {
       isLoading.value = false;
-    })
-      .catch((error) => {
-        isLoading.value = false;
-        errorMessage.value = error.response.data || "خطایی رخ داد لطفا دوباره تلاش کنید"
-      })
+      errorMessage.value = error.response.data || "خطایی رخ داد لطفا دوباره تلاش کنید"
+    }
   }
 }
 </script>
@@ -56,9 +59,9 @@ function savaAndNext() {
       </li>
       <li><select v-model="data.company.size" required>
         <option class="null" value="" disabled selected>تعداد اعضای شرکت</option>
-        <option value="small">زیر 15 نفر</option>
-        <option value="medium">15 تا 50 نفر</option>
-        <option value="large">بیش از 50 نفر</option>
+        <option value="Small">زیر 15 نفر</option>
+        <option value="Medium">15 تا 50 نفر</option>
+        <option value="Large">بیش از 50 نفر</option>
       </select></li>
     </ul>
 

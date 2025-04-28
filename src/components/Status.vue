@@ -10,8 +10,9 @@ const complication = ref(null);
 const credits = ref(null);
 const result = ref(null);
 const route = useRoute();
+
 let status = ref("حوزه عارضه یابی");
-let isSignedIn = ref(false);
+let name = ref(sessionStorage.getItem("name"));
 
 watch(() => route.name, (newName) => {
   switch (newName) {
@@ -159,10 +160,24 @@ function finalResult() {
   result.value.classList.add("now")
 }
 
+function routeProfile() {
+  router.push('/Profile')
+}
+
 </script>
 
 <template>
   <div class="main">
+
+    <div class="header" v-if="route.name !== 'Profile' && route.name !== 'ComplicationHistory'">
+      <div class="empty" v-if="!name"></div>
+      <div class="userName" v-if="name" @click="routeProfile">
+        <font-awesome-icon class="icon" icon="user"/>
+        <h3>{{ name }}</h3>
+      </div>
+      <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
+      <div class="empty"></div>
+    </div>
 
     <ul>
       <li class="" ref="description" @click="router.push('/')">
@@ -208,9 +223,14 @@ function finalResult() {
   margin: 0 auto;
 }
 
+.main .title {
+  text-align: center;
+  font-size: 28px;
+}
+
 .main .header {
+  width: 100%;
   margin: 0 auto;
-  width: 70%;
   height: 75px;
   display: flex;
   align-items: center;
@@ -221,6 +241,33 @@ function finalResult() {
 
 .main .header h1 {
   margin: 0;
+}
+
+.main .header .userName {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 3vw;
+}
+
+.main .header .userName .icon {
+  font-size: 22px;
+}
+
+.main .header .userName h3 {
+  margin-right: 1vw;
+  font-size: 20px;
+}
+
+.main .header .userName img {
+  border-radius: 50%;
+  width: 4vw;
+  aspect-ratio: 1/1;
+  margin: 0;
+}
+
+.main .header .empty {
+  width: 10vw;
 }
 
 .main ul {

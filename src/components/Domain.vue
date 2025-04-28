@@ -1,74 +1,42 @@
 <script setup>
-import {onMounted, reactive, ref, computed, provide} from "vue";
+import {onMounted, reactive, ref, computed} from "vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 
 let errMessage = ref("");
 let isLoading = ref(false);
-let domains = reactive({});
+let domains = reactive([]);
+
 let picked = ref(null);
 const selectedDomain = computed(() => picked.value);
+const nationalID = ref("")
 
-const Data = {
-  userid: sessionStorage.getItem("id"),
-  nationalID: sessionStorage.getItem("nationalID"),
-  size : sessionStorage.getItem("size"),
-  answer : { "" : "" },
+
+async function loadDomains() {
+  const res = await axios.get("/domain")
+  Object.assign(domains, res.data)
+  nationalID.value = sessionStorage.getItem("nationalID");
 }
 
-function loadDomains() {
-  fetch("/domains.json").then((res) => res.json()).then((resData) => {
-    Object.assign(domains, resData);
-  })
-}
-
-function selectDomain(domain) {
-  switch (domain) {
-    case 1 :
-      sendRequest("human_resources");
-      break;
-    case 2 :
-      sendRequest("sales_and_marketing");
-      break;
-    case 3 :
-      sendRequest("branding")
-      break;
-    case 4 :
-      sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
-      router.push("/questions")
-      break;
-    case 5 :
-      // sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
-      // router.push("/FinancialComplications")
-      sendRequest("financial");
-      break;
-  }
-}
-
-async function sendRequest(domain) {
-  const retries = 3 ;
-  const delay = 2000 ;
+async function fetchDomain(domain) {
+  const retries = 3;
   isLoading.value = true;
-
-  sessionStorage.setItem("domain", JSON.stringify([`${domain}`, selectedDomain.value]));
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      await axios.put(`${domain}/`, Data);
+      const res = await axios.post("start-questionnaire/", {domain, nationalID : nationalID.value});
+
       isLoading.value = false;
-      provide("questionCount" , 1)
-      return router.push({name : "Questions" , query : {questionNum : 0}});
+      await router.push({name : "Questions" , params : {question : JSON.stringify(res.data)}});
+      break;
     } catch {
 
       if (attempt === retries) {
         isLoading.value = false;
         errMessage.value = "خطایی رخ داده است. لطفا دوباره تلاش کنید.";
       }
-
-      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-
 }
 
 onMounted(loadDomains)
@@ -77,18 +45,18 @@ onMounted(loadDomains)
 <template>
   <img v-if="isLoading" class="loader" src="../assets/images/Animation.gif" alt=""/>
   <div class="main" v-else>
-    <p>{{ domains.question }}</p>
+    <p>در چه حوزه ای میخواهید عارضه یابی را انجام دهید ؟</p>
     <ul>
-      <li v-for="(domain , index) in domains.options" :key="domain" :for="index">
-        <input name="domain" type="radio" :id="index" :value="Number(index)+1" v-model="picked"/>
+      <li v-for="(domain , index) in domains" :key="domain" :for="index">
+        <input name="domain" type="radio" :id="index" :value="Number(index)" v-model="picked"/>
         <label :for="index">
-          <font-awesome-icon class="icon" :icon="domains.icons[index]"/>
-          {{ domain }}
+          <font-awesome-icon class="icon" :icon="domain.icon"/>
+          {{ domain.name }}
         </label>
       </li>
     </ul>
     <p class="error" v-if="errMessage">{{ errMessage }}</p>
-    <router-link to="" class="saveAndNext" @click="selectDomain(selectedDomain)">
+    <router-link to="" class="saveAndNext" @click="fetchDomain(domains[selectedDomain].name)">
       شروع عارضه یابی
     </router-link>
   </div>
@@ -105,7 +73,7 @@ onMounted(loadDomains)
   height: auto;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3 , 1fr);
+  grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   grid-gap: 2vh 1vw;
   margin: 0 auto;
@@ -155,6 +123,7 @@ onMounted(loadDomains)
   .main {
     width: 75%;
   }
+
   .main ul {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -164,6 +133,7 @@ onMounted(loadDomains)
   .main {
     max-height: max-content;
   }
+
   .main ul {
     grid-template-columns: repeat(1, 1fr);
   }

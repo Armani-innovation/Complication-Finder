@@ -1,69 +1,28 @@
 <script setup>
-import GaugeChart from './GaugeChart.vue'
-import RadarChart from "./RadarChart.vue";
+import GaugeChart from "@/components/GaugeChart.vue";
+// import RadarChart from "./RadarChart.vue";
+// import {ref, reactive, watch} from "vue";
 import axios from "@/axios/axios.js";
-import {ref, reactive, watch} from "vue";
+import {reactive, ref} from "vue"
 
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const domain = JSON.parse(sessionStorage.getItem("domain"));
-
-const data = {
-  userid: sessionStorage.getItem("id"),
-  nationalID: sessionStorage.getItem("nationalID"),
-  size: sessionStorage.getItem("size"),
-}
+const questionnaire = Number(sessionStorage.getItem("questionnaire"));
+const nationalID = sessionStorage.getItem("nationalID");
 
 let isLoading = ref(true);
 
-let finalResults = reactive({})
-const scores = reactive([]);
-const keys = reactive([]);
-let companyName = ref("");
-let companyDomain = ref("");
-let overallScore = ref(0);
+let result = reactive({})
 
-let improveSituations = ref(null);
 
-axios.get(`${domain[0]}/`, {params: data}).then((response) => {
-  Object.assign(finalResults, response.data)
-  isLoading.value = false;
-  console.log(response)
-})
+axios.get(`questionnaire/${questionnaire}/report/`, {params: {nationalID}})
+  .then(res => {
+    Object.assign(result, res.data);
+    console.log(result)
+    isLoading.value = false
+  })
 
-watch(finalResults, (finalResultsFetch) => {
-  for (const key in finalResultsFetch.results) {
-    if (key !== "overallScore") {
-      scores.push(finalResultsFetch.results[key]);
-      keys.push(key)
-    }
-  }
-  companyName.value = finalResultsFetch.company.name;
-  companyDomain.value = finalResultsFetch.domain;
-  overallScore.value = finalResultsFetch.results.overallScore;
-
-})
-
-fetch("/improveSituation.json").then((res) => res.json())
-  .then((resData) => {
-      improveSituations.value = resData[(domain[1]) - 1];
-    }
-  )
-
-function setIndex(index) {
-  if (scores[index] >= 0 && scores[index] < 1) {
-    return 1;
-  } else if (scores[index] >= 1 && scores[index] < 2) {
-    return 2;
-  } else if (scores[index] >= 2 && scores[index] < 3) {
-    return 3;
-  } else if (scores[index] >= 3 && scores[index] < 4) {
-    return 4;
-  } else if (scores[index] >= 4 && scores[index] <= 5) {
-    return 5;
-  }
-}
 
 const generatePDF = async () => {
   const element = document.getElementById("pdf-content");
@@ -88,59 +47,130 @@ const generatePDF = async () => {
     }
   }
 
-  pdf.save(` گزارش عارضه یابی ${companyDomain.value} شرکت ${companyName.value} .pdf`);
+  pdf.save(`گزارش عارضه یابی .pdf`);
 };
+
+// async function fetchResult() {
+//   console.log("fetched result");
+//   const res = await axios.get(`questionnaire/${questionnaire}/report/`, {params: nationalID})
+//   console.log(res.data)
+// }
+
+// const domain = JSON.parse(sessionStorage.getItem("domain"));
+//
+// const data = {
+//   userid: sessionStorage.getItem("id"),
+//   nationalID: sessionStorage.getItem("nationalID"),
+//   size: sessionStorage.getItem("size"),
+// }
+
+//
+// let finalResults = reactive({})
+// const scores = reactive([]);
+// const keys = reactive([]);
+// let companyName = ref("");
+// let companyDomain = ref("");
+// let overallScore = ref(0);
+//
+// let improveSituations = ref(null);
+//
+// axios.get(`${domain[0]}/`, {params: data}).then((response) => {
+//   Object.assign(finalResults, response.data)
+//   isLoading.value = false;
+//   console.log(response)
+// })
+//
+// watch(finalResults, (finalResultsFetch) => {
+//   for (const key in finalResultsFetch.results) {
+//     if (key !== "overallScore") {
+//       scores.push(finalResultsFetch.results[key]);
+//       keys.push(key)
+//     }
+//   }
+//   companyName.value = finalResultsFetch.company.name;
+//   companyDomain.value = finalResultsFetch.domain;
+//   overallScore.value = finalResultsFetch.results.overallScore;
+//
+// })
+//
+// fetch("/improveSituation.json").then((res) => res.json())
+//   .then((resData) => {
+//       improveSituations.value = resData[(domain[1]) - 1];
+//     }
+//   )
+
+// function setIndex(index) {
+//   if (scores[index] >= 0 && scores[index] < 1) {
+//     return 1;
+//   } else if (scores[index] >= 1 && scores[index] < 2) {
+//     return 2;
+//   } else if (scores[index] >= 2 && scores[index] < 3) {
+//     return 3;
+//   } else if (scores[index] >= 3 && scores[index] < 4) {
+//     return 4;
+//   } else if (scores[index] >= 4 && scores[index] <= 5) {
+//     return 5;
+//   }
+// }
+// fetchResult()
 
 </script>
 
 <template>
   <div id="pdf-content" class="main" v-if="!isLoading">
-    <div class="logo">
-      <img src="../assets/images/logo.png" alt="">
-    </div>
-    <h2>گزارش عارضه یابی {{ companyDomain }} <br>
-      <span> شرکت {{ companyName }} </span>
-    </h2>
+    <!--    <h2>گزارش عارضه یابی {{ companyDomain }} <br>-->
+    <!--      <span> شرکت {{ companyName }} </span>-->
+    <!--    </h2>-->
+<!--        <div class="textAndChart">-->
+<!--          <p>-->
+<!--            رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت-->
+<!--            توجه-->
+<!--            به-->
+<!--            بازاریابی و فروش نسبت به چند سال گذشته دو چندان گردد. لزوم برنامه ریزی منظم و رعایت اصول-->
+<!--            بازاریابی و فروش از عوامل حیاتی حفظ و نگه داشت جایگاه کسب و کارها در دنیای امروز است.-->
+<!--            باتوجه-->
+<!--            به اهمیت این واحد، لازم است معیار های استاندارد برای سنجش فرآیندهای فروش و مارکتینگ طراحی-->
+<!--            و-->
+<!--            وضعیت چگونگی انجام کار هر یک مشخص شود.-->
+<!--            KPI های فروش شاخص‌های برجسته‌ای هستند که به یک رهبر فروش، مدیر فروش و تیم فروش کمک می‌کنند-->
+<!--            تا-->
+<!--            میزان پیشرفت خود را در رسیدن به اهداف فروش و اهداف سازمانی تعیین کنند. یک واحد فروش موفق،-->
+<!--            به-->
+<!--            داده‌های فروش صحیح دسترسی دارد. با استفاده از KPI، بخش فروش شما می‌تواند:-->
+<!--            <br>-->
+<!--            • پیشرفت خود را در دستیابی به اهداف پیگیری کند.-->
+<!--            <br>-->
+<!--            • فرآیند شناسایی، جذب و نگهداشت مشتریان خود را بهینه کند.-->
+<!--            <br>-->
+<!--            • بهبود جریان درآمد را عملی کند.-->
+<!--          </p>-->
+<!--          <GaugeChart class="gaugeChart" :value="overallScore"></GaugeChart>-->
+<!--        </div>-->
+
     <div class="textAndChart">
       <p>
-        رقابت شدید و سرعت تغییرات در بازارها و روندهای پیش بینی نشده اقتصادی باعث شده تا اهمیت
-        توجه
-        به
-        بازاریابی و فروش نسبت به چند سال گذشته دو چندان گردد. لزوم برنامه ریزی منظم و رعایت اصول
-        بازاریابی و فروش از عوامل حیاتی حفظ و نگه داشت جایگاه کسب و کارها در دنیای امروز است.
-        باتوجه
-        به اهمیت این واحد، لازم است معیار های استاندارد برای سنجش فرآیندهای فروش و مارکتینگ طراحی
-        و
-        وضعیت چگونگی انجام کار هر یک مشخص شود.
-        KPI های فروش شاخص‌های برجسته‌ای هستند که به یک رهبر فروش، مدیر فروش و تیم فروش کمک می‌کنند
-        تا
-        میزان پیشرفت خود را در رسیدن به اهداف فروش و اهداف سازمانی تعیین کنند. یک واحد فروش موفق،
-        به
-        داده‌های فروش صحیح دسترسی دارد. با استفاده از KPI، بخش فروش شما می‌تواند:
-        <br>
-        • پیشرفت خود را در دستیابی به اهداف پیگیری کند.
-        <br>
-        • فرآیند شناسایی، جذب و نگهداشت مشتریان خود را بهینه کند.
-        <br>
-        • بهبود جریان درآمد را عملی کند.
+        {{result.messages}}
       </p>
-      <GaugeChart class="gaugeChart" :value="overallScore"></GaugeChart>
+      <GaugeChart class="gaugeChart" :value="result.overallscore"></GaugeChart>
     </div>
 
-    <RadarChart :keys="keys" :values="scores"></RadarChart>
+    <!--    <RadarChart :keys="keys" :values="scores"></RadarChart>-->
 
-    <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>
+    <!--    <h2 style="color: #0056b3">پیشنهاداتی برای بهبود عملکرد</h2>-->
 
-    <div class="improveSituation" v-for="(improveSituation , index) in improveSituations"
-         :key="index">
-      <h4>{{ improveSituation[0] }}</h4>
-      <div>
-        <pre>
-        {{ improveSituation[setIndex(index)] }}
-        </pre>
-        <GaugeChart class="gaugeChartPre" :value="scores[index]"></GaugeChart>
-      </div>
-      <hr style="height: 2px; background-color: black">
+    <!--    <div class="improveSituation" v-for="(improveSituation , index) in improveSituations"-->
+    <!--         :key="index">-->
+    <!--      <h4>{{ improveSituation[0] }}</h4>-->
+    <!--      <div>-->
+    <!--        <pre>-->
+    <!--        {{ improveSituation[setIndex(index)] }}-->
+    <!--        </pre>-->
+    <!--        <GaugeChart class="gaugeChartPre" :value="scores[index]"></GaugeChart>-->
+    <!--      </div>-->
+    <!--      <hr style="height: 2px; background-color: black">-->
+    <!--    </div>-->
+    <div class="logo">
+      <img src="../assets/images/logo.png" alt="">
     </div>
     <router-link class="saveAndNext" to="/domains">
       ادامه عارضه یابی

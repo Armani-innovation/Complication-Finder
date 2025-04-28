@@ -1,14 +1,14 @@
 <script setup>
-import {reactive, ref, inject} from "vue"
+import {reactive, ref} from "vue"
 import router from "@/router/index.js";
 import axios from "@/axios/axios.js";
 
 const isLoading = ref(false);
-const is_company = ref(false);
+let is_company = ref(false);
 let errorMessage = ref(null);
 
 let formData = reactive({
-  is_company: false,
+  is_company: "False",
   name: "",
   username: "",
   password: "",
@@ -21,7 +21,7 @@ let formData = reactive({
 function handleEvent() {
 
   if ((formData.name && formData.registrationNumber && formData.username && formData.password && formData.repeatPassword) || (formData.name && formData.username && formData.password && formData.repeatPassword)) {
-    is_company.value ?
+    formData.is_company ?
       handleCompany()
       :
       handleMentor()
@@ -36,23 +36,24 @@ async function handleCompany() {
   isLoading.value = true;
   const retries = 3;
   try {
-    formData.is_company = is_company.value;
-    sessionStorage.setItem("size", formData.size);
+    formData.is_company = "True";
     let res;
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         res = await axios.post("register/", formData);
-        console.log(res)
         break;
       } catch (error) {
         if (attempt === retries)
           errorMessage.value = error.response.data || "خطایی رخ داد لطفا دوباره امتحان کنید";
       }
     }
+
+    sessionStorage.setItem("size", res.data.size);
     sessionStorage.setItem("is_company", true)
     sessionStorage.setItem("id", res.data.id);
-    sessionStorage.setItem("nationalID", res.data.username);
-    await fetchUser();
+    sessionStorage.setItem("nationalID", res.data.nationalID);
+    sessionStorage.setItem("name", res.data.name);
+
     await router.push("/domains");
   } catch (err) {
     isLoading.value = false;
@@ -65,16 +66,16 @@ async function handleMentor() {
 
   isLoading.value = true;
   const retries = 3;
-  formData.is_company = is_company.value;
-
   let res;
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
+
       res = await axios.post("register/", formData);
-      sessionStorage.setItem("is_company", false)
+
+      sessionStorage.setItem("is_company", false);
       sessionStorage.setItem("id", res.data.id);
       sessionStorage.setItem("username", res.data.username);
-      await fetchUser();
+
       await router.push("/CompanyInfo");
       break;
     } catch (err) {
@@ -88,8 +89,6 @@ async function handleMentor() {
   }
   isLoading.value = false;
 }
-
-const fetchUser = inject("fetchUser");
 
 </script>
 
@@ -149,9 +148,9 @@ const fetchUser = inject("fetchUser");
       <li>
         <select v-model="formData.size" required>
           <option value="" class="null" disabled selected>تعداد اعضای شرکت</option>
-          <option value="small">زیر 15 نفر</option>
-          <option value="medium">15 تا 50 نفر</option>
-          <option value="large">بیش از 50 نفر</option>
+          <option value="Small">زیر 15 نفر</option>
+          <option value="Medium">15 تا 50 نفر</option>
+          <option value="Large">بیش از 50 نفر</option>
         </select>
       </li>
 

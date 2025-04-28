@@ -100,7 +100,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="setting">
-        <font-awesome-icon @click="$emit('updateSignIn')" id="logout" icon="power-off"/>
+        <font-awesome-icon @click="$emit('signOut')" id="logout" icon="power-off"/>
         <a href="">تماس با ما</a>
       </div>
     </div>

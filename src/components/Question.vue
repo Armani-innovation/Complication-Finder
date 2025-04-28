@@ -1,160 +1,150 @@
 <script setup>
-import {computed, inject, onMounted, reactive, ref} from "vue";
-import axios from "../axios/axios.js";
-import router from "@/router/index.js";
-import {useRoute} from "vue-router";
+import {ref, computed, reactive} from "vue";
 import Pagination from "@/components/Pagination.vue";
+import axios from "@/axios/axios.js";
 import OptionInfo from "@/components/OptionInfo.vue";
+import router from "@/router/index.js";
+// import OptionInfo from "@/components/OptionInfo.vue";
 
-const route = useRoute();
+const props = defineProps(["question"])
+const domainTitle = sessionStorage.getItem("domain");
+const nationalID = sessionStorage.getItem("nationalID");
+
+let questionCount = ref(0);
+const questionCounter = computed(() => questionCount.value);
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
 let lastQuestion = ref(false);
-let firstQuestion = ref(true);
 
-const domain = JSON.parse(sessionStorage.getItem("domain"));
-const size = sessionStorage.getItem("size");
+let questions = reactive(JSON.parse(props.question));
+sessionStorage.setItem("questionnaire" , questions.questionnaire) ;
+const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 
-let questions = reactive([]);
-let questionsKey = reactive([]);
-let options = reactive([]);
-let optionsInfo = reactive([]);
-let domainTitle = ref(null)
-let questionHistory = reactive([]);
+console.log(questionnaire)
+console.log(questions)
 
-let questionCount = ref(0);
-const questionCounter = computed(() => questionCount.value);
-questionCount.value = route.query.questionNum;
-
-let picked = ref(null);
-const selectedOption = computed(() => picked.value || 1);
-
-let data = reactive({
-  userid: sessionStorage.getItem("id"),
-  nationalID: sessionStorage.getItem("nationalID"),
-  size ,
-  answer: {}
-});
-
-function fetchQuestions() {
-  if (domain[1] === 4) {
-    fetch("/OrganizationalStructureQuestions.json").then((res) => res.json()).then((resData) => {
-      domainTitle.value = resData.name;
-      for (const dataKey in resData.questions) {
-        questions.push(resData.questions[dataKey])
-        questionsKey.push(dataKey);
-      }
-      for (const dataKey in resData.options) {
-        options.push(resData.options[dataKey])
-      }
-      for (const dataKey in resData.infos) {
-        optionsInfo.push(resData.infos[dataKey])
-      }
-    })
-  } else {
-    if (size === "small") {
-      fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-        domainTitle.value = resData[domain[1]].name;
-        for (const dataKey in resData[domain[1]].questions) {
-          questions.push(resData[domain[1]].questions[dataKey])
-          questionsKey.push(dataKey);
-        }
-        for (const dataKey in resData[domain[1]].options) {
-          options.push(resData[domain[1]].options[dataKey])
-        }
-        for (const dataKey in resData[domain[1]].infos) {
-          optionsInfo.push(resData[domain[1]].infos[dataKey])
-        }
-      })
-    } else if (size === "medium") {
-      fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-        domainTitle.value = resData[domain[1]].name;
-        for (const dataKey in resData[domain[1]].questions) {
-          questions.push(resData[domain[1]].questions[dataKey])
-          questionsKey.push(dataKey);
-        }
-        for (const dataKey in resData[domain[1]].options) {
-          options.push(resData[domain[1]].options[dataKey])
-        }
-        for (const dataKey in resData[domain[1]].infos) {
-          optionsInfo.push(resData[domain[1]].infos[dataKey])
-        }
-      })
-    } else {
-      fetch("/lgCompanyQuestions.json").then((res) => res.json()).then((resData) => {
-        domainTitle.value = resData[domain[1]].name;
-        for (const dataKey in resData[domain[1]].questions) {
-          questions.push(resData[domain[1]].questions[dataKey])
-          questionsKey.push(dataKey);
-        }
-        for (const dataKey in resData[domain[1]].options) {
-          options.push(resData[domain[1]].options[dataKey])
-        }
-        for (const dataKey in resData[domain[1]].infos) {
-          optionsInfo.push(resData[domain[1]].infos[dataKey])
-        }
-      })
-    }
-  }
-}
-
-async function nextQuestion() {
-  firstQuestion.value = false;
-
-  if (questionHistory.length > 0) {
-    questionLoading.value = true;
-    data.answer[`${questionsKey[questionCounter.value]}`] = `${options[questionCounter.value][selectedOption.value - 1]}`;
-    data.answer[`${questionsKey[questionCounter.value]}Num`] = selectedOption.value
-    await axios.put(`${domain[0]}/`, data).then(() => {
-      questionCount.value = questionHistory.pop();
-      picked.value = null;
-      questionLoading.value = false;
-    });
-  } else if (questionCounter.value === questions.length - 1) {
-    lastQuestion.value = true;
-  } else {
-    questionLoading.value = true;
-    data.answer[`${questionsKey[questionCounter.value]}`] = `${selectedOption.value}.${options[questionCounter.value][selectedOption.value - 1]}`;
-    data.answer[`${questionsKey[questionCounter.value]}Num`] = selectedOption.value
-    await axios.put(`${domain[0]}/`, data).then(() => {
-      questionCount.value++;
-      picked.value = null;
-      questionLoading.value = false;
-    });
+async function nextQuestion(index) {
+  questionCounter.value++;
+  const res = await axios.post(`questionnaire/${questionnaire}/answer/` , {
+    nationalID ,
+    question : questions.question.name ,
+    option : questions.question.options[index].name
+  })
+  Object.assign(questions , res.data)
+  if (questions.message){
+    lastQuestion.value = true ;
   }
 }
 
 function sendLastQuestion() {
-  data.answer[`${questionsKey[questionCounter.value]}`] = `${selectedOption.value}.${options[questionCounter.value][selectedOption.value - 1]}`;
-  data.answer[`${questionsKey[questionCounter.value]}Num`] = selectedOption.value
-  isLoading.value = true;
-  axios.put(`${domain[0]}/`, data).then(() => {
-    router.push("/PayPage")
-    isLoading.value = false;
-  });
+  router.push("/PayPage")
 }
 
+//
+// let data = reactive({
+//   nationalID: sessionStorage.getItem("nationalID"),
+//   question: "" ,
+//   option : ""
+// });
+//
+// function sendQuestion() {
+//
+// }
+// const selectedOption = computed(() => picked.value || 1);
 
-onMounted(() => {
-  fetchQuestions();
-  questionCounter.value = inject("questionCount")
-})
+// let firstQuestion = ref(true)
+// let questions = reactive([]);
+// let questionsKey = reactive([]);
+// let options = reactive([]);
+// let optionsInfo = reactive([]);
+// let domainTitle = ref(null)
+// let questionHistory = reactive([]);
+// questionCount.value = route.query.questionNum;
+// function fetchQuestions() {
+//   if (domain[1] === 4) {
+//     fetch("/OrganizationalStructureQuestions.json").then((res) => res.json()).then((resData) => {
+//       domainTitle.value = resData.name;
+//       for (const dataKey in resData.questions) {
+//         questions.push(resData.questions[dataKey])
+//         questionsKey.push(dataKey);
+//       }
+//       for (const dataKey in resData.options) {
+//         options.push(resData.options[dataKey])
+//       }
+//       for (const dataKey in resData.infos) {
+//         optionsInfo.push(resData.infos[dataKey])
+//       }
+//     })
+//   } else {
+//     if (size === "small") {
+//       fetch("/smCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+//         domainTitle.value = resData[domain[1]].name;
+//         for (const dataKey in resData[domain[1]].questions) {
+//           questions.push(resData[domain[1]].questions[dataKey])
+//           questionsKey.push(dataKey);
+//         }
+//         for (const dataKey in resData[domain[1]].options) {
+//           options.push(resData[domain[1]].options[dataKey])
+//         }
+//         for (const dataKey in resData[domain[1]].infos) {
+//           optionsInfo.push(resData[domain[1]].infos[dataKey])
+//         }
+//       })
+//     } else if (size === "medium") {
+//       fetch("/medCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+//         domainTitle.value = resData[domain[1]].name;
+//         for (const dataKey in resData[domain[1]].questions) {
+//           questions.push(resData[domain[1]].questions[dataKey])
+//           questionsKey.push(dataKey);
+//         }
+//         for (const dataKey in resData[domain[1]].options) {
+//           options.push(resData[domain[1]].options[dataKey])
+//         }
+//         for (const dataKey in resData[domain[1]].infos) {
+//           optionsInfo.push(resData[domain[1]].infos[dataKey])
+//         }
+//       })
+//     } else {
+//       fetch("/lgCompanyQuestions.json").then((res) => res.json()).then((resData) => {
+//         domainTitle.value = resData[domain[1]].name;
+//         for (const dataKey in resData[domain[1]].questions) {
+//           questions.push(resData[domain[1]].questions[dataKey])
+//           questionsKey.push(dataKey);
+//         }
+//         for (const dataKey in resData[domain[1]].options) {
+//           options.push(resData[domain[1]].options[dataKey])
+//         }
+//         for (const dataKey in resData[domain[1]].infos) {
+//           optionsInfo.push(resData[domain[1]].infos[dataKey])
+//         }
+//       })
+//     }
+//   }
+// }
+//
+//
+//
+//
+// onMounted(() => {
+//   fetchQuestions();
+//   questionCounter.value = inject("questionCount")
+// })
 </script>
 
 <template>
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-      <p v-if="!questionLoading">{{ questions[questionCounter] }}</p>
+      <p v-if="!questionLoading">{{ questions.question.text }}</p>
       <a href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
-      <li v-for="(option , index) in options[questionCount]" :key="option" :for="index">
-        <input @change="nextQuestion" type="radio" name="option" :id="index"
-               :value="Number(index)+1" v-model="picked"/>
-        <label :for="index">{{ option }}</label>
-        <OptionInfo :optionInfo="optionsInfo[questionCount][index]"/>
+      <li v-for="(option , index) in questions.question.options" :key="option" :for="index">
+        <input @change="nextQuestion(index)" type="radio" name="option" :id="index"
+               :value="Number(index)"/>
+        <label :for="index">{{ option.text }}</label>
+        <OptionInfo :optionInfo="questions.question.options[index].description" />
       </li>
     </ul>
 
@@ -168,7 +158,7 @@ onMounted(() => {
 
       <Pagination
         :questionCount="questionCount"
-        :totalQuestions="questions.length"
+        :totalQuestions="questions.number_of_questions"
       />
 
     </div>

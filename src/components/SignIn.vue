@@ -23,6 +23,7 @@ async function subform() {
     if (isCompany) {
       const id = sessionStorage.getItem("id");
       await axios.get("register/", { params: { id } }).then((res) => {
+        console.log(res.data)
         sessionStorage.setItem("nationalID", res.data.nationalID);
         sessionStorage.setItem("is_company" , res.data.is_company);
         sessionStorage.setItem("size" , res.data.size);
