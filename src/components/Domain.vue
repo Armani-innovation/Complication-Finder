@@ -2,6 +2,7 @@
 import {onMounted, reactive, ref, computed} from "vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
+import {getTokenInfo} from "@/composables/composable.js";
 
 let errMessage = ref("");
 let isLoading = ref(false);
@@ -11,11 +12,12 @@ let picked = ref(null);
 const selectedDomain = computed(() => picked.value);
 const nationalID = ref("")
 
-
 async function loadDomains() {
   const res = await axios.get("/domain")
   Object.assign(domains, res.data)
-  nationalID.value = sessionStorage.getItem("nationalID");
+  const token = sessionStorage.getItem("token");
+  const data = await getTokenInfo(token);
+  nationalID.value = data.nationalID;
 }
 
 async function fetchDomain(domain) {
@@ -24,10 +26,10 @@ async function fetchDomain(domain) {
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const res = await axios.post("start-questionnaire/", {domain, nationalID : nationalID.value});
+      const res = await axios.post("start-questionnaire/", {domain, nationalID: nationalID.value});
 
       isLoading.value = false;
-      await router.push({name : "Questions" , params : {question : JSON.stringify(res.data)}});
+      await router.push({name: "Questions", params: {question: JSON.stringify(res.data)}});
       break;
     } catch {
 

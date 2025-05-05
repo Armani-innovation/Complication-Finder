@@ -1,17 +1,9 @@
 <script setup>
-import {ref} from "vue";
 import Status from "@/components/Status.vue";
 import {useRoute} from "vue-router";
-import router from "@/router/index.js";
 
-let isSignedIn = ref(false);
 const route = useRoute();
 
-function handleSignOut() {
-  isSignedIn.value = false;
-  sessionStorage.clear()
-  router.push("/signin")
-}
 </script>
 
 <template>
@@ -23,7 +15,7 @@ function handleSignOut() {
     </video>
 
     <Status v-if="route.name !== 'Profile' && route.name !== 'ComplicationHistory'" class="status"/>
-    <RouterView @signOut="handleSignOut"/>
+    <RouterView/>
     <img class="logo" src="./assets/images/logo1.png" alt="">
   </div>
 </template>

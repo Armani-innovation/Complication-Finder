@@ -107,7 +107,7 @@ function getResponsiveGaugeOption() {
         type: "gauge",
         startAngle: 200,
         endAngle: -20,
-        min: 0,
+        min: 1,
         max: 4,
         splitNumber: 5,
         radius: containerWidth < 500 ? "80%" : "100%",

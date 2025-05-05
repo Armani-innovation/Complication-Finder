@@ -2,6 +2,8 @@
 import {ref, watch} from "vue";
 import {useRoute} from 'vue-router'
 import router from "@/router/index.js";
+import {sessionToken} from "@/composables/composable.js";
+import {getTokenInfo} from "@/composables/composable.js";
 
 const description = ref(null);
 const user = ref(null);
@@ -9,10 +11,15 @@ const infos = ref(null);
 const complication = ref(null);
 const credits = ref(null);
 const result = ref(null);
+const name = ref("");
 const route = useRoute();
 
 let status = ref("حوزه عارضه یابی");
-let name = ref(sessionStorage.getItem("name"));
+
+watch(sessionToken, async (newToken) => {
+  const user = await getTokenInfo(newToken)
+  name.value = user.name;
+})
 
 watch(() => route.name, (newName) => {
   switch (newName) {

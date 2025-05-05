@@ -59,9 +59,9 @@ async function savaAndNext() {
       </li>
       <li><select v-model="data.company.size" required>
         <option class="null" value="" disabled selected>تعداد اعضای شرکت</option>
-        <option value="Small">زیر 15 نفر</option>
-        <option value="Medium">15 تا 50 نفر</option>
-        <option value="Large">بیش از 50 نفر</option>
+        <option value="SMALL">زیر 15 نفر</option>
+        <option value="MEDIUM">15 تا 50 نفر</option>
+        <option value="LARGE">بیش از 50 نفر</option>
       </select></li>
     </ul>
 

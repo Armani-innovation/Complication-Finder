@@ -1,8 +1,8 @@
 <script setup>
-import {inject, reactive, ref} from "vue"
+import {reactive, ref} from "vue"
 import axios from "@/axios/axios.js";
-import {jwtDecode} from "jwt-decode";
 import router from "@/router/index.js";
+import {getInfo} from "@/composables/composable.js";
 
 const isLoading = ref(false);
 let errMessage = ref("");
@@ -16,31 +16,18 @@ async function subform() {
     isLoading.value = true;
     const res = await axios.post("token/", formData);
     const token = res.data.access;
-    const decoded = jwtDecode(token);
-    sessionStorage.setItem("id", decoded.user_id);
-    const isCompany = await fetchUser()
+    sessionStorage.setItem("token", JSON.stringify(token));
+    const user = await getInfo(formData.username , formData.password);
     isLoading.value = false;
-    if (isCompany) {
-      const id = sessionStorage.getItem("id");
-      await axios.get("register/", { params: { id } }).then((res) => {
-        console.log(res.data)
-        sessionStorage.setItem("nationalID", res.data.nationalID);
-        sessionStorage.setItem("is_company" , res.data.is_company);
-        sessionStorage.setItem("size" , res.data.size);
-      })
-      await router.push("/domains");
+    if (user.is_company){
+      await router.push("/domains")
     } else {
-      const id = sessionStorage.getItem("id");
-      await axios.get("register/", { params: { id } }).then((res) => {
-        sessionStorage.setItem("username", res.data.username);
-        sessionStorage.setItem("is_company" , res.data.is_company)
-      })
-      await router.push("/CompanyInfo");
+      await router.push("/CompanyInfo")
     }
   } catch(err) {
     console.log(err)
     isLoading.value = false;
-    errMessage.value = err.response.data.detail || "نام کاربری یا رمز عبور اشتباه است";
+    errMessage.value = err.response.data || "نام کاربری یا رمز عبور اشتباه است";
   }
 }
 
@@ -48,14 +35,13 @@ function loginWithEnter(event) {
   if (event.key === "Enter") subform();
 }
 
-const fetchUser = inject("fetchUser")
 </script>
 
 <template>
   <img v-if="isLoading" class="loader" alt="" src="../assets/images/Animation.gif">
   <div v-else class="main">
     <h1>ورود</h1>
-    <ul>
+    <ul @keyup="loginWithEnter">
       <li>
         <input
           v-model="formData.username"
@@ -68,7 +54,6 @@ const fetchUser = inject("fetchUser")
           v-model="formData.password"
           type="password"
           placeholder="رمز عبور"
-          @keyup="loginWithEnter"
         />
       </li>
     </ul>

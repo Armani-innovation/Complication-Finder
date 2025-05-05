@@ -2,6 +2,7 @@
 import {reactive, ref} from "vue"
 import router from "@/router/index.js";
 import axios from "@/axios/axios.js";
+import {getInfo} from "@/composables/composable.js";
 
 const isLoading = ref(false);
 let is_company = ref(false);
@@ -37,10 +38,9 @@ async function handleCompany() {
   const retries = 3;
   try {
     formData.is_company = "True";
-    let res;
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        res = await axios.post("register/", formData);
+        await axios.post("register/", formData);
         break;
       } catch (error) {
         if (attempt === retries)
@@ -48,16 +48,19 @@ async function handleCompany() {
       }
     }
 
-    sessionStorage.setItem("size", res.data.size);
-    sessionStorage.setItem("is_company", true)
-    sessionStorage.setItem("id", res.data.id);
-    sessionStorage.setItem("nationalID", res.data.nationalID);
-    sessionStorage.setItem("name", res.data.name);
+    await getInfo(formData.username , formData.password);
 
+    // sessionStorage.setItem("size", res.data.size);
+    // sessionStorage.setItem("is_company", true)
+    // sessionStorage.setItem("id", res.data.id);
+    // sessionStorage.setItem("nationalID", res.data.nationalID);
+    // sessionStorage.setItem("name", res.data.name);
+
+    isLoading.value = false;
     await router.push("/domains");
   } catch (err) {
     isLoading.value = false;
-    errorMessage.value = err.response.data.username[0];
+    errorMessage.value = err.response.data ;
   }
   isLoading.value = false;
 }
@@ -66,15 +69,16 @@ async function handleMentor() {
 
   isLoading.value = true;
   const retries = 3;
-  let res;
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
 
-      res = await axios.post("register/", formData);
+      await axios.post("register/", formData);
 
-      sessionStorage.setItem("is_company", false);
-      sessionStorage.setItem("id", res.data.id);
-      sessionStorage.setItem("username", res.data.username);
+      // sessionStorage.setItem("is_company", false);
+      // sessionStorage.setItem("id", res.data.id);
+      // sessionStorage.setItem("username", res.data.username);
+
+      await getInfo(formData.username , formData.password);
 
       await router.push("/CompanyInfo");
       break;
@@ -88,6 +92,14 @@ async function handleMentor() {
     }
   }
   isLoading.value = false;
+}
+
+function enterHandleCompany(event){
+  if (event.key === "Enter") handleCompany();
+}
+
+function enterHandleMentor(event){
+  if (event.key === "Enter") handleMentor();
 }
 
 </script>
@@ -111,7 +123,7 @@ async function handleMentor() {
       </div>
     </div>
 
-    <ul v-if="is_company" :class="{companyUl : is_company}">
+    <ul v-if="is_company" :class="{companyUl : is_company}" @keyup="enterHandleCompany">
       <li>
         <input
           v-model="formData.name"
@@ -148,9 +160,9 @@ async function handleMentor() {
       <li>
         <select v-model="formData.size" required>
           <option value="" class="null" disabled selected>تعداد اعضای شرکت</option>
-          <option value="Small">زیر 15 نفر</option>
-          <option value="Medium">15 تا 50 نفر</option>
-          <option value="Large">بیش از 50 نفر</option>
+          <option value="SMALL">زیر 15 نفر</option>
+          <option value="MEDIUM">15 تا 50 نفر</option>
+          <option value="LARGE">بیش از 50 نفر</option>
         </select>
       </li>
 
@@ -173,7 +185,7 @@ async function handleMentor() {
       </li>
     </ul>
 
-    <ul v-else>
+    <ul v-else @keyup="enterHandleMentor">
       <li>
         <input
           v-model="formData.name"

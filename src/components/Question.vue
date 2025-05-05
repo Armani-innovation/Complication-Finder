@@ -1,14 +1,15 @@
 <script setup>
-import {ref, computed, reactive} from "vue";
+import {ref, computed, reactive, onMounted} from "vue";
 import Pagination from "@/components/Pagination.vue";
 import axios from "@/axios/axios.js";
 import OptionInfo from "@/components/OptionInfo.vue";
 import router from "@/router/index.js";
 // import OptionInfo from "@/components/OptionInfo.vue";
+import {getTokenInfo} from "@/composables/composable.js";
 
 const props = defineProps(["question"])
-const domainTitle = sessionStorage.getItem("domain");
-const nationalID = sessionStorage.getItem("nationalID");
+
+let nationalID = ref("")
 
 let questionCount = ref(0);
 const questionCounter = computed(() => questionCount.value);
@@ -18,22 +19,25 @@ let questionLoading = ref(false);
 let lastQuestion = ref(false);
 
 let questions = reactive(JSON.parse(props.question));
-sessionStorage.setItem("questionnaire" , questions.questionnaire) ;
+sessionStorage.setItem("questionnaire", questions.questionnaire || questions.id);
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 
-console.log(questionnaire)
-console.log(questions)
+async function fetchInfos() {
+  const token = sessionStorage.getItem("token");
+  const user = await getTokenInfo(token);
+  nationalID.value = user.nationalID;
+}
 
 async function nextQuestion(index) {
   questionCount.value++;
-  const res = await axios.post(`questionnaire/${questionnaire}/answer/` , {
-    nationalID ,
-    question : questions.question.name ,
-    option : questions.question.options[index].name
+  const res = await axios.post(`questionnaire/${questionnaire}/answer/`, {
+    nationalID: nationalID.value,
+    question: questions.question.name,
+    option: questions.question.options[index].name
   })
-  Object.assign(questions , res.data)
-  if (questions.message){
-    lastQuestion.value = true ;
+  Object.assign(questions, res.data)
+  if (questions.message) {
+    lastQuestion.value = true;
   }
 }
 
@@ -41,13 +45,17 @@ function sendLastQuestion() {
   router.push("/PayPage")
 }
 
+onMounted(() => {
+  fetchInfos();
+})
+
 </script>
 
 <template>
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-      <p v-if="!questionLoading"> {{questionCounter+1}}.{{ questions.question.text }}</p>
+      <p v-if="!questionLoading"> {{ questionCounter + 1 }}.{{ questions.question.text }}</p>
       <a href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
@@ -55,7 +63,7 @@ function sendLastQuestion() {
         <input @change="nextQuestion(index)" type="radio" name="option" :id="index"
                :value="Number(index)"/>
         <label :for="index">{{ option.text }}</label>
-        <OptionInfo :optionInfo="questions.question.options[index].description" />
+        <OptionInfo :optionInfo="questions.question.options[index].description"/>
       </li>
     </ul>
 
@@ -71,7 +79,6 @@ function sendLastQuestion() {
         :questionCount="questionCounter"
         :totalQuestions="questions.number_of_questions"
       />
-
     </div>
   </div>
   <img v-else class="loader" src="../assets/images/Animation.gif" alt="">

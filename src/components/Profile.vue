@@ -1,87 +1,96 @@
 <script setup>
-import router from "@/router/index.js";
-import {onMounted, reactive, computed} from "vue";
+// import {onMounted, reactive, computed} from "vue";
 import axios from "../axios/axios.js";
-defineEmits(["updateSignIn"])
+import router from "@/router/index.js";
+import {computed, onMounted, reactive, ref} from "vue";
+import {getTokenInfo} from "@/composables/composable.js";
 
-const is_company = JSON.parse(sessionStorage.getItem("is_company"))
-const username = is_company ? sessionStorage.getItem("nationalID") : sessionStorage.getItem("username");
+let name = ref("");
+let username = ref("");
+let nationalID = ref("");
+let is_company = ref(null);
 
-let infos = reactive({
-  companies: [],
-  history: [],
-  mentors: {}
-})
+const complications = reactive([])
+const complicationsInfo = reactive([])
 
-function fetchInfos() {
-  axios.get("dashboard/All", {params: {is_company, username}}).then(res => {
-    Object.assign(infos, res.data)
-    console.log(infos.history[0])
-  })
+const sortKey = ref('company');
+const sortOrder = ref('asc');
+
+
+async function fetchInfos() {
+  const token = sessionStorage.getItem("token");
+  const infos = await getTokenInfo(token);
+  name.value = infos.name;
+  username.value = infos.username || null;
+  nationalID.value = infos.nationalID || null;
+  is_company.value = infos.is_company;
+  await fetchHistory();
+}
+
+async function fetchHistory() {
+  const history = await axios.get("questionnaires", {params: is_company.value ? {nationalID: nationalID.value} : {usename: username.value}})
+  console.log(history.data)
+
+  for (const historyKey in history.data) {
+
+    complications.push(history.data[historyKey]);
+    const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
+    complicationsInfo.push(res.data)
+    console.log(res.data)
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+}
+
+function formattedDate(dateStr){
+  const [date, time] = dateStr.split('T');
+  const formattedTime = time.split('.')[0];
+  return `${formattedTime}    ${date}`;
+}
+
+function handleSignOut() {
+  sessionStorage.clear();
+  router.push("/signin");
 }
 
 function backward() {
-  router.back()
+  router.back();
 }
 
-function draftAction(index , domain) {
-  console.log(index, domain)
-  console.log(infos.history[0][domain][index])
-  if (infos.history[0][domain][index].is_draft){
-    sessionStorage.setItem("domain", JSON.stringify([`${domain.slice(0,-2)}`, selectedDomain(`${domain.slice(0,-2)}`)]))
-    router.push({name:'Questions' , query:{questionNum : 0}})
-  }else {
-    console.log("draft")
+function handleSortChange(event) {
+  const selectedValue = event.target.value;
+  if (selectedValue) {
+    sortData(selectedValue);
   }
 }
 
-function selectedDomain(domain) {
-  switch (domain) {
-    case "human_resources":
-      return 1;
-    case "sales_and_marketing" :
-      return 2;
-    case "branding" :
-      return 3;
-  }
+function sortData(key) {
+  sortKey.value = key;
+  sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
 }
 
-function returnDomain(englishDomain) {
-  switch (englishDomain) {
-    case "branding_l" :
-      return ("برندینگ (شرکت های بزرگ)");
-    case "branding_m" :
-      return ("برندینگ (شرکت های متوسط)");
-    case "branding_s" :
-      return ("برندینگ (شرکت های کوچک)");
-    case "human_resources_l" :
-      return ("منابع انسانی (شرکت های بزرگ)");
-    case "human_resources_m" :
-      return ("منابع انسانی (شرکت های متوسط)");
-    case "human_resources_s" :
-      return ("منابع انسانی (شرکت های کوچک)");
-    case "sales_and_marketing_l" :
-      return ("فروش و مارکتینگ(شرکت های بزرگ)");
-    case "sales_and_marketing_m" :
-      return ("فروش و مارکتینگ(شرکت های متوسط)");
-    case "sales_and_marketing_s" :
-      return ("فروش و مارکتینگ(شرکت های کوچک)");
+const sortedComplications = computed(() => {
+  return complications.slice().sort((a, b) => {
+    let aValue = a[sortKey.value];
+    let bValue = b[sortKey.value];
 
-  }
-}
+    if (sortKey.value === 'created_at') {
+      aValue = new Date(aValue);
+      bValue = new Date(bValue);
+    }
 
-const nonEmptyHistories = computed(() => {
-  const historyObj = infos.history[0];
-  if (!historyObj) return {};
-
-  return Object.fromEntries(
-    Object.entries(historyObj).filter(([, arr]) => Array.isArray(arr) && arr.length > 0)
-  );
+    if (sortOrder.value === 'asc') {
+      return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+    } else {
+      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+    }
+  });
 });
 
 onMounted(() => {
-  fetchInfos()
+  fetchInfos();
 })
+
 </script>
 
 <template>
@@ -91,32 +100,76 @@ onMounted(() => {
         <img src="@/assets/images/user.png" alt="">
         <div class="name">
           <h3 class="name">{{
-              infos.mentors.name || infos.companies[0]?.name || "در حال بارگذاری..."
+              name || "در حال بارگذاری..."
             }}</h3>
           <h4 class="nationalId"> {{ is_company ? "شناسه ملی شرکت" : "کد ملی مشاور" }} :
             {{
-              infos.mentors.username || infos.companies[0]?.nationalID || "در حال بارگذاری..."
+              username || nationalID || "در حال بارگذاری..."
             }} </h4>
         </div>
       </div>
       <div class="setting">
-        <font-awesome-icon @click="$emit('signOut')" id="logout" icon="power-off"/>
+        <font-awesome-icon @click="handleSignOut" id="logout" icon="power-off"/>
         <a href="">تماس با ما</a>
       </div>
     </div>
+  </div>
+  <div class="main">
     <div class="content">
       <h3>سوابق عارضه یابی</h3>
-      <div class="historyContainer">
-        <div class="history" v-for="(history , domain) in nonEmptyHistories" :key="domain">
-          <h4>{{returnDomain(domain)}}</h4>
-          <div class="items" >
-            <div v-for="(item , index) in history" :key="index" @click="draftAction(index , domain)">
-              <h4>{{item.date}}</h4>
-              <h5> وضعیت : <span :style="{color : item.is_draft ? 'red' : 'green'}"> {{item.is_draft ? "تمام نشده" : "تمام شده"}} </span> </h5>
+      <h4>تعداد عارضه یابی های انجام شده : {{ complications.length }}</h4>
 
-            </div>
-          </div>
-        </div>
+      <div class="historyContainer">
+        <!--        <div class="history">-->
+        <!--          <div class="items" v-for="(history , index) in complications" :key="index">-->
+        <!--            <div class="info">-->
+        <!--              <h5>در تاریخ : {{ history.created_at }}</h5>-->
+        <!--              <h5>برای شرکت : {{ history.company }}</h5>-->
+        <!--              <div class="status">-->
+        <!--                <h5> وضعیت : <span :style="history.is_completed ? 'color : green' : 'color : red'"> {{-->
+        <!--                    history.is_completed ? "تمام شده" : "نا تمام"-->
+        <!--                  }} </span></h5>-->
+        <!--                <h5 style="color : #0056b3">-->
+        <!--                  {{ history.is_completed ? "مشاهده وضعیت" : "ادامه عارضه یابی" }} </h5>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <table class="history">
+          <thead>
+          <tr class="title">
+            <th>نام شرکت</th>
+            <th>حوزه</th>
+            <th>تاریخ</th>
+            <th>وضعیت</th>
+            <th>
+              <select @change="handleSortChange" id="sort-select">
+                <option value="" disabled selected>مرتب سازی بر اساس...</option>
+                <option value="company">شرکت</option>
+                <option value="domain">حوزه</option>
+                <option value="created_at">تاریخ</option>
+              </select>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="info" v-for="(history , index) in sortedComplications" :key="index">
+            <td>{{ history.company }}</td>
+            <td>{{ history.domain }}</td>
+            <td>{{ formattedDate(history.created_at) }}</td>
+            <td>
+              <span :style="history.is_completed ? 'color : green' : 'color : red'">
+                {{ history.is_completed ? "تمام شده" : "نا تمام" }}
+              </span>
+            </td>
+            <td>
+              <router-link to="">
+                {{ history.is_completed ? "مشاهده وضعیت" : "ادامه عارضه یابی" }}
+              </router-link>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <router-link class="link" to="" @click="backward">بازگشت</router-link>
@@ -125,17 +178,13 @@ onMounted(() => {
 
 <style scoped>
 .main {
-  top: 5vh;
   width: 75%;
-  max-height: 90vh;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  max-height: 70vh;
   background-color: white;
 }
 
 .main .header {
   height: 15vh;
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -170,8 +219,7 @@ onMounted(() => {
 }
 
 .main .content {
-  height: 65vh;
-  grid-column: 1/-1;
+  height: 60vh;
 }
 
 .main .content h3 {
@@ -181,19 +229,37 @@ onMounted(() => {
 
 .main .content .historyContainer {
   width: 100%;
-  height: 90%;
+  height: 79%;
+  margin-top: 3vh;
   overflow-y: auto;
 }
 
+.main .content .historyContainer .history {
+  text-align: center;
+  width: 100%;
+}
+
+.main .content .historyContainer .history thead {
+  border: 1px solid green;
+}
+
+.main .content .historyContainer .history .title th select {
+  border: none;
+  outline: none;
+}
+
+.main .content .historyContainer .history .title th select:active {
+  border: none;
+  outline: none;
+}
+
+/*
 .main .content .historyContainer .history .items {
   width: 100%;
-  display: flex;
-  overflow-x: auto;
-  gap: 1% 1%;
   margin: 2vh 0;
 }
 
-.main .content .historyContainer .history .items div {
+.main .content .historyContainer .history .items .info {
   min-width: 20vw;
   height: 15vh;
   border: 1px solid red;
@@ -201,36 +267,18 @@ onMounted(() => {
   cursor: pointer;
 }
 
-.main .content .historyContainer .history .items div h5 {
+.main .content .historyContainer .history .items .info h5 {
   margin: 1vh;
 }
 
-.main .link {
-  margin-top: 2vh;
-}
-
-
-a {
-  display: inline;
-  text-decoration: none;
-  color: #0056b3;
-  position: relative;
-  z-index: 0;
-}
-
-a::before {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 2px;
-  background-color: #0056b3;
-  bottom: 0;
-  right: 50%;
-  transition: 200ms all ease;
-}
-
-a:hover::before {
+.main .content .historyContainer .history .items .info .status {
   width: 100%;
-  right: 0;
+  display: flex;
+  justify-content: space-between;
+}
+*/
+
+.main .link {
+  margin-top: 10vh;
 }
 </style>
