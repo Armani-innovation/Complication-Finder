@@ -149,30 +149,6 @@ body {
 }
 
 
-a {
-  display: inline;
-  text-decoration: none;
-  color: #0056b3;
-  position: relative;
-  z-index: 0;
-}
-
-a::before {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 2px;
-  background-color: #0056b3;
-  bottom: 0;
-  right: 50%;
-  transition: 200ms all ease;
-}
-
-a:hover::before {
-  width: 100%;
-  right: 0;
-}
-
 @media only print {
   body {
     display: none !important;

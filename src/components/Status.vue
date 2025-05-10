@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch} from "vue";
+import {ref, watch, reactive} from "vue";
 import {useRoute} from 'vue-router'
 import router from "@/router/index.js";
 import {sessionToken} from "@/composables/composable.js";
@@ -14,11 +14,15 @@ const result = ref(null);
 const name = ref("");
 const route = useRoute();
 
+let info = reactive({})
+
 let status = ref("حوزه عارضه یابی");
 
+name.value = info.name;
+
 watch(sessionToken, async (newToken) => {
-  const user = await getTokenInfo(newToken)
-  name.value = user.name;
+  info = await getTokenInfo(newToken)
+  name.value = info.name;
 })
 
 watch(() => route.name, (newName) => {

@@ -31,7 +31,7 @@
       منحصربه‌فرد و تخصصی، در بهبود و توسعه شرکت‌ شما در کنارتان خواهد بود.
     </p>
     <RouterLink class="saveAndNext" to="/SignIn">
-        شروع عارضه یابی
+        ورود / ثبت نام
     </RouterLink>
   </div>
 </template>

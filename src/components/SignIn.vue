@@ -17,13 +17,14 @@ async function subform() {
     const res = await axios.post("token/", formData);
     const token = res.data.access;
     sessionStorage.setItem("token", JSON.stringify(token));
-    const user = await getInfo(formData.username , formData.password);
+    await getInfo(formData.username , formData.password);
     isLoading.value = false;
-    if (user.is_company){
-      await router.push("/domains")
-    } else {
-      await router.push("/CompanyInfo")
-    }
+    // if (user.is_company){
+    //   await router.push("/profile")
+    // } else {
+    //   await router.push("/CompanyInfo")
+    // }
+    router.push("/profile")
   } catch(err) {
     console.log(err)
     isLoading.value = false;

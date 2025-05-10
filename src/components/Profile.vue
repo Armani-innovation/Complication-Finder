@@ -1,5 +1,4 @@
 <script setup>
-// import {onMounted, reactive, computed} from "vue";
 import axios from "../axios/axios.js";
 import router from "@/router/index.js";
 import {computed, onMounted, reactive, ref} from "vue";
@@ -10,8 +9,11 @@ let username = ref("");
 let nationalID = ref("");
 let is_company = ref(null);
 
+let showHistory = ref(false);
+let showedHistory = ref(false);
+
 const complications = reactive([])
-const complicationsInfo = reactive([])
+// const complicationsInfo = reactive([])
 
 const sortKey = ref('company');
 const sortOrder = ref('asc');
@@ -24,7 +26,7 @@ async function fetchInfos() {
   username.value = infos.username || null;
   nationalID.value = infos.nationalID || null;
   is_company.value = infos.is_company;
-  await fetchHistory();
+  // await fetchHistory();
 }
 
 async function fetchHistory() {
@@ -34,15 +36,15 @@ async function fetchHistory() {
   for (const historyKey in history.data) {
 
     complications.push(history.data[historyKey]);
-    const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
-    complicationsInfo.push(res.data)
-    console.log(res.data)
+    // const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
+    // complicationsInfo.push(res.data)
+    // console.log(res.data)
 
     await new Promise(resolve => setTimeout(resolve, 50));
   }
 }
 
-function formattedDate(dateStr){
+function formattedDate(dateStr) {
   const [date, time] = dateStr.split('T');
   const formattedTime = time.split('.')[0];
   return `${formattedTime}    ${date}`;
@@ -54,7 +56,13 @@ function handleSignOut() {
 }
 
 function backward() {
-  router.back();
+  showHistory.value = false;
+}
+
+function showComplicationHistory() {
+  showHistory.value = true;
+  if (!showedHistory.value) fetchHistory()
+  showedHistory.value = true;
 }
 
 function handleSortChange(event) {
@@ -87,6 +95,27 @@ const sortedComplications = computed(() => {
   });
 });
 
+async function handleCompleted() {
+
+}
+
+async function handleNotCompleted(id) {
+
+  console.log(id)
+
+  const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
+
+  console.log(res.data.next_question)
+
+  await router.push({name: "Questions", params: {question: JSON.stringify(res.data.next_question)}})
+
+}
+
+function startComplication(){
+  if (is_company.value) router.push("/domains")
+  else router.push("/CompanyInfo")
+}
+
 onMounted(() => {
   fetchInfos();
 })
@@ -109,32 +138,24 @@ onMounted(() => {
         </div>
       </div>
       <div class="setting">
-        <font-awesome-icon @click="handleSignOut" id="logout" icon="power-off"/>
-        <a href="">تماس با ما</a>
+        <span @click="handleSignOut" href="">خروج از حساب</span>
       </div>
     </div>
   </div>
-  <div class="main">
-    <div class="content">
+  <div class="main" id="historyMain">
+    <div class="content" v-if="showHistory">
       <h3>سوابق عارضه یابی</h3>
       <h4>تعداد عارضه یابی های انجام شده : {{ complications.length }}</h4>
 
+      <select @change="handleSortChange" id="sort-select">
+        <option value="" disabled selected>مرتب سازی بر اساس...</option>
+        <option value="company">شرکت</option>
+        <option value="domain">حوزه</option>
+        <option value="created_at">تاریخ</option>
+        <option value="is_completed">وضعیت</option>
+      </select>
+
       <div class="historyContainer">
-        <!--        <div class="history">-->
-        <!--          <div class="items" v-for="(history , index) in complications" :key="index">-->
-        <!--            <div class="info">-->
-        <!--              <h5>در تاریخ : {{ history.created_at }}</h5>-->
-        <!--              <h5>برای شرکت : {{ history.company }}</h5>-->
-        <!--              <div class="status">-->
-        <!--                <h5> وضعیت : <span :style="history.is_completed ? 'color : green' : 'color : red'"> {{-->
-        <!--                    history.is_completed ? "تمام شده" : "نا تمام"-->
-        <!--                  }} </span></h5>-->
-        <!--                <h5 style="color : #0056b3">-->
-        <!--                  {{ history.is_completed ? "مشاهده وضعیت" : "ادامه عارضه یابی" }} </h5>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
         <table class="history">
           <thead>
           <tr class="title">
@@ -142,14 +163,6 @@ onMounted(() => {
             <th>حوزه</th>
             <th>تاریخ</th>
             <th>وضعیت</th>
-            <th>
-              <select @change="handleSortChange" id="sort-select">
-                <option value="" disabled selected>مرتب سازی بر اساس...</option>
-                <option value="company">شرکت</option>
-                <option value="domain">حوزه</option>
-                <option value="created_at">تاریخ</option>
-              </select>
-            </th>
           </tr>
           </thead>
           <tbody>
@@ -163,20 +176,42 @@ onMounted(() => {
               </span>
             </td>
             <td>
-              <router-link to="">
+              <div class="status"
+                   @click="history.is_completed ? handleCompleted : handleNotCompleted(history.id)">
                 {{ history.is_completed ? "مشاهده وضعیت" : "ادامه عارضه یابی" }}
-              </router-link>
+              </div>
             </td>
           </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <router-link class="link" to="" @click="backward">بازگشت</router-link>
+    <router-link v-if="showHistory" class="link" to="" @click="backward">بازگشت</router-link>
+    <div class="optionsContainer" v-else>
+      <div class="options">
+        <button class="saveAndNext" @click="showComplicationHistory">
+          سوابق عارضه یابی
+        </button>
+        <button class="saveAndNext">
+          سوابق مالی
+        </button>
+      </div>
+      <div class="startComplication">
+        <!-- <img src="@/assets/images/Artboard%201.png" alt=""> -->
+         <button class="saveAndNext" @click="startComplication">
+          شروع عارضه یابی
+         </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+#historyMain {
+  padding: 0;
+  height: max-content;
+}
+
 .main {
   width: 75%;
   max-height: 70vh;
@@ -203,14 +238,16 @@ onMounted(() => {
 
 .main .header .setting {
   display: flex;
-  flex-direction: column;
   gap: 10px;
 }
 
-.main .header .setting #logout {
-  font-size: 20px;
+.main .header .setting span {
   color: red;
   cursor: pointer;
+}
+
+.main .header .setting a::before {
+  color: red;
 }
 
 .main .profile .name {
@@ -220,6 +257,8 @@ onMounted(() => {
 
 .main .content {
   height: 60vh;
+  width: 95%;
+  margin: 0 auto;
 }
 
 .main .content h3 {
@@ -227,9 +266,13 @@ onMounted(() => {
   color: red;
 }
 
+.main .content h4 {
+  margin-bottom: 2vh;
+}
+
 .main .content .historyContainer {
   width: 100%;
-  height: 79%;
+  height: 70%;
   margin-top: 3vh;
   overflow-y: auto;
 }
@@ -239,46 +282,92 @@ onMounted(() => {
   width: 100%;
 }
 
-.main .content .historyContainer .history thead {
-  border: 1px solid green;
-}
-
-.main .content .historyContainer .history .title th select {
-  border: none;
-  outline: none;
-}
-
-.main .content .historyContainer .history .title th select:active {
-  border: none;
-  outline: none;
-}
-
-/*
-.main .content .historyContainer .history .items {
+table {
+  border-collapse: collapse;
   width: 100%;
-  margin: 2vh 0;
 }
 
-.main .content .historyContainer .history .items .info {
-  min-width: 20vw;
-  height: 15vh;
-  border: 1px solid red;
+table td {
   margin-bottom: 1vh;
+}
+
+table tr {
+  border-bottom: 2px solid black;
+}
+
+select {
+  border: none;
+  outline: none;
+}
+
+.main .content .historyContainer .history .status {
+  width: max-content;
+  color: #0056b3;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+select:active {
+  border: none;
+  outline: none;
+}
+
+.main .optionsContainer {
+  width: 100%;
+  height: 50vh;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.main .optionsContainer .options {
+  width: 30%;
+}
+
+.main .optionsContainer .startComplication {
+  background-image: url("@/assets/images/Artboard%201.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 70%;
+  height: 50vh;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+}
+
+.main .optionsContainer .startComplication img {
+  width: 100%;
+  height: 100%;
+}
+
+.main .link {
+  margin: 10vh 5vw;
+}
+
+
+a {
+  display: inline;
+  text-decoration: none;
+  color: #0056b3;
+  position: relative;
+  z-index: 0;
   cursor: pointer;
 }
 
-.main .content .historyContainer .history .items .info h5 {
-  margin: 1vh;
+a::before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 2px;
+  background-color: #0056b3;
+  bottom: 0;
+  right: 50%;
+  transition: 200ms all ease;
 }
 
-.main .content .historyContainer .history .items .info .status {
+a:hover::before {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  right: 0;
 }
-*/
 
-.main .link {
-  margin-top: 10vh;
-}
 </style>

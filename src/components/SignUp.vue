@@ -57,7 +57,7 @@ async function handleCompany() {
     // sessionStorage.setItem("name", res.data.name);
 
     isLoading.value = false;
-    await router.push("/domains");
+    await router.push("/profile");
   } catch (err) {
     isLoading.value = false;
     errorMessage.value = err.response.data ;
@@ -80,7 +80,7 @@ async function handleMentor() {
 
       await getInfo(formData.username , formData.password);
 
-      await router.push("/CompanyInfo");
+      await router.push("/profile");
       break;
     } catch (err) {
       if (err.code === "ERR_NETWORK") {

@@ -9,6 +9,8 @@ import {getTokenInfo} from "@/composables/composable.js";
 
 const props = defineProps(["question"])
 
+console.log(props.question)
+
 let nationalID = ref("")
 
 let questionCount = ref(0);
@@ -55,7 +57,7 @@ onMounted(() => {
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-      <p v-if="!questionLoading"> {{ questionCounter + 1 }}.{{ questions.question.text }}</p>
+<!--      <p v-if="!questionLoading"> {{ questionCounter + 1 }}.{{ questions.question.text }}</p>-->
       <a href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
