@@ -36,9 +36,8 @@ async function fetchHistory() {
   for (const historyKey in history.data) {
 
     complications.push(history.data[historyKey]);
-    // const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
-    // complicationsInfo.push(res.data)
-    // console.log(res.data)
+    const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
+    console.log(res.data)
 
     await new Promise(resolve => setTimeout(resolve, 50));
   }
@@ -107,13 +106,21 @@ async function handleNotCompleted(id) {
 
   console.log(res.data.next_question)
 
-  await router.push({name: "Questions", params: {question: JSON.stringify(res.data.next_question)}})
+  const questionProp = {
+    questionnaire: id,
+    question: {}
+  }
+
+  Object.assign(questionProp.question, res.data.next_question)
+
+  // await router.push({name: "Questions", params: {question: JSON.stringify(res.data.next_question)}})
+  await router.push({name: "Questions", params: {question: JSON.stringify(questionProp)}})
 
 }
 
-function startComplication(){
-  if (is_company.value) router.push("/domains")
-  else router.push("/CompanyInfo")
+function startComplication() {
+  if (is_company.value) router.replace("/domains")
+  else router.replace("/CompanyInfo")
 }
 
 onMounted(() => {
@@ -195,12 +202,13 @@ onMounted(() => {
         <button class="saveAndNext">
           سوابق مالی
         </button>
+        <router-link class="link" to="/signin">بازگشت</router-link>
       </div>
       <div class="startComplication">
         <!-- <img src="@/assets/images/Artboard%201.png" alt=""> -->
-         <button class="saveAndNext" @click="startComplication">
+        <button class="saveAndNext" @click="startComplication">
           شروع عارضه یابی
-         </button>
+        </button>
       </div>
     </div>
   </div>
@@ -325,7 +333,7 @@ select:active {
 }
 
 .main .optionsContainer .startComplication {
-  background-image: url("@/assets/images/Artboard%201.png");
+  background-image: url("@/assets/images/Artboard 1.png");
   background-repeat: no-repeat;
   background-size: cover;
   width: 70%;

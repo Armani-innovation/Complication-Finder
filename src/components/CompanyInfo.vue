@@ -1,12 +1,13 @@
 <script setup>
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import router from "@/router/index.js";
 import axios from "./../axios/axios.js";
+import {getTokenInfo} from "@/composables/composable.js";
 
 let isLoading = ref(false);
 
 const data = reactive({
-  userid: sessionStorage.getItem("id"),
+  userid: 0,
   company: {
     name: "",
     registrationNumber: "",
@@ -17,6 +18,12 @@ const data = reactive({
 })
 
 let errorMessage = ref(null);
+
+async function fetchInfo() {
+  const token = sessionStorage.getItem("token");
+  const infos = await getTokenInfo(token);
+  data.userid = infos.id;
+}
 
 async function savaAndNext() {
   if (!(data.company.name && data.company.registrationNumber && data.company.nationalID && data.company.company_domain && data.company.size)) {
@@ -38,6 +45,10 @@ async function savaAndNext() {
     }
   }
 }
+
+onMounted(()=>{
+  fetchInfo()
+})
 </script>
 
 <template>

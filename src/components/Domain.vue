@@ -17,7 +17,8 @@ async function loadDomains() {
   Object.assign(domains, res.data)
   const token = sessionStorage.getItem("token");
   const data = await getTokenInfo(token);
-  nationalID.value = data.nationalID;
+  console.log(data)
+  nationalID.value = data.nationalID || data.username;
 }
 
 async function fetchDomain(domain) {
@@ -41,7 +42,9 @@ async function fetchDomain(domain) {
   }
 }
 
-onMounted(loadDomains)
+onMounted(()=> {
+  loadDomains() ;
+})
 </script>
 
 <template>

@@ -9,8 +9,6 @@ import {getTokenInfo} from "@/composables/composable.js";
 
 const props = defineProps(["question"])
 
-console.log(props.question)
-
 let nationalID = ref("")
 
 let questionCount = ref(0);
@@ -21,13 +19,17 @@ let questionLoading = ref(false);
 let lastQuestion = ref(false);
 
 let questions = reactive(JSON.parse(props.question));
-sessionStorage.setItem("questionnaire", questions.questionnaire || questions.id);
-const questionnaire = Number(sessionStorage.getItem("questionnaire"));
+console.log(questions)
+questionCount.value = questions.question.num_of_question ;
+// sessionStorage.setItem("questionnaire", questions.questionnaire);
+// const questionnaire = Number(sessionStorage.getItem("questionnaire"));
+let questionnaire = reactive(0)
 
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = user.nationalID;
+
 }
 
 async function nextQuestion(index) {
@@ -37,6 +39,7 @@ async function nextQuestion(index) {
     question: questions.question.name,
     option: questions.question.options[index].name
   })
+  console.log(res.data)
   Object.assign(questions, res.data)
   if (questions.message) {
     lastQuestion.value = true;
@@ -49,6 +52,8 @@ function sendLastQuestion() {
 
 onMounted(() => {
   fetchInfos();
+  sessionStorage.setItem("questionnaire", questions.questionnaire);
+  questionnaire = Number(sessionStorage.getItem("questionnaire"));
 })
 
 </script>
@@ -57,7 +62,7 @@ onMounted(() => {
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-<!--      <p v-if="!questionLoading"> {{ questionCounter + 1 }}.{{ questions.question.text }}</p>-->
+      <p v-if="!questionLoading"> {{ questionCounter + 1 }}.{{ questions.question.text }}</p>
       <a href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
@@ -79,7 +84,7 @@ onMounted(() => {
 
       <Pagination
         :questionCount="questionCounter"
-        :totalQuestions="questions.number_of_questions"
+        :totalQuestions="questions.question.all_questions"
       />
     </div>
   </div>

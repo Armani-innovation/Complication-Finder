@@ -72,7 +72,8 @@ async function handleMentor() {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
 
-      await axios.post("register/", formData);
+      const res = await axios.post("register/", formData);
+      console.log(res.data)
 
       // sessionStorage.setItem("is_company", false);
       // sessionStorage.setItem("id", res.data.id);
@@ -80,7 +81,7 @@ async function handleMentor() {
 
       await getInfo(formData.username , formData.password);
 
-      await router.push("/profile");
+      // await router.push("/profile");
       break;
     } catch (err) {
       if (err.code === "ERR_NETWORK") {

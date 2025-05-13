@@ -2,7 +2,7 @@
 import {ref, watch, reactive} from "vue";
 import {useRoute} from 'vue-router'
 import router from "@/router/index.js";
-import {sessionToken} from "@/composables/composable.js";
+// import {sessionToken} from "@/composables/composable.js";
 import {getTokenInfo} from "@/composables/composable.js";
 
 const description = ref(null);
@@ -18,12 +18,17 @@ let info = reactive({})
 
 let status = ref("حوزه عارضه یابی");
 
-name.value = info.name;
-
-watch(sessionToken, async (newToken) => {
+watch(sessionStorage.getItem("token"), async (newToken) => {
+  console.log(Boolean(newToken))
   info = await getTokenInfo(newToken)
   name.value = info.name;
 })
+
+async function fetchInfo() {
+  const token = sessionStorage.getItem("token");
+  const infos = await getTokenInfo(token);
+  name.value = infos.name;
+}
 
 watch(() => route.name, (newName) => {
   switch (newName) {
@@ -96,6 +101,7 @@ function User() {
 }
 
 function companyInfo() {
+  fetchInfo()
   description.value.classList.add("passed")
   description.value.classList.remove("now")
 
@@ -115,6 +121,7 @@ function companyInfo() {
 }
 
 function questions() {
+  fetchInfo()
   description.value.classList.add("passed")
   description.value.classList.remove("now")
 
@@ -134,6 +141,7 @@ function questions() {
 }
 
 function payPage() {
+  fetchInfo()
   description.value.classList.add("passed")
   description.value.classList.remove("now")
 
