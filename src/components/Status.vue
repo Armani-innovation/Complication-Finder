@@ -27,7 +27,9 @@ watch(sessionStorage.getItem("token"), async (newToken) => {
 async function fetchInfo() {
   const token = sessionStorage.getItem("token");
   const infos = await getTokenInfo(token);
-  name.value = infos.name;
+  if (infos) {
+    name.value = infos.name;
+  }
 }
 
 watch(() => route.name, (newName) => {
@@ -82,6 +84,7 @@ function welcome() {
 }
 
 function User() {
+  fetchInfo()
   description.value.classList.add("passed")
   description.value.classList.remove("now")
 

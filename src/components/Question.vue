@@ -8,6 +8,7 @@ import router from "@/router/index.js";
 import {getTokenInfo} from "@/composables/composable.js";
 
 const props = defineProps(["question"])
+const nationalId = sessionStorage.getItem("nationalID") || null;
 
 let nationalID = ref("")
 
@@ -29,6 +30,9 @@ async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = user.nationalID;
+  if (nationalId) {
+    nationalID.value = nationalId;
+  }
 
 }
 

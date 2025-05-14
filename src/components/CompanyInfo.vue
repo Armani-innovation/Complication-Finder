@@ -34,9 +34,7 @@ async function savaAndNext() {
     try {
       const res = await axios.post("company/", data);
 
-      sessionStorage.setItem("size", res.data.size[0]);
       sessionStorage.setItem("nationalID", res.data.nationalID);
-      sessionStorage.setItem("company_domain", res.data.company_domain);
 
       await router.push("/domains");
     } catch (error) {

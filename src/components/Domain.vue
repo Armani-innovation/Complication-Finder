@@ -4,6 +4,8 @@ import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 import {getTokenInfo} from "@/composables/composable.js";
 
+const nationalId = sessionStorage.getItem("nationalID") || null;
+
 let errMessage = ref("");
 let isLoading = ref(false);
 let domains = reactive([]);
@@ -19,6 +21,9 @@ async function loadDomains() {
   const data = await getTokenInfo(token);
   console.log(data)
   nationalID.value = data.nationalID || data.username;
+  if (nationalId) {
+    nationalID.value = nationalId ;
+  }
 }
 
 async function fetchDomain(domain) {

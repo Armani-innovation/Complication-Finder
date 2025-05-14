@@ -142,6 +142,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
+hr {
+  width: 80%;
+  border: 1px solid black;
+}
+
 .main {
   max-height: max-content;
   width: 75%;

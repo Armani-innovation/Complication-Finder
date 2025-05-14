@@ -9,7 +9,7 @@ let is_company = ref(false);
 let errorMessage = ref(null);
 
 let formData = reactive({
-  is_company: "False",
+  is_company: "",
   name: "",
   username: "",
   password: "",
@@ -56,7 +56,6 @@ async function handleCompany() {
     // sessionStorage.setItem("nationalID", res.data.nationalID);
     // sessionStorage.setItem("name", res.data.name);
 
-    isLoading.value = false;
     await router.push("/profile");
   } catch (err) {
     isLoading.value = false;
@@ -69,6 +68,7 @@ async function handleMentor() {
 
   isLoading.value = true;
   const retries = 3;
+  formData.is_company = "False";
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
 
@@ -81,7 +81,7 @@ async function handleMentor() {
 
       await getInfo(formData.username , formData.password);
 
-      // await router.push("/profile");
+      await router.push("/profile");
       break;
     } catch (err) {
       if (err.code === "ERR_NETWORK") {
