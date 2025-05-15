@@ -34,12 +34,15 @@ function handleEvent() {
 }
 
 async function handleCompany() {
+  console.log("handle company")
+  console.log(formData);
+  formData.is_company = "True";
   isLoading.value = true;
   const retries = 3;
   try {
-    formData.is_company = "True";
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
+        console.log(formData);
         await axios.post("register/", formData);
         break;
       } catch (error) {
@@ -48,7 +51,7 @@ async function handleCompany() {
       }
     }
 
-    await getInfo(formData.username , formData.password);
+    await getInfo(formData.username, formData.password);
 
     // sessionStorage.setItem("size", res.data.size);
     // sessionStorage.setItem("is_company", true)
@@ -59,7 +62,7 @@ async function handleCompany() {
     await router.push("/profile");
   } catch (err) {
     isLoading.value = false;
-    errorMessage.value = err.response.data ;
+    errorMessage.value = err.response.data;
   }
   isLoading.value = false;
 }
@@ -79,7 +82,7 @@ async function handleMentor() {
       // sessionStorage.setItem("id", res.data.id);
       // sessionStorage.setItem("username", res.data.username);
 
-      await getInfo(formData.username , formData.password);
+      await getInfo(formData.username, formData.password);
 
       await router.push("/profile");
       break;
@@ -95,11 +98,11 @@ async function handleMentor() {
   isLoading.value = false;
 }
 
-function enterHandleCompany(event){
+function enterHandleCompany(event) {
   if (event.key === "Enter") handleCompany();
 }
 
-function enterHandleMentor(event){
+function enterHandleMentor(event) {
   if (event.key === "Enter") handleMentor();
 }
 
