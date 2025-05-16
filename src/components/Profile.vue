@@ -119,8 +119,8 @@ async function handleNotCompleted(id) {
 }
 
 function startComplication() {
-  if (is_company.value) router.replace("/domains")
-  else router.replace("/CompanyInfo")
+  if (is_company.value) router.push("/domains")
+  else router.push("/CompanyInfo")
 }
 
 onMounted(() => {
@@ -207,8 +207,11 @@ onMounted(() => {
       <div class="startComplication">
         <!-- <img src="@/assets/images/Artboard%201.png" alt=""> -->
         <button class="saveAndNext" @click="startComplication">
-          شروع عارضه یابی
+          عارضه یابی شرکت خودم
         </button>
+        <router-link to="/CompanyInfo" v-if="is_company" class="saveAndNext">
+          عارضه یابی دیگر شرکت ها
+        </router-link>
       </div>
     </div>
   </div>
@@ -341,6 +344,17 @@ select:active {
   display: flex;
   align-items: end;
   justify-content: center;
+}
+
+.main .optionsContainer .startComplication a {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main .optionsContainer .startComplication a:hover::before {
+  width: 0;
 }
 
 .main .optionsContainer .startComplication img {

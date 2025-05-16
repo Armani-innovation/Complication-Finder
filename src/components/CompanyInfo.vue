@@ -61,10 +61,7 @@ onMounted(()=>{
       <li><input maxlength="4" type="text" placeholder="شماره ثبت علامت تجاری"
                  v-model="data.company.registrationNumber"/></li>
       <li>
-        <select v-model="data.company.company_domain" required>
-          <option class="null" value="" disabled selected>حوزه کاری شرکت</option>
-          <option value="تجاری سازی">تجاری سازی</option>
-        </select>
+        <input v-model="data.company.company_domain" type="text" placeholder="حوزه کاری شرکت">
       </li>
       <li><select v-model="data.company.size" required>
         <option class="null" value="" disabled selected>تعداد اعضای شرکت</option>

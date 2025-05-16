@@ -22,33 +22,40 @@ async function loadDomains() {
   console.log(data)
   nationalID.value = data.nationalID || data.username;
   if (nationalId) {
-    nationalID.value = nationalId ;
+    nationalID.value = nationalId;
   }
 }
 
 async function fetchDomain(domain) {
-  const retries = 3;
-  isLoading.value = true;
+  if (domain === "تحلیل صورت های مالی") {
+    await router.push("/FinancialComplications")
+  } else {
+    const retries = 3;
+    isLoading.value = true;
 
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      const res = await axios.post("start-questionnaire/", {domain, nationalID: nationalID.value});
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const res = await axios.post("start-questionnaire/", {
+          domain,
+          nationalID: nationalID.value
+        });
 
-      isLoading.value = false;
-      await router.push({name: "Questions", params: {question: JSON.stringify(res.data)}});
-      break;
-    } catch {
-
-      if (attempt === retries) {
         isLoading.value = false;
-        errMessage.value = "خطایی رخ داده است. لطفا دوباره تلاش کنید.";
+        await router.push({name: "Questions", params: {question: JSON.stringify(res.data)}});
+        break;
+      } catch {
+
+        if (attempt === retries) {
+          isLoading.value = false;
+          errMessage.value = "خطایی رخ داده است. لطفا دوباره تلاش کنید.";
+        }
       }
     }
   }
 }
 
-onMounted(()=> {
-  loadDomains() ;
+onMounted(() => {
+  loadDomains();
 })
 </script>
 

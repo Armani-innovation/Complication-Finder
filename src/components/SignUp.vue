@@ -155,10 +155,7 @@ function enterHandleMentor(event) {
       </li>
 
       <li>
-        <select v-model="formData.company_domain" required>
-          <option value="" class="null" disabled selected>حوزه کاری شرکت</option>
-          <option value="تجاری سازی">تجاری سازی</option>
-        </select>
+        <input v-model="formData.company_domain" type="text" placeholder="حوزه کاری شرکت">
       </li>
 
       <li>

@@ -12,16 +12,6 @@ let data = reactive({
   sales_change_percentage: ""
 })
 
-let counter = 0
-
-function formatInput(key) {
-  counter++ ;
-  if (counter === 3) {
-    data[key].concat(",") ;
-    counter = 0 ;
-  }
-}
-
 function sendValues() {
   axios.put("financial/", data).then(response => {
     console.log(response)
