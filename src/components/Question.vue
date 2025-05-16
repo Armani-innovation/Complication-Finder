@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, reactive, onMounted} from "vue";
+import {ref, reactive, onMounted} from "vue";
 import Pagination from "@/components/Pagination.vue";
 import axios from "@/axios/axios.js";
 import OptionInfo from "@/components/OptionInfo.vue";
@@ -13,7 +13,7 @@ const nationalId = sessionStorage.getItem("nationalID") || null;
 let nationalID = ref("")
 
 let questionCount = ref(0);
-const questionCounter = computed(() => questionCount.value);
+// const questionCounter = computed(() => questionCount.value);
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
@@ -33,11 +33,9 @@ async function fetchInfos() {
   if (nationalId) {
     nationalID.value = nationalId;
   }
-
 }
 
 async function nextQuestion(index) {
-  questionCount.value++;
   const res = await axios.post(`questionnaire/${questionnaire}/answer/`, {
     nationalID: nationalID.value,
     question: questions.question.name,
@@ -45,6 +43,7 @@ async function nextQuestion(index) {
   })
   console.log(res.data)
   Object.assign(questions, res.data)
+  questionCount.value = questions.question.num_of_question ;
   if (questions.message) {
     lastQuestion.value = true;
   }
@@ -66,7 +65,7 @@ onMounted(() => {
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-      <p v-if="!questionLoading"> {{ questionCounter + 1 }}.{{ questions.question.text }}</p>
+      <p v-if="!questionLoading"> {{ questionCount }}.{{ questions.question.text }}</p>
       <a href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
@@ -87,7 +86,7 @@ onMounted(() => {
       </button>
 
       <Pagination
-        :questionCount="questionCounter"
+        :questionCount="questionCount-1"
         :totalQuestions="questions.question.all_questions"
       />
     </div>
