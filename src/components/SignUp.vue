@@ -22,7 +22,7 @@ let formData = reactive({
 function handleEvent() {
 
   if ((formData.name && formData.registrationNumber && formData.username && formData.password && formData.repeatPassword) || (formData.name && formData.username && formData.password && formData.repeatPassword)) {
-    formData.is_company ?
+    is_company.value ?
       handleCompany()
       :
       handleMentor()

@@ -30,7 +30,7 @@ async function fetchInfos() {
 }
 
 async function fetchHistory() {
-  const history = await axios.get("questionnaires", {params: is_company.value ? {nationalID: nationalID.value} : {usename: username.value}})
+  const history = await axios.get("questionnaires", {params: is_company.value ? {nationalID: nationalID.value , is_company : is_company.value} : {username: username.value , is_company : is_company.value}})
   console.log(history.data)
 
   for (const historyKey in history.data) {
