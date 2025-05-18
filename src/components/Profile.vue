@@ -333,10 +333,22 @@ select:active {
 
 .main .optionsContainer .options {
   width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main .optionsContainer .options .saveAndNext {
+  background: none;
+  color: #0056b3;
+  margin: 2vh auto;
+}
+
+.main .optionsContainer .options .link {
+  margin: 2vh auto;
 }
 
 .main .optionsContainer .startComplication {
-  background-image: url("@/assets/images/Artboard 1.png");
+  background-image: url("@/assets/images/Capture.png");
   background-repeat: no-repeat;
   background-size: cover;
   width: 70%;
@@ -346,11 +358,21 @@ select:active {
   justify-content: center;
 }
 
+.main .optionsContainer .startComplication .saveAndNext {
+  background: none;
+  width: max-content;
+  margin: 5vh 2vw;
+  font-size: 13px;
+  border: 2px solid #ffffff;
+}
+
 .main .optionsContainer .startComplication a {
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  padding: 0 0.5vw;
 }
 
 .main .optionsContainer .startComplication a:hover::before {
