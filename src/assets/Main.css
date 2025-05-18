@@ -93,8 +93,9 @@ body {
   border-radius: 10px;
   border: 0;
   margin: 5vh auto;
-  background-color: #0d6efd;
-  background: url("images/Artboard 1.png");
+  background: #1E90FF;
+  background: linear-gradient(340deg,rgba(10, 94, 184, 1) 30%, rgba(107, 181, 255, 1) 90%);
+  /*background: url("images/Artboard 1.png");*/
   background-size: cover;
   color: #ffffff;
   cursor: pointer;

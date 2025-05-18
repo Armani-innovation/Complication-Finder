@@ -29,6 +29,8 @@ async function fetchInfo() {
   const infos = await getTokenInfo(token);
   if (infos) {
     name.value = infos.name;
+  } else {
+    name.value = "";
   }
 }
 

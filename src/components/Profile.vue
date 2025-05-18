@@ -39,7 +39,7 @@ async function fetchHistory() {
     const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
     console.log(res.data)
 
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // await new Promise(resolve => setTimeout(resolve, 50));
   }
 }
 

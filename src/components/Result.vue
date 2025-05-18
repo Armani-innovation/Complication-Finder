@@ -8,6 +8,8 @@ import {getTokenInfo} from "@/composables/composable.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+let nationalid = ref(null) ;
+
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 const nationalID = ref("");
 
@@ -36,7 +38,7 @@ let secondPartMessage = reactive([]);
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
-  nationalID.value = user.nationalID;
+  nationalID.value = nationalid || user.nationalID;
   await getResult();
 }
 
@@ -117,7 +119,8 @@ const generatePDF = async () => {
 };
 
 onMounted(() => {
-  fetchInfos()
+  fetchInfos() ;
+  nationalid.value = sessionStorage.getItem("nationalID")
 })
 
 </script>
