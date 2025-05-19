@@ -18,7 +18,7 @@ const nationalID = ref("");
 
 let isLoading = ref(true);
 
-let result = reactive({
+let finalResult = reactive({
   overallScore: 0,
   messages: "",
   subdomain_scores: {}
@@ -38,12 +38,14 @@ let finalMessage = ref("")
 let message = reactive([]);
 let secondPartMessage = reactive([]);
 
+let interval ;
+
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = nationalid.value || user.nationalID;
   await firstRequest()
-  setInterval(async () => {
+  interval = setInterval(async () => {
     await getResult();
   }, 60000)
 }
@@ -58,8 +60,9 @@ async function getResult() {
   const res = await axios.get(`questionnaire/${report_id.value}/result/`)
   if (res.data.status === "done") {
     console.log(res.data)
-    finalMessage.value = res.data.result.messages;
-    await Object.assign(result, res.data.result);
+    const result = JSON.parse(res.data.result);
+    finalMessage.value = result.messages;
+    await Object.assign(finalResult, result);
 
     for (const score in result.subdomain_scores) {
       keys.push(score)
@@ -75,10 +78,10 @@ async function getResult() {
     // setTimeout(()=>{
     //   isLoading.value = false
     // } , 5000)
+    clearInterval(interval)
 
     await setPartOne()
     await setDomainsText()
-    clearInterval()
     isLoading.value = false
   }
 }
