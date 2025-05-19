@@ -207,7 +207,7 @@ onMounted(() => {
       <div class="startComplication">
         <!-- <img src="@/assets/images/Artboard%201.png" alt=""> -->
         <button class="saveAndNext" @click="startComplication">
-          عارضه یابی شرکت خودم
+          {{ is_company ? "عارضه یابی شرکت خودم" : "شروع عارضه یابی" }}
         </button>
         <router-link to="/CompanyInfo" v-if="is_company" class="saveAndNext">
           عارضه یابی دیگر شرکت ها

@@ -8,7 +8,7 @@ import {getTokenInfo} from "@/composables/composable.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-let nationalid = ref(null);
+let nationalid = ref(null) ;
 
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 const nationalID = ref("");
@@ -38,7 +38,7 @@ let secondPartMessage = reactive([]);
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
-  nationalID.value = nationalid.value || user.nationalID;
+  nationalID.value = nationalid || user.nationalID;
   await getResult();
 }
 
@@ -69,7 +69,7 @@ async function getResult() {
   isLoading.value = false
 }
 
-async function setPartOne() {
+async function setPartOne(){
   const match = finalMessage.value.toString().match(/start first([\s\S]*?)end first/);
 
   if (match) {
@@ -80,7 +80,7 @@ async function setPartOne() {
   }
 }
 
-async function setDomainsText() {
+async function setDomainsText(){
   const match = finalMessage.value.toString().match(/start this subdomain([\s\S]*?)end this subdomain/);
 
   if (match) {
@@ -119,8 +119,7 @@ const generatePDF = async () => {
 };
 
 onMounted(() => {
-  nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"))
-  fetchInfos();
+  fetchInfos() ;
 })
 
 </script>
@@ -224,40 +223,6 @@ hr {
   white-space: pre-line;
 }
 
-/*.main .finalResult .text pre {
-  max-width: 100%;
-  text-align: justify;
-}*/
-
-/*.main .finalResult .charts {
-  height: max-content;
-}*/
-
-/*
-.main h3 {
-  color: #0056b3;
-}
-
-.main .improveSituation pre {
-  font-family: "B Yekan", cursive;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  width: 50%;
-}
-
-.main .improveSituation h4 {
-  width: 50%;
-}
-
-.main .improveSituation div {
-  display: flex;
-}
-
-.main .improveSituation div .gaugeChartPre {
-  width: 25vw;
-  aspect-ratio: 4/4;
-}
-*/
 .main .finalText {
   width: 100%;
   text-align: center;
