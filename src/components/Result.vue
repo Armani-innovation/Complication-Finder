@@ -59,14 +59,14 @@ async function firstRequest() {
 async function getResult() {
   const res = await axios.get(`questionnaire/${report_id.value}/result/`)
   if (res.data.status === "done") {
+    clearInterval(interval)
     console.log(res.data)
-    const result = JSON.parse(res.data.result);
-    finalMessage.value = result.messages;
-    await Object.assign(finalResult, result);
+    finalMessage.value = res.data.result.messages;
+    await Object.assign(finalResult, res.data.result);
 
-    for (const score in result.subdomain_scores) {
+    for (const score in res.data.result.subdomain_scores) {
       keys.push(score)
-      values.push(result.subdomain_scores[score])
+      values.push(res.data.result.subdomain_scores[score])
     }
 
     finalMessage.value = finalMessage.value.toString().replace("\u200c", " ");
@@ -78,7 +78,6 @@ async function getResult() {
     // setTimeout(()=>{
     //   isLoading.value = false
     // } , 5000)
-    clearInterval(interval)
 
     await setPartOne()
     await setDomainsText()
