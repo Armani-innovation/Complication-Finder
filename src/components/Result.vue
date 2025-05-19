@@ -1,6 +1,7 @@
 <script setup>
 import GaugeChart from "@/components/GaugeChart.vue";
 import RadarChart from "@/components/RadarChart.vue";
+import Timer from "@/components/Timer.vue";
 import axios from "@/axios/axios.js";
 import {onMounted, reactive, ref} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
@@ -9,6 +10,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
 let nationalid = ref(null);
+
+let report_id = ref(null);
 
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 const nationalID = ref("");
@@ -39,34 +42,50 @@ async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = nationalid.value || user.nationalID;
-  await getResult();
+  await firstRequest()
+  setInterval(async () => {
+    await getResult();
+  }, 60000)
+}
+
+async function firstRequest() {
+  const res = await axios.post(`questionnaire/report/`, {nationalID: nationalID.value , questionnaire_id : questionnaire})
+  console.log(res.data)
+  report_id.value = res.data.report_id
 }
 
 async function getResult() {
-  const res = await axios.get(`questionnaire/${questionnaire}/report/`, {params: {nationalID: nationalID.value}})
-  console.log(res.data)
-  finalMessage.value = res.data.messages;
-  await Object.assign(result, res.data);
+  try {
+    const res = await axios.get(`questionnaire/${report_id.value}/report/`)
+    console.log(res.data)
+    finalMessage.value = res.data.messages;
+    await Object.assign(result, res.data);
 
-  for (const score in result.subdomain_scores) {
-    keys.push(score)
-    values.push(result.subdomain_scores[score])
+    for (const score in result.subdomain_scores) {
+      keys.push(score)
+      values.push(result.subdomain_scores[score])
+    }
+
+    finalMessage.value = finalMessage.value.toString().replace("\u200c", " ");
+
+    // finalMessage.value = finalMessage.value.toString().replace("seconde", "");
+    // message = finalMessage.value.toString().split('first');
+    // secondPartMessage = message[0].toString().split("تحلیل:")
+
+    // setTimeout(()=>{
+    //   isLoading.value = false
+    // } , 5000)
+
+    await setPartOne()
+    await setDomainsText()
+    clearInterval()
+    isLoading.value = false
+
+  } catch (err) {
+
+    console.log(err)
+
   }
-
-  finalMessage.value = finalMessage.value.toString().replace("\u200c", " ");
-
-  // finalMessage.value = finalMessage.value.toString().replace("seconde", "");
-  // message = finalMessage.value.toString().split('first');
-  // secondPartMessage = message[0].toString().split("تحلیل:")
-
-  // setTimeout(()=>{
-  //   isLoading.value = false
-  // } , 5000)
-
-  await setPartOne()
-  await setDomainsText()
-
-  isLoading.value = false
 }
 
 async function setPartOne() {
@@ -174,6 +193,14 @@ onMounted(() => {
     <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
   </div>
   <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
+  <div v-if="isLoading" class="waiting">
+    <Timer/>
+    <p>
+      پاسخ های شما در حال تحلیل و بررسی است
+      نتایج عارضه یابی هوشمند کسب و کار تا 15 دقیقه دیگر قابل مشاهده خواهد بود
+      با تشکر از صبر و شکیبایی شما
+    </p>
+  </div>
 </template>
 
 <style scoped>
@@ -220,44 +247,6 @@ hr {
   max-width: 70%;
 }
 
-.main .finalResult p {
-  white-space: pre-line;
-}
-
-/*.main .finalResult .text pre {
-  max-width: 100%;
-  text-align: justify;
-}*/
-
-/*.main .finalResult .charts {
-  height: max-content;
-}*/
-
-/*
-.main h3 {
-  color: #0056b3;
-}
-
-.main .improveSituation pre {
-  font-family: "B Yekan", cursive;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  width: 50%;
-}
-
-.main .improveSituation h4 {
-  width: 50%;
-}
-
-.main .improveSituation div {
-  display: flex;
-}
-
-.main .improveSituation div .gaugeChartPre {
-  width: 25vw;
-  aspect-ratio: 4/4;
-}
-*/
 .main .finalText {
   width: 100%;
   text-align: center;
@@ -266,5 +255,19 @@ hr {
 .main .finalText a {
   color: black;
   text-decoration: none;
+}
+
+.waiting {
+  width: 100%;
+  text-align: center;
+}
+
+.waiting p {
+  color: white;
+  display: block;
+}
+
+p {
+  white-space: pre-line;
 }
 </style>
