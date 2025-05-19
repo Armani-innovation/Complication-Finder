@@ -64,9 +64,9 @@ async function getResult() {
     finalMessage.value = res.data.result.messages;
     await Object.assign(finalResult, res.data.result);
 
-    for (const score in res.data.result.subdomain_scores) {
+    for (const score in finalResult.subdomain_scores) {
       keys.push(score)
-      values.push(res.data.result.subdomain_scores[score])
+      values.push(finalResult.subdomain_scores[score])
     }
 
     finalMessage.value = finalMessage.value.toString().replace("\u200c", " ");
@@ -156,7 +156,7 @@ onMounted(() => {
             {{ message[0] }}
           </p>
         </div>
-        <GaugeChart class="gaugeChart" :value="result.overallScore"/>
+        <GaugeChart class="gaugeChart" :value="finalResult.overallScore"/>
       </div>
 
       <div class="chartAndResults">
