@@ -36,6 +36,7 @@ let finalMessage = ref("")
 
 
 let message = reactive([]);
+let firstPartMessage = ref("") ;
 let secondPartMessage = reactive([]);
 
 let interval ;
@@ -69,8 +70,6 @@ async function getResult() {
       values.push(finalResult.subdomain_scores[score])
     }
 
-    finalMessage.value = finalMessage.value.toString().replace("\u200c", " ");
-
     // finalMessage.value = finalMessage.value.toString().replace("seconde", "");
     // message = finalMessage.value.toString().split('first');
     // secondPartMessage = message[0].toString().split("تحلیل:")
@@ -79,33 +78,50 @@ async function getResult() {
     //   isLoading.value = false
     // } , 5000)
 
-    await setPartOne()
-    await setDomainsText()
+    // await setPartOne()
+    // await setDomainsText()
+    await processMessage()
     isLoading.value = false
   }
 }
 
-async function setPartOne() {
-  const match = finalMessage.value.toString().match(/start first([\s\S]*?)end first/);
+async function processMessage() {
+  finalMessage.value = finalMessage.value.toString().replace(/\u200c/g, " ");
 
-  if (match) {
-    const extracted = match[1];
-    message.push(extracted.trim())
-  } else {
-    console.log("عبارتی بین start first و end first پیدا نشد.");
-  }
+  message = finalMessage.value.toString().split("start first")
+  firstPartMessage.value = message[1].toString().replace("end first", "");
+  firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف اول:", "");
+  firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف دوم:", "");
+  firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف سوم:", "");
+
+  const secondPart = message[0].toString().replace(/start this subdomain/g, "");
+  secondPartMessage = secondPart.toString().split("end this subdomain");
 }
 
-async function setDomainsText() {
-  const match = finalMessage.value.toString().match(/start this subdomain([\s\S]*?)end this subdomain/);
-
-  if (match) {
-    const extracted = match[1];
-    secondPartMessage.push(extracted.trim())
-  } else {
-    console.log("عبارتی بین start this subdomain و end this subdomain پیدا نشد.");
-  }
-}
+// async function setPartOne() {
+//   const match = finalMessage.value.toString().match(/start first([\s\S]*?)end first/);
+//
+//   if (match) {
+//     const extracted = match[1];
+//     message.push(extracted.trim())
+//   } else {
+//     console.log("عبارتی بین start first و end first پیدا نشد.");
+//   }
+// }
+//
+// async function setDomainsText() {
+//   // const match = finalMessage.value.toString().match(/start this subdomain([\s\S]*?)end this subdomain/);
+//   //
+//   // if (match) {
+//   //   // const extracted = match[1];
+//   //   console.log(match)
+//   //   // secondPartMessage.push(extracted.trim())
+//   // } else {
+//   //   console.log("عبارتی بین start this subdomain و end this subdomain پیدا نشد.");
+//   // }
+//   finalMessage.value = finalMessage.value.toString().replace("start this subdomain", " ");
+//   secondPartMessage = finalMessage.value.toString().split("end this subdomain");
+// }
 
 const generatePDF = async () => {
   const element = document.getElementById("pdf-content");
@@ -153,7 +169,7 @@ onMounted(() => {
       <div class="textAndChart">
         <div>
           <p>
-            {{ message[0] }}
+            {{ firstPartMessage }}
           </p>
         </div>
         <GaugeChart class="gaugeChart" :value="finalResult.overallScore"/>
@@ -166,7 +182,7 @@ onMounted(() => {
           <p>
             {{ message }}
           </p>
-          <hr v-if="index !== 0 && index !== secondPartMessage.length-1">
+          <hr v-if="index !== secondPartMessage.length-1">
         </div>
       </div>
 
