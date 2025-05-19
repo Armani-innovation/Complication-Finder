@@ -74,7 +74,7 @@ async function setPartOne() {
 
   if (match) {
     const extracted = match[1];
-    secondPartMessage.push(extracted.trim())
+    message.push(extracted.trim())
   } else {
     console.log("عبارتی بین start first و end first پیدا نشد.");
   }
@@ -85,7 +85,7 @@ async function setDomainsText() {
 
   if (match) {
     const extracted = match[1];
-    message.push(extracted.trim())
+    secondPartMessage.push(extracted.trim())
   } else {
     console.log("عبارتی بین start this subdomain و end this subdomain پیدا نشد.");
   }
