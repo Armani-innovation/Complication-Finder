@@ -98,13 +98,13 @@ async function handleMentor() {
   isLoading.value = false;
 }
 
-function enterHandleCompany(event) {
-  if (event.key === "Enter") handleCompany();
-}
-
-function enterHandleMentor(event) {
-  if (event.key === "Enter") handleMentor();
-}
+// function enterHandleCompany(event) {
+//   if (event.key === "Enter") handleCompany();
+// }
+//
+// function enterHandleMentor(event) {
+//   if (event.key === "Enter") handleMentor();
+// }
 
 </script>
 
@@ -127,7 +127,8 @@ function enterHandleMentor(event) {
       </div>
     </div>
 
-    <ul v-if="is_company" :class="{companyUl : is_company}" @keyup="enterHandleCompany">
+<!--    <ul v-if="is_company" :class="{companyUl : is_company}" @keyup="enterHandleCompany">-->
+    <ul v-if="is_company" :class="{companyUl : is_company}">
       <li>
         <input
           v-model="formData.name"
@@ -186,7 +187,8 @@ function enterHandleMentor(event) {
       </li>
     </ul>
 
-    <ul v-else @keyup="enterHandleMentor">
+<!--    <ul v-else @keyup="enterHandleMentor">-->
+    <ul v-else>
       <li>
         <input
           v-model="formData.name"
@@ -227,9 +229,9 @@ function enterHandleMentor(event) {
 
     <router-link to="/SignIn" class="links" id="isSignUp">ثبت نام کرده اید ؟</router-link>
 
-    <router-link to="" class="saveAndNext" @click="handleEvent">
-      ثبت نام
-    </router-link>
+<!--    <router-link to="" class="saveAndNext" @click="handleEvent">-->
+<!--      ثبت نام-->
+<!--    </router-link>-->
   </div>
 </template>
 

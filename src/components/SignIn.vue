@@ -19,12 +19,7 @@ async function subform() {
     sessionStorage.setItem("token", JSON.stringify(token));
     await getInfo(formData.username , formData.password);
     isLoading.value = false;
-    // if (user.is_company){
-    //   await router.push("/profile")
-    // } else {
-    //   await router.push("/CompanyInfo")
-    // }
-    router.push("/profile")
+    await router.push("/profile")
   } catch(err) {
     console.log(err)
     isLoading.value = false;
@@ -67,9 +62,9 @@ function loginWithEnter(event) {
       ورود
     </router-link>
 
-    <router-link to="/SignUp" class="links"
-    >هنوز ثبت نام نکرده اید ؟
-    </router-link>
+<!--    <router-link to="/SignUp" class="links"-->
+<!--    >هنوز ثبت نام نکرده اید ؟-->
+<!--    </router-link>-->
   </div>
 </template>
 
