@@ -3,7 +3,7 @@ import GaugeChart from "@/components/GaugeChart.vue";
 import RadarChart from "@/components/RadarChart.vue";
 import Timer from "@/components/Timer.vue";
 import axios from "@/axios/axios.js";
-import {onMounted, reactive, ref} from "vue";
+import {onBeforeMount, onMounted, reactive, ref} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
 
 import jsPDF from "jspdf";
@@ -43,6 +43,7 @@ async function fetchInfos() {
   interval = setInterval(async () => {
     await getResult();
   }, 60000)
+  // await getResult() ;
 }
 
 async function firstRequest() {
@@ -112,9 +113,21 @@ const generatePDF = async () => {
 
 };
 
+function handleBeforeUnload(e) {
+  sessionStorage.setItem('diagnosisRefresh', 'true')
+
+  e.preventDefault()
+  e.returnValue = ''
+}
+
 onMounted(() => {
   nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"))
   fetchInfos();
+  window.addEventListener('beforeunload', handleBeforeUnload)
+})
+
+onBeforeMount(()=>{
+  window.removeEventListener('beforeunload', handleBeforeUnload)
 })
 
 </script>

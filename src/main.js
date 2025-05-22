@@ -50,6 +50,13 @@ library.add(faCopyright)
 library.add(faChartLine)
 library.add(faPowerOff)
 
+const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
+
+if (diagnosisFlag === 'true') {
+  sessionStorage.removeItem('diagnosisRefresh')
+  alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
+  window.location.href = '/profile'
+}
 
 const app = createApp(App)
 app.use(router)
