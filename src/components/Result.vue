@@ -15,6 +15,8 @@ let report_id = ref(null);
 
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 const nationalID = ref("");
+let name = ref("");
+let domain = ref("");
 
 let isLoading = ref(true);
 
@@ -28,7 +30,6 @@ let keys = reactive([]);
 let values = reactive([]);
 let finalMessage = ref("")
 
-
 let message = reactive([]);
 let firstPartMessage = ref("");
 let secondPartMessage = reactive([]);
@@ -39,6 +40,8 @@ async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = nationalid.value || user.nationalID;
+  name.value = user.name;
+  domain.value = user.company_domain;
   await firstRequest()
   interval = setInterval(async () => {
     await getResult();
@@ -51,7 +54,6 @@ async function firstRequest() {
     nationalID: nationalID.value,
     questionnaire_id: questionnaire
   })
-  console.log(res.data)
   report_id.value = res.data.report_id
 }
 
@@ -59,7 +61,6 @@ async function getResult() {
   const res = await axios.get(`questionnaire/${report_id.value}/result/`)
   if (res.data.status === "done") {
     clearInterval(interval)
-    console.log(res.data)
     finalMessage.value = res.data.result.messages;
     await Object.assign(finalResult, res.data.result);
 
@@ -75,9 +76,11 @@ async function getResult() {
 
 async function processMessage() {
   finalMessage.value = finalMessage.value.toString().replace(/\u200c/g, " ");
+  finalMessage.value = finalMessage.value.toString().replace(/\n\n/g, "\n");
 
   message = finalMessage.value.toString().split("start first")
   firstPartMessage.value = message[1].toString().replace("end first", "");
+  firstPartMessage.value = firstPartMessage.value.toString().replace(/\([^()]*\)/g, "");
   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف اول:", "");
   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف دوم:", "");
   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف سوم:", "");
@@ -140,7 +143,7 @@ onBeforeMount(()=>{
     </div>
 
     <div class="finalResult">
-
+      <h3>گزارش عارضه یابی شرکت {{ name }} در حوزه {{ domain }}</h3>
       <div class="textAndChart">
         <div>
           <p>
@@ -160,12 +163,7 @@ onBeforeMount(()=>{
           <hr v-if="index !== secondPartMessage.length-1">
         </div>
       </div>
-
     </div>
-
-    <router-link class="saveAndNext" to="/domains">
-      ادامه عارضه یابی
-    </router-link>
 
     <p class="finalText">
       شما می‌توانید برای دریافت راهنمایی بیشتر و استفاده از نظرات تخصصی مشاوران فروش و
@@ -177,10 +175,8 @@ onBeforeMount(()=>{
       <a href="tel:+989046504331">09046504331</a>
       تماس حاصل نمایید.
     </p>
-
-    <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
   </div>
-  <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
+  <img v-if="isLoading" class="loader" src="../assets/images/Animation.gif" alt="">
   <div v-if="isLoading" class="waiting">
     <Timer/>
     <p>
@@ -188,6 +184,12 @@ onBeforeMount(()=>{
       نتایج عارضه یابی هوشمند کسب و کار تا 15 دقیقه دیگر قابل مشاهده خواهد بود
       با تشکر از صبر و شکیبایی شما
     </p>
+  </div>
+  <div v-else class="options">
+    <router-link class="saveAndNext" to="/domains">
+      ادامه عارضه یابی
+    </router-link>
+    <button class="saveAndNext" @click="generatePDF">دریافت فایل pdf صفحه</button>
   </div>
 </template>
 
@@ -220,6 +222,14 @@ hr {
 .main .finalResult {
   width: 100%;
   height: max-content;
+}
+
+.main .finalResult h3 {
+  margin-top: 3vh;
+}
+
+.main .finalResult p {
+  line-height: 1.8;
 }
 
 .main .finalResult .textAndChart {
@@ -258,4 +268,11 @@ hr {
 p {
   white-space: pre-line;
 }
+
+.options {
+  width: 50%;
+  display: flex;
+  margin: 0 auto;
+}
+
 </style>
