@@ -8,7 +8,6 @@ import Result from "@/components/Result.vue";
 import CompanyInfo from "@/components/CompanyInfo.vue";
 import SignIn from "@/components/SignIn.vue";
 import SignUp from "@/components/SignUp.vue";
-import FullComplication from "@/components/FullComplication.vue";
 import Profile from "@/components/Profile.vue";
 import FinancialComplications from "@/components/FinancialComplications.vue";
 import ComplicationHistory from "@/components/ComplicationHistory.vue";
@@ -24,7 +23,6 @@ const router = createRouter({
     { name: "Questions", component: Question, path: "/questions/:question", props : true},
     { name: "PayPage", component: PayPage, path: "/PayPage"},
     { name: "Result", component: Result, path: "/result"},
-    { name: "FullComplication", component: FullComplication, path: "/FullComplication" },
     { name: "Profile", component: Profile, path: "/Profile" },
     { name: "FinancialComplications", component: FinancialComplications, path: "/FinancialComplications" },
     { name: "ComplicationHistory", component: ComplicationHistory, path: "/ComplicationHistory"},

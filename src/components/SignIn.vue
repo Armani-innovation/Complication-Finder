@@ -21,7 +21,6 @@ async function subform() {
     isLoading.value = false;
     await router.push("/profile")
   } catch(err) {
-    console.log(err)
     isLoading.value = false;
     errMessage.value = err.response.data || "نام کاربری یا رمز عبور اشتباه است";
   }

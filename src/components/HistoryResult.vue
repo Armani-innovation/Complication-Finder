@@ -44,7 +44,6 @@ async function fetchInfos() {
 
 async function getResult() {
   const res = await axios.get(`questionnaire/${questionnaire}/report/`, {params: {nationalID: nationalID.value}})
-  console.log(res.data)
   finalMessage.value = res.data.messages;
   await Object.assign(result, res.data);
 

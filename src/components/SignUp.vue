@@ -34,15 +34,12 @@ function handleEvent() {
 }
 
 async function handleCompany() {
-  console.log("handle company")
-  console.log(formData);
   formData.is_company = "True";
   isLoading.value = true;
   const retries = 3;
   try {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        console.log(formData);
         await axios.post("register/", formData);
         break;
       } catch (error) {
@@ -76,7 +73,6 @@ async function handleMentor() {
     try {
 
       const res = await axios.post("register/", formData);
-      console.log(res.data)
 
       // sessionStorage.setItem("is_company", false);
       // sessionStorage.setItem("id", res.data.id);

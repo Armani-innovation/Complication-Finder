@@ -31,13 +31,11 @@ async function fetchInfos() {
 
 async function fetchHistory() {
   const history = await axios.get("questionnaires", {params: is_company.value ? {nationalID: nationalID.value , is_company : is_company.value} : {username: username.value , is_company : is_company.value}})
-  console.log(history.data)
 
   for (const historyKey in history.data) {
 
     complications.push(history.data[historyKey]);
     const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
-    console.log(res.data)
 
     // await new Promise(resolve => setTimeout(resolve, 50));
   }
@@ -100,11 +98,7 @@ async function handleCompleted() {
 
 async function handleNotCompleted(id) {
 
-  console.log(id)
-
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
-
-  console.log(res.data.next_question)
 
   const questionProp = {
     questionnaire: id,

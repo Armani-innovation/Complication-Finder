@@ -13,9 +13,7 @@ let data = reactive({
 })
 
 function sendValues() {
-  axios.put("financial/", data).then(response => {
-    console.log(response)
-  })
+  axios.put("financial/", data)
 }
 </script>
 

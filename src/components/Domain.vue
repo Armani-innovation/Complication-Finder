@@ -19,7 +19,6 @@ async function loadDomains() {
   Object.assign(domains, res.data)
   const token = sessionStorage.getItem("token");
   const data = await getTokenInfo(token);
-  console.log(data)
   nationalID.value = data.nationalID || data.username;
   if (nationalId) {
     nationalID.value = nationalId;

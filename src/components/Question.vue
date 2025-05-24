@@ -20,7 +20,6 @@ let questionLoading = ref(false);
 let lastQuestion = ref(false);
 
 let questions = reactive(JSON.parse(props.question));
-console.log(questions)
 questionCount.value = questions.question.num_of_question ;
 // sessionStorage.setItem("questionnaire", questions.questionnaire);
 // const questionnaire = Number(sessionStorage.getItem("questionnaire"));
@@ -41,7 +40,6 @@ async function nextQuestion(index) {
     question: questions.question.name,
     option: questions.question.options[index].name
   })
-  console.log(res.data)
   Object.assign(questions, res.data)
   questionCount.value = questions.question.num_of_question ;
   if (questions.message) {
@@ -66,7 +64,7 @@ onMounted(() => {
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
       <p v-if="!questionLoading"> {{ questionCount }}.{{ questions.question.text }}</p>
-      <a href="">مقاله مربوطه</a>
+      <a v-else-if="questions.question.link" href="">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
       <li v-for="(option , index) in questions.question.options" :key="option" :for="index">
