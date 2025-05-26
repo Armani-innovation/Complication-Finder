@@ -8,7 +8,7 @@ const show = ref(false)
 
 <template>
   <div class="info" @mouseenter="show = true" @mouseleave="show = false">
-    <font-awesome-icon icon="question"/>
+    <font-awesome-icon icon="info"/>
     <div v-if="show" class="tooltip">
       <p>{{ info }}</p>
     </div>

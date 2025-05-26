@@ -62,7 +62,7 @@ async function firstRequest() {
 }
 
 async function getResult() {
-  const res = await axios.get(`questionnaire/${report_id.value}/result/`)
+  const res = await axios.get(`questionnaire/21/result/`)
   if (res.data.status === "done") {
     clearInterval(interval)
     finalMessage.value = res.data.result.messages;
