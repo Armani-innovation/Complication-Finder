@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import Question from "@/components/Question.vue";
+import Question from "@/components/Questions/Question.vue";
 import Welcome from "@/components/Welcome.vue";
-import Domain from "@/components/Domain.vue";
+import Domain from "@/components/Domains/Domain.vue";
 import PayPage from "@/components/PayPage.vue";
-import Result from "@/components/Result.vue";
-import CompanyInfo from "@/components/CompanyInfo.vue";
-import SignIn from "@/components/SignIn.vue";
-import SignUp from "@/components/SignUp.vue";
-import Profile from "@/components/Profile.vue";
-import FinancialComplications from "@/components/FinancialComplications.vue";
-import ComplicationHistory from "@/components/ComplicationHistory.vue";
+import Result from "@/components/Results/Result.vue";
+import CompanyInfo from "@/components/Domains/CompanyInfo.vue";
+import SignIn from "@/components/Autentications/SignIn.vue";
+import SignUp from "@/components/Autentications/SignUp.vue";
+import Profile from "@/components/Profile/Profile.vue";
+import FinancialComplications from "@/components/Questions/FinancialComplications.vue";
+import HistoryResult from "@/components/Results/HistoryResult.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,7 +25,7 @@ const router = createRouter({
     { name: "Result", component: Result, path: "/result"},
     { name: "Profile", component: Profile, path: "/Profile" },
     { name: "FinancialComplications", component: FinancialComplications, path: "/FinancialComplications" },
-    { name: "ComplicationHistory", component: ComplicationHistory, path: "/ComplicationHistory"},
+    { name: "HistoryResult", component: HistoryResult, path: "/HistoryResult"},
   ],
 });
 

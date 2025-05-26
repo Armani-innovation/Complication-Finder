@@ -1,5 +1,5 @@
 <script setup>
-import axios from "../axios/axios.js";
+import axios from "../../axios/axios.js";
 import router from "@/router/index.js";
 import {computed, onMounted, reactive, ref} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
@@ -35,7 +35,7 @@ async function fetchHistory() {
   for (const historyKey in history.data) {
 
     complications.push(history.data[historyKey]);
-    const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
+    await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
 
     // await new Promise(resolve => setTimeout(resolve, 50));
   }
@@ -93,7 +93,8 @@ const sortedComplications = computed(() => {
 });
 
 async function handleCompleted() {
-
+  // const res = await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
+  // console.log(res)
 }
 
 async function handleNotCompleted(id) {
@@ -127,7 +128,7 @@ onMounted(() => {
   <div class="main">
     <div class="header">
       <div class="profile">
-        <img src="@/assets/images/user.png" alt="">
+        <img src="../../assets/images/user.png" alt="">
         <div class="name">
           <h3 class="name">{{
               name || "در حال بارگذاری..."
@@ -139,7 +140,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="setting">
-        <span @click="handleSignOut" href="">خروج از حساب</span>
+        <span @click="handleSignOut">خروج از حساب</span>
       </div>
     </div>
   </div>

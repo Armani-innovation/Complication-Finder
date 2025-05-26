@@ -105,7 +105,7 @@ async function handleMentor() {
 </script>
 
 <template>
-  <img v-if="isLoading" class="loader" alt="" src="../assets/images/Animation.gif">
+  <img v-if="isLoading" class="loader" alt="" src="../../assets/images/Animation.gif">
   <div v-else class="main">
 
     <h1>ثبت نام</h1>

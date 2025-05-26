@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
 import router from "@/router/index.js";
-import axios from "./../axios/axios.js";
+import axios from "../../axios/axios.js";
 import {getTokenInfo} from "@/composables/composable.js";
 
 let isLoading = ref(false);
@@ -15,7 +15,7 @@ const data = reactive({
     size: "",
     company_domain: "",
   },
-})
+});
 
 let errorMessage = ref(null);
 
@@ -50,7 +50,7 @@ onMounted(()=>{
 </script>
 
 <template>
-  <img v-if="isLoading" class="loader" alt="" src="../assets/images/Animation.gif">
+  <img v-if="isLoading" class="loader" alt="" src="../../assets/images/Animation.gif">
   <div class="main" v-else>
     <h4>برای شروع عارضه یابی لطفا اطلاعات شرکتتون رو وارد کنین</h4>
 

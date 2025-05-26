@@ -1,9 +1,7 @@
 <script setup>
-import GaugeChart from "@/components/GaugeChart.vue";
-import RadarChart from "@/components/RadarChart.vue";
-import Timer from "@/components/Timer.vue";
+import Timer from "@/components/Results/Timer.vue";
 import axios from "@/axios/axios.js";
-import {onBeforeMount, onMounted, reactive, ref} from "vue";
+import {onBeforeMount, onMounted, ref, reactive} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
 
 import jsPDF from "jspdf";
@@ -20,19 +18,19 @@ let domain = ref("");
 
 let isLoading = ref(true);
 
-let finalResult = reactive({
-  overallScore: 0,
-  messages: "",
-  subdomain_scores: {}
-})
+// let finalResult = reactive({
+//   overallScore: 0,
+//   messages: "",
+//   subdomain_scores: {}
+// })
 
-let keys = reactive([]);
-let values = reactive([]);
+// let keys = reactive([]);
+// let values = reactive([]);
 let finalMessage = ref("")
 
 let message = reactive([]);
-let firstPartMessage = ref("");
-let secondPartMessage = reactive([]);
+// let firstPartMessage = ref("");
+// let secondPartMessage = reactive([]);
 
 let interval;
 
@@ -61,13 +59,13 @@ async function getResult() {
   const res = await axios.get(`questionnaire/${report_id.value}/result/`)
   if (res.data.status === "done") {
     clearInterval(interval)
-    finalMessage.value = res.data.result.messages;
-    await Object.assign(finalResult, res.data.result);
+    finalMessage.value = res.data.result;
+    // await Object.assign(finalResult, res.data.result);
 
-    for (const score in finalResult.subdomain_scores) {
-      keys.push(score)
-      values.push(finalResult.subdomain_scores[score])
-    }
+    // for (const score in finalResult.subdomain_scores) {
+    //   keys.push(score)
+    //   values.push(finalResult.subdomain_scores[score])
+    // }
 
     await processMessage()
     isLoading.value = false
@@ -77,16 +75,16 @@ async function getResult() {
 async function processMessage() {
   finalMessage.value = finalMessage.value.toString().replace(/\u200c/g, " ");
   finalMessage.value = finalMessage.value.toString().replace(/\n\n/g, "\n");
-
-  message = finalMessage.value.toString().split("start first")
-  firstPartMessage.value = message[1].toString().replace("end first", "");
-  firstPartMessage.value = firstPartMessage.value.toString().replace(/\([^()]*\)/g, "");
-  firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف اول:", "");
-  firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف دوم:", "");
-  firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف سوم:", "");
-
-  const secondPart = message[0].toString().replace(/start this subdomain/g, "");
-  secondPartMessage = secondPart.toString().split("end this subdomain");
+//
+  message = finalMessage.value.toString().split("end first")
+//   firstPartMessage.value = message[1].toString().replace("end first", "");
+//   firstPartMessage.value = firstPartMessage.value.toString().replace(/\([^()]*\)/g, "");
+//   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف اول:", "");
+//   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف دوم:", "");
+//   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف سوم:", "");
+//
+//   const secondPart = message[0].toString().replace(/start this subdomain/g, "");
+//   secondPartMessage = secondPart.toString().split("end this subdomain");
 }
 
 const generatePDF = async () => {
@@ -129,7 +127,7 @@ onMounted(() => {
   window.addEventListener('beforeunload', handleBeforeUnload)
 })
 
-onBeforeMount(()=>{
+onBeforeMount(() => {
   window.removeEventListener('beforeunload', handleBeforeUnload)
 })
 
@@ -139,42 +137,31 @@ onBeforeMount(()=>{
   <div id="pdf-content" class="main" v-if="!isLoading">
 
     <div class="logo">
-      <img src="../assets/images/logo.png" alt="">
+      <img src="../../assets/images/logo.png" alt="">
     </div>
 
     <div class="finalResult">
-      <h3>گزارش عارضه یابی شرکت {{ name }} در حوزه {{ domain }}</h3>
-      <div class="textAndChart">
-        <div>
-          <p>
-            {{ firstPartMessage }}
-          </p>
-        </div>
-        <GaugeChart class="gaugeChart" :value="finalResult.overallScore"/>
-      </div>
+      <h3>گزارش عارضه یابی شرکت {{ name }} در حوزه تحلیل صورت های مالی</h3>
 
-      <div class="chartAndResults">
-        <RadarChart class="radarChart" :values="values" :keys="keys"/>
+      <p>
+        {{ message[0] }}
+      </p>
+      <p>
+        {{ message[1] }}
+      </p>
+
+      <p class="finalText">
+        شما می‌ توانید برای دریافت راهکارهای اجرایی به منظور حل عارضه ‌های خود با مشاوران ما در تماس
+        باشید
+        <br> <br>
+        <a href="tel:+982332300357">32300357-023</a>
+        یا
+        <a href="tel:+989046504331">09046504331</a>
         <br>
-        <div v-for="(message , index) in secondPartMessage" :key="message">
-          <p>
-            {{ message }}
-          </p>
-          <hr v-if="index !== secondPartMessage.length-1">
-        </div>
-      </div>
+      </p>
     </div>
-
-    <p class="finalText">
-      شما می‌ توانید برای دریافت راهکارهای اجرایی به منظور حل عارضه ‌های خود با مشاوران ما در تماس باشید
-      <br> <br>
-      <a href="tel:+982332300357">32300357-023</a>
-      یا
-      <a href="tel:+989046504331">09046504331</a>
-      <br>
-    </p>
   </div>
-  <img v-if="isLoading" class="loader" src="../assets/images/Animation.gif" alt="">
+  <img v-if="isLoading" class="loader" src="../../assets/images/Animation.gif" alt="">
   <div v-if="isLoading" class="waiting">
     <Timer/>
     <p>
@@ -201,7 +188,7 @@ hr {
   max-height: max-content;
   width: 75%;
   min-width: 300px;
-  background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.95)), url("../assets/images/logo.png") repeat-y center center;
+  background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.95)), url("../../assets/images/logo.png") repeat-y center center;
   background-size: contain;
   z-index: 0;
 }
@@ -228,15 +215,6 @@ hr {
 
 .main .finalResult p {
   line-height: 1.8;
-}
-
-.main .finalResult .textAndChart {
-  width: 100%;
-  display: flex;
-}
-
-.main .finalResult .textAndChart .gaugeChart {
-  width: 30%;
 }
 
 .main .finalResult .textAndChart div {

@@ -59,7 +59,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <img v-if="isLoading" class="loader" src="../assets/images/Animation.gif" alt=""/>
+  <img v-if="isLoading" class="loader" src="../../assets/images/Animation.gif" alt=""/>
   <div class="main" v-else>
     <p>در چه حوزه ای میخواهید عارضه یابی را انجام دهید ؟</p>
     <ul>

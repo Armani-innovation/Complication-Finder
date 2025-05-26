@@ -33,7 +33,7 @@ function loginWithEnter(event) {
 </script>
 
 <template>
-  <img v-if="isLoading" class="loader" alt="" src="../assets/images/Animation.gif">
+  <img v-if="isLoading" class="loader" alt="" src="../../assets/images/Animation.gif">
   <div v-else class="main">
     <h1>ورود</h1>
     <ul @keyup="loginWithEnter">

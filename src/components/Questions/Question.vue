@@ -1,8 +1,8 @@
 <script setup>
 import {ref, reactive, onMounted} from "vue";
-import Pagination from "@/components/Pagination.vue";
+import Pagination from "@/components/Questions/Pagination.vue";
 import axios from "@/axios/axios.js";
-import OptionInfo from "@/components/OptionInfo.vue";
+import OptionInfo from "@/components/Questions/OptionInfo.vue";
 import router from "@/router/index.js";
 // import OptionInfo from "@/components/OptionInfo.vue";
 import {getTokenInfo} from "@/composables/composable.js";
@@ -75,7 +75,7 @@ onMounted(() => {
       </li>
     </ul>
 
-    <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
+    <img v-else class="loader" src="../../assets/images/Animation.gif" alt="">
 
     <div class="buttons">
 
@@ -89,7 +89,7 @@ onMounted(() => {
       />
     </div>
   </div>
-  <img v-else class="loader" src="../assets/images/Animation.gif" alt="">
+  <img v-else class="loader" src="../../assets/images/Animation.gif" alt="">
 </template>
 
 <style scoped>
