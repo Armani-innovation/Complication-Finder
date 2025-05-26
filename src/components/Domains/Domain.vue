@@ -6,6 +6,7 @@ import {getTokenInfo} from "@/composables/composable.js";
 
 const nationalId = sessionStorage.getItem("nationalID") || null;
 
+let name = ref("")
 let errMessage = ref("");
 let isLoading = ref(false);
 let domains = reactive([]);
@@ -22,7 +23,12 @@ async function loadDomains() {
   nationalID.value = data.nationalID || data.username;
   if (nationalId) {
     nationalID.value = nationalId;
+    const res = await axios.get("company/" , {params : {nationalID : nationalID.value}});
+    name.value = res.data.name;
+  } else {
+    name.value = data.name;
   }
+  isLoading.value = false;
 }
 
 async function fetchDomain(domain) {
@@ -54,6 +60,7 @@ async function fetchDomain(domain) {
 }
 
 onMounted(() => {
+  isLoading.value = true;
   loadDomains();
 })
 </script>
@@ -64,15 +71,19 @@ onMounted(() => {
     <p>در چه حوزه ای میخواهید عارضه یابی را انجام دهید ؟</p>
     <ul>
       <li v-for="(domain , index) in domains" :key="domain" :for="index">
-        <input name="domain" type="radio" :id="index" :value="Number(index)" v-model="picked"/>
+        <input name="domain" type="radio" :id="index" :value="Number(index)" v-model="picked" />
         <label :for="index">
           <font-awesome-icon class="icon" :icon="domain.icon"/>
           {{ domain.name }}
         </label>
       </li>
     </ul>
+    <div class="complicationFor">
+      <p style="color: #0056b3">شما در حال انجام عارضه یابی برای شر کت {{name}} هستید. </p>
+      <router-link to="/CompanyInfo" class="links"> تغییر شرکت </router-link>
+    </div>
     <p class="error" v-if="errMessage">{{ errMessage }}</p>
-    <router-link to="" class="saveAndNext" @click="fetchDomain(domains[selectedDomain].name)">
+    <router-link to="" v-if="picked !== null" class="saveAndNext" @click="fetchDomain(domains[selectedDomain].name)">
       شروع عارضه یابی
     </router-link>
   </div>
@@ -81,7 +92,18 @@ onMounted(() => {
 <style scoped>
 .main {
   width: 50%;
+  min-height: 30vh;
   min-width: 300px;
+}
+
+.main .complicationFor {
+  display: flex;
+  align-items: center;
+  margin-top: 2vh;
+}
+
+.main .complicationFor a{
+  margin-right: 1vw;
 }
 
 .main ul {

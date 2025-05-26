@@ -30,7 +30,7 @@ async function fetchInfos() {
 }
 
 async function fetchHistory() {
-  const history = await axios.get("questionnaires", {params: is_company.value ? {nationalID: nationalID.value , is_company : is_company.value} : {username: username.value , is_company : is_company.value}})
+  const history = await axios.get("questionnaires", {params: {username : username.value || nationalID.value}  })
 
   for (const historyKey in history.data) {
 
@@ -50,6 +50,7 @@ function formattedDate(dateStr) {
 function handleSignOut() {
   sessionStorage.clear();
   router.push("/signin");
+  window.location.replace('/signin');
 }
 
 function backward() {

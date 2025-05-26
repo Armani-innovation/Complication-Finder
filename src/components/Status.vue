@@ -164,6 +164,7 @@ function payPage() {
 }
 
 function finalResult() {
+  fetchInfo()
   description.value.classList.add("passed")
   description.value.classList.remove("now")
 

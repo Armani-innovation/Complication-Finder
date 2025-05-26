@@ -1,11 +1,10 @@
 <script setup>
 import {ref, reactive, onMounted} from "vue";
 import Pagination from "@/components/Questions/Pagination.vue";
-import axios from "@/axios/axios.js";
 import OptionInfo from "@/components/Questions/OptionInfo.vue";
-import router from "@/router/index.js";
-// import OptionInfo from "@/components/OptionInfo.vue";
 import {getTokenInfo} from "@/composables/composable.js";
+import axios from "@/axios/axios.js";
+import router from "@/router/index.js";
 
 const props = defineProps(["question"])
 const nationalId = sessionStorage.getItem("nationalID") || null;
@@ -13,7 +12,6 @@ const nationalId = sessionStorage.getItem("nationalID") || null;
 let nationalID = ref("")
 
 let questionCount = ref(0);
-// const questionCounter = computed(() => questionCount.value);
 
 let isLoading = ref(false);
 let questionLoading = ref(false);
@@ -21,9 +19,7 @@ let lastQuestion = ref(false);
 
 let questions = reactive(JSON.parse(props.question));
 questionCount.value = questions.question.num_of_question ;
-// sessionStorage.setItem("questionnaire", questions.questionnaire);
-// const questionnaire = Number(sessionStorage.getItem("questionnaire"));
-let questionnaire = reactive(0)
+let questionnaire = reactive(0);
 
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
@@ -35,6 +31,7 @@ async function fetchInfos() {
 }
 
 async function nextQuestion(index) {
+  questionLoading.value = true;
   const res = await axios.post(`questionnaire/${questionnaire}/answer/`, {
     nationalID: nationalID.value,
     question: questions.question.name,
@@ -45,6 +42,7 @@ async function nextQuestion(index) {
   if (questions.message) {
     lastQuestion.value = true;
   }
+  questionLoading.value = false;
 }
 
 function sendLastQuestion() {
@@ -63,14 +61,14 @@ onMounted(() => {
   <div v-if="!isLoading" class="main">
     <h3 class="domain">{{ domainTitle }}</h3>
     <div class="questionBar">
-      <p v-if="!questionLoading"> {{ questionCount }}.{{ questions.question.text }}</p>
-      <a v-else-if="questions.question.link" href="">مقاله مربوطه</a>
+      <p class="no-select" v-if="!questionLoading"> {{ questionCount }}.{{ questions.question.text }}</p>
+      <a v-show="questions.question.link" :href="questions.question.link" target="_blank">مقاله مربوطه</a>
     </div>
     <ul v-if="!questionLoading">
       <li v-for="(option , index) in questions.question.options" :key="option" :for="index">
         <input @change="nextQuestion(index)" type="radio" name="option" :id="index"
                :value="Number(index)"/>
-        <label :for="index">{{ option.text }}</label>
+        <label class="no-select" :for="index">{{ option.text }}</label>
         <OptionInfo :optionInfo="questions.question.options[index].description"/>
       </li>
     </ul>
@@ -183,40 +181,17 @@ a:hover::before {
   transition: ease 100ms;
 }
 
-
-/*
-.main .buttons .prevQuestion {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #0022FF;
-  box-sizing: content-box;
-  margin: 0 !important;
+.main .loader {
+  margin-top: 2vh;
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.pagination button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white;
-  padding: 10px 15px;
-  margin: 5px;
-  font-size: 16px;
-}
-
-.pagination button.active {
-  background: #ffffff;
-  color: #000;
-  font-weight: bold;
-  border-radius: 5px;
-}
-*/
 @media screen and (max-width: 1279px) {
   .main {
     width: 95%;

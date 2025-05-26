@@ -16,13 +16,13 @@ let report_id = ref(null);
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
 const nationalID = ref("");
 let name = ref("");
-let domain = ref("");
 
 let isLoading = ref(true);
 
 let finalResult = reactive({
   overallScore: 0,
   messages: "",
+  domain: "",
   subdomain_scores: {}
 })
 
@@ -39,14 +39,18 @@ let interval;
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
-  nationalID.value = nationalid.value || user.nationalID;
-  name.value = user.name;
-  domain.value = user.company_domain;
-  await firstRequest()
-  interval = setInterval(async () => {
-    await getResult();
-  }, 60000)
-  // await getResult() ;
+  nationalID.value = user.nationalID;
+  if (nationalid.value) {
+    const res = await axios.get("company/" , {params : {nationalID : nationalid.value}});
+    name.value = res.data.name;
+  } else {
+    name.value = user.name;
+  }
+  // await firstRequest()
+  // interval = setInterval(async () => {
+  //   await getResult();
+  // }, 60000)
+  await getResult() ;
 }
 
 async function firstRequest() {
@@ -58,7 +62,7 @@ async function firstRequest() {
 }
 
 async function getResult() {
-  const res = await axios.get(`questionnaire/${report_id.value}/result/`)
+  const res = await axios.get(`questionnaire/21/result/`)
   if (res.data.status === "done") {
     clearInterval(interval)
     finalMessage.value = res.data.result.messages;
@@ -76,7 +80,6 @@ async function getResult() {
 
 async function processMessage() {
   finalMessage.value = finalMessage.value.toString().replace(/\u200c/g, " ");
-  finalMessage.value = finalMessage.value.toString().replace(/\n\n/g, "\n");
 
   message = finalMessage.value.toString().split("start first")
   firstPartMessage.value = message[1].toString().replace("end first", "");
@@ -89,38 +92,75 @@ async function processMessage() {
   secondPartMessage = secondPart.toString().split("end this subdomain");
 }
 
+// const generatePDF = async () => {
+//   const element = document.getElementById("pdf-content");
+//
+//   if (!element) return;
+//
+//   const canvas = await html2canvas(element, {scale: 3});
+//   const imgData = canvas.toDataURL("image/png");
+//   const pdf = new jsPDF("p", "mm", "a4");
+//   const imgWidth = 210;
+//   const pageHeight = 297;
+//   const imgHeight = (canvas.height * imgWidth) / canvas.width;
+//
+//   let yPosition = 0;
+//
+//   while (yPosition < imgHeight) {
+//     pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
+//     yPosition += pageHeight;
+//
+//     if (yPosition < imgHeight) {
+//       pdf.addPage();
+//     }
+//   }
+//
+//   pdf.save(`گزارش عارضه یابی ${finalResult.domain} شرکت ${name.value} .pdf`);
+//
+// };
+
 const generatePDF = async () => {
   const element = document.getElementById("pdf-content");
-
   if (!element) return;
 
-  const canvas = await html2canvas(element, {scale: 3});
-  const imgData = canvas.toDataURL("image/png");
+  const canvas = await html2canvas(element, {
+    scale: 1.5,
+    useCORS: true,
+  });
+
+  const imgData = canvas.toDataURL("image/jpeg", 0.7); // استفاده از jpeg با کیفیت کمتر
   const pdf = new jsPDF("p", "mm", "a4");
+
   const imgWidth = 210;
   const pageHeight = 297;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
   let yPosition = 0;
 
   while (yPosition < imgHeight) {
-    pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
+    pdf.addImage(imgData, "JPEG", 0, -yPosition, imgWidth, imgHeight);
     yPosition += pageHeight;
-
     if (yPosition < imgHeight) {
       pdf.addPage();
     }
   }
 
-  pdf.save(`گزارش عارضه یابی .pdf`);
-
+  pdf.save(`گزارش عارضه یابی ${finalResult.domain} شرکت ${name.value}.pdf`);
 };
+
 
 function handleBeforeUnload(e) {
   sessionStorage.setItem('diagnosisRefresh', 'true')
 
   e.preventDefault()
   e.returnValue = ''
+}
+
+const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
+
+if (diagnosisFlag === 'true') {
+  sessionStorage.removeItem('diagnosisRefresh')
+  alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
+  window.location.href = '/profile'
 }
 
 onMounted(() => {
@@ -143,7 +183,11 @@ onBeforeMount(()=>{
     </div>
 
     <div class="finalResult">
-      <h3>گزارش عارضه یابی شرکت {{ name }} در حوزه {{ domain }}</h3>
+      <h3>
+        گزارش عارضه یابی {{finalResult.domain}}
+        <br>
+        <span>شرکت {{name}}</span>
+      </h3>
       <div class="textAndChart">
         <div>
           <p>
@@ -224,6 +268,10 @@ hr {
 
 .main .finalResult h3 {
   margin-top: 3vh;
+}
+
+.main .finalResult h3 span {
+  font-size: 16px;
 }
 
 .main .finalResult p {

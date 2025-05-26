@@ -1,5 +1,24 @@
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
+const router = useRouter();
+const route = useRoute();
+
+const handlePopState = () => {
+  if (route.path === '/PayPage') {
+    router.push('/Profile');
+  }
+};
+
+onMounted(() => {
+  history.pushState(null, '', window.location.href);
+  window.addEventListener('popstate', handlePopState);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('popstate', handlePopState);
+});
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref} from "vue"
+import {onMounted, reactive, ref} from "vue"
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 import {getInfo} from "@/composables/composable.js";
@@ -17,12 +17,16 @@ async function subform() {
     const res = await axios.post("token/", formData);
     const token = res.data.access;
     sessionStorage.setItem("token", JSON.stringify(token));
-    await getInfo(formData.username , formData.password);
+    await getInfo(formData.username, formData.password);
     isLoading.value = false;
     await router.push("/profile")
-  } catch(err) {
+  } catch (err) {
     isLoading.value = false;
-    errMessage.value = err.response.data || "نام کاربری یا رمز عبور اشتباه است";
+    if (err.response.status === 401) {
+      errMessage.value = "نام کاربری یا رمز عبور اشتباه است"
+    } else {
+      errMessage.value = err.response.data;
+    }
   }
 }
 
@@ -61,9 +65,9 @@ function loginWithEnter(event) {
       ورود
     </router-link>
 
-<!--    <router-link to="/SignUp" class="links"-->
-<!--    >هنوز ثبت نام نکرده اید ؟-->
-<!--    </router-link>-->
+    <!--    <router-link to="/SignUp" class="links"-->
+    <!--    >هنوز ثبت نام نکرده اید ؟-->
+    <!--    </router-link>-->
   </div>
 </template>
 
