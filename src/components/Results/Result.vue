@@ -46,11 +46,11 @@ async function fetchInfos() {
   } else {
     name.value = user.name;
   }
-  // await firstRequest()
-  // interval = setInterval(async () => {
-  //   await getResult();
-  // }, 60000)
-  await getResult() ;
+  await firstRequest()
+  interval = setInterval(async () => {
+    await getResult();
+  }, 60000)
+  // await getResult() ;
 }
 
 async function firstRequest() {
@@ -62,7 +62,7 @@ async function firstRequest() {
 }
 
 async function getResult() {
-  const res = await axios.get(`questionnaire/21/result/`)
+  const res = await axios.get(`questionnaire/${report_id.value}/result/`)
   if (res.data.status === "done") {
     clearInterval(interval)
     finalMessage.value = res.data.result.messages;
