@@ -62,7 +62,7 @@ async function firstRequest() {
 }
 
 async function getResult() {
-  const res = await axios.get(`questionnaire/21/result/`)
+  const res = await axios.get(`questionnaire/${report_id.value}/result/`)
   if (res.data.status === "done") {
     clearInterval(interval)
     finalMessage.value = res.data.result.messages;
@@ -92,33 +92,6 @@ async function processMessage() {
   secondPartMessage = secondPart.toString().split("end this subdomain");
 }
 
-// const generatePDF = async () => {
-//   const element = document.getElementById("pdf-content");
-//
-//   if (!element) return;
-//
-//   const canvas = await html2canvas(element, {scale: 3});
-//   const imgData = canvas.toDataURL("image/png");
-//   const pdf = new jsPDF("p", "mm", "a4");
-//   const imgWidth = 210;
-//   const pageHeight = 297;
-//   const imgHeight = (canvas.height * imgWidth) / canvas.width;
-//
-//   let yPosition = 0;
-//
-//   while (yPosition < imgHeight) {
-//     pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
-//     yPosition += pageHeight;
-//
-//     if (yPosition < imgHeight) {
-//       pdf.addPage();
-//     }
-//   }
-//
-//   pdf.save(`گزارش عارضه یابی ${finalResult.domain} شرکت ${name.value} .pdf`);
-//
-// };
-
 const generatePDF = async () => {
   const element = document.getElementById("pdf-content");
   if (!element) return;
@@ -128,7 +101,7 @@ const generatePDF = async () => {
     useCORS: true,
   });
 
-  const imgData = canvas.toDataURL("image/jpeg", 0.7); // استفاده از jpeg با کیفیت کمتر
+  const imgData = canvas.toDataURL("image/jpeg", 0.7);
   const pdf = new jsPDF("p", "mm", "a4");
 
   const imgWidth = 210;
