@@ -7,6 +7,9 @@ import {getTokenInfo} from "@/composables/composable.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+const props = defineProps(["result"]);
+const result = JSON.parse(props.result);
+
 let nationalid = ref(null);
 
 let report_id = ref(null);
@@ -17,20 +20,9 @@ let name = ref("");
 let domain = ref("");
 
 let isLoading = ref(true);
-
-// let finalResult = reactive({
-//   overallScore: 0,
-//   messages: "",
-//   subdomain_scores: {}
-// })
-
-// let keys = reactive([]);
-// let values = reactive([]);
 let finalMessage = ref("")
 
 let message = reactive([]);
-// let firstPartMessage = ref("");
-// let secondPartMessage = reactive([]);
 
 let interval;
 
@@ -40,11 +32,15 @@ async function fetchInfos() {
   nationalID.value = nationalid.value || user.nationalID;
   name.value = user.name;
   domain.value = user.company_domain;
-  await firstRequest()
-  interval = setInterval(async () => {
-    await getResult();
-  }, 60000)
-  // await getResult() ;
+  if (result){
+    await getResultsFromProps()
+  } else {
+    await firstRequest()
+    interval = setInterval(async () => {
+      await getResult();
+    }, 60000)
+    // await getResult() ;
+  }
 }
 
 async function firstRequest() {
@@ -60,31 +56,24 @@ async function getResult() {
   if (res.data.status === "done") {
     clearInterval(interval)
     finalMessage.value = res.data.result;
-    // await Object.assign(finalResult, res.data.result);
-
-    // for (const score in finalResult.subdomain_scores) {
-    //   keys.push(score)
-    //   values.push(finalResult.subdomain_scores[score])
-    // }
 
     await processMessage()
     isLoading.value = false
   }
 }
 
+async function getResultsFromProps() {
+  finalMessage.value = result;
+
+  await processMessage()
+  isLoading.value = false
+}
+
 async function processMessage() {
   finalMessage.value = finalMessage.value.toString().replace(/\u200c/g, " ");
   finalMessage.value = finalMessage.value.toString().replace(/\n\n/g, "\n");
-//
+
   message = finalMessage.value.toString().split("end first")
-//   firstPartMessage.value = message[1].toString().replace("end first", "");
-//   firstPartMessage.value = firstPartMessage.value.toString().replace(/\([^()]*\)/g, "");
-//   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف اول:", "");
-//   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف دوم:", "");
-//   firstPartMessage.value = firstPartMessage.value.toString().replace("پاراگراف سوم:", "");
-//
-//   const secondPart = message[0].toString().replace(/start this subdomain/g, "");
-//   secondPartMessage = secondPart.toString().split("end this subdomain");
 }
 
 const generatePDF = async () => {
@@ -111,7 +100,6 @@ const generatePDF = async () => {
   }
 
   pdf.save(`گزارش عارضه یابی .pdf`);
-
 };
 
 function handleBeforeUnload(e) {
@@ -121,13 +109,21 @@ function handleBeforeUnload(e) {
   e.returnValue = ''
 }
 
+const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
+
+if (diagnosisFlag === 'true') {
+  sessionStorage.removeItem('diagnosisRefresh')
+  alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
+  window.location.href = '/profile'
+}
+
 onMounted(() => {
   nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"))
   fetchInfos();
   window.addEventListener('beforeunload', handleBeforeUnload)
 })
 
-onBeforeMount(() => {
+onBeforeMount(()=>{
   window.removeEventListener('beforeunload', handleBeforeUnload)
 })
 
@@ -153,7 +149,7 @@ onBeforeMount(() => {
       <p class="finalText">
         شما می‌ توانید برای دریافت راهکارهای اجرایی به منظور حل عارضه ‌های خود با مشاوران ما در تماس
         باشید
-        <br> <br>
+        <br>
         <a href="tel:+982332300357">32300357-023</a>
         یا
         <a href="tel:+989046504331">09046504331</a>

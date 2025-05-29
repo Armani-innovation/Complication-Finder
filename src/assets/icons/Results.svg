@@ -14,13 +14,13 @@
     <defs>
         <linearGradient id="paint0_linear_0_1" x1="78.9165" y1="0" x2="78.9165" y2="101.833"
                         gradientUnits="userSpaceOnUse">
-            <stop stop-color="#2EC2CC"/>
-            <stop offset="1" stop-color="#004181"/>
+            <stop stop-color="#0A5EB8"/>
+            <stop offset="1" stop-color="#6BB5FF"/>
         </linearGradient>
         <linearGradient id="paint1_linear_0_1" x1="79.3076" y1="27" x2="79.3076" y2="77.6152"
                         gradientUnits="userSpaceOnUse">
-            <stop stop-color="#2EC2CC"/>
-            <stop offset="1" stop-color="#004181"/>
+            <stop stop-color="#6BB5FF"/>
+            <stop offset="1" stop-color="#0A5EB8"/>
         </linearGradient>
     </defs>
 </svg>

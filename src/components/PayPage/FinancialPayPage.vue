@@ -5,11 +5,15 @@ import { useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
-const handlePopState = () => {
+function handlePopState() {
   if (route.path === '/PayPage') {
     router.push('/Profile');
   }
 };
+
+function getResults() {
+  router.push({name: 'FinancialResult' , params: { result : JSON.stringify(null)} });
+}
 
 onMounted(() => {
   history.pushState(null, '', window.location.href);
@@ -25,10 +29,10 @@ onUnmounted(() => {
   <div class="main">
     <pre>
       عارضه یابی شما با موفقیت انجام شد
-      لطفا برای مشاهده گزارش مبلغ 5,000,000 تومان را پرداخت کنید
+      لطفا برای مشاهده گزارش مبلغ 3,000,000 تومان را پرداخت کنید
     </pre>
-    <router-link class="saveAndNext" to="/result">
-        پرداخت و مشاهده نتیجه
+    <router-link to="" class="saveAndNext" @click="getResults">
+      پرداخت و مشاهده نتیجه
     </router-link>
   </div>
 </template>

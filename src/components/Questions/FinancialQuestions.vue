@@ -55,7 +55,7 @@ async function nextQuestion() {
   questionCount.value = questions.question.num_of_question;
   isLoading.value = false;
   if (res.data.message) {
-    await router.push("/HistoryResult")
+    await router.push("/FinancialPayPage")
   }
 }
 
@@ -99,16 +99,9 @@ onMounted(async () => {
   font-weight: bold;
 }
 
-.main .questions {
-  height: 20vh;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10% 2%;
-}
-
 .main input {
   outline: none;
-  width: 35%;
+  width: 45%;
   height: 5vh;
   border-radius: 10px;
   border: none;
@@ -116,7 +109,7 @@ onMounted(async () => {
   padding: 0 2%;
   background-color: #ffffff;
   font-size: 15px;
-  margin: 0 auto;
+  margin: 8vh auto 10vh auto;
 }
 
 .main input:hover {

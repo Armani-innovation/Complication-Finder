@@ -66,13 +66,25 @@ const sortedComplications = computed(() => {
 
 async function handleCompleted(id) {
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
-  console.log(res)
+  if (res.data.domain === 4){
+    await router.push({name: 'FinancialResult' , params: { result : JSON.stringify(res.data.report)} });
+  } else {
+    await router.push({name: 'Result' , params: { result : JSON.stringify(res.data.report)} });
+  }
+}
+
+async function handleNotPayed(id) {
+  const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
+  sessionStorage.setItem("questionnaire", id);
+  if (res.data.domain === 4){
+    await router.push("/FinancialPayPage");
+  } else {
+    await router.push("/PayPage");
+  }
 }
 
 async function handleNotCompleted(id) {
-
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
-
   const questionProp = {
     questionnaire: id,
     question: {}
@@ -81,8 +93,11 @@ async function handleNotCompleted(id) {
   Object.assign(questionProp.question, res.data.next_question)
 
   // await router.push({name: "Questions", params: {question: JSON.stringify(res.data.next_question)}})
-  await router.push({name: "Questions", params: {question: JSON.stringify(questionProp)}})
-
+  if (res.data.domain === 4){
+    await router.push({name: "FinancialQuestions", params: {question: JSON.stringify(questionProp)}})
+  }else {
+    await router.push({name: "Questions", params: {question: JSON.stringify(questionProp)}})
+  }
 }
 
 function formattedDate(dateStr) {
@@ -118,6 +133,7 @@ onMounted(() => {
             <th>حوزه</th>
             <th>تاریخ</th>
             <th>وضعیت</th>
+            <th>مرحله</th>
           </tr>
           </thead>
           <tbody>
@@ -126,14 +142,23 @@ onMounted(() => {
             <td>{{ history.domain }}</td>
             <td>{{ formattedDate(history.created_at) }}</td>
             <td>
-              <span :style="history.is_completed ? 'color : green' : 'color : red'">
-                {{ history.is_completed ? "تمام شده" : "نا تمام" }}
+              <span
+                :style="history.is_completed ? (history.is_paid ? 'color : green' : 'color : red' ) : 'color : red'">
+                {{
+                  history.is_completed ?
+                    (history.is_paid ? "تمام شده" : "نا تمام")
+                    : "نا تمام"
+                }}
               </span>
             </td>
             <td>
               <div class="status"
-                   @click="history.is_completed ? handleCompleted(history.id) : handleNotCompleted(history.id)">
-                {{ history.is_completed ? "مشاهده وضعیت" : "ادامه عارضه یابی" }}
+                   @click="history.is_completed ? (history.is_paid ? handleCompleted(history.id) : handleNotPayed(history.id) ) : handleNotCompleted(history.id)">
+                {{
+                  history.is_completed ?
+                    (history.is_paid ? "مشاهده گزارش" : "پرداخت")
+                    : "ادامه عارضه یابی"
+                }}
               </div>
             </td>
           </tr>

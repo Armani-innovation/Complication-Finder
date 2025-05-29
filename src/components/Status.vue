@@ -53,10 +53,19 @@ watch(() => route.name, (newName) => {
     case "Questions" :
       questions()
       break;
+    case "FinancialQuestions" :
+      questions()
+      break;
     case "PayPage" :
       payPage()
       break;
+    case "FinancialPayPage" :
+      payPage()
+      break;
     case "Result" :
+      finalResult()
+      break;
+    case "FinancialResult" :
       finalResult()
       break;
     case "Profile" :
@@ -198,7 +207,7 @@ function routeProfile() {
         <font-awesome-icon class="icon" icon="user"/>
         <h3>{{ name }}</h3>
       </div>
-      <h1 class="title">پلتفرم عارضه یابی شرکت شبکه نوآوری آرمانی</h1>
+      <h1 class="title">پلتفرم هوشمند عارضه یابی</h1>
       <div class="empty"></div>
     </div>
 

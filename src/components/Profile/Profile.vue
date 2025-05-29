@@ -46,7 +46,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="setting">
-        <span @click="handleSignOut">خروج از حساب</span>
+        <span @click="handleSignOut">خروج</span>
       </div>
     </div>
   </div>
@@ -84,12 +84,9 @@ onMounted(() => {
 }
 
 .main .header .setting span {
-  color: red;
+  color: #aa0000;
   cursor: pointer;
-}
-
-.main .header .setting a::before {
-  color: red;
+  font-weight: bold;
 }
 
 .main .profile .name {

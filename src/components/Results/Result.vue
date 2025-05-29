@@ -9,8 +9,10 @@ import {getTokenInfo} from "@/composables/composable.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-let nationalid = ref(null);
+const props = defineProps(["result"])
+const result = JSON.parse(props.result)
 
+let nationalid = ref(null);
 let report_id = ref(null);
 
 const questionnaire = Number(sessionStorage.getItem("questionnaire"));
@@ -46,11 +48,16 @@ async function fetchInfos() {
   } else {
     name.value = user.name;
   }
-  await firstRequest()
-  interval = setInterval(async () => {
-    await getResult();
-  }, 60000)
-  // await getResult() ;
+
+  if (result){
+    await getResultsFromProps()
+  } else {
+    await firstRequest()
+    interval = setInterval(async () => {
+      await getResult();
+    }, 60000)
+    // await getResult() ;
+  }
 }
 
 async function firstRequest() {
@@ -76,6 +83,19 @@ async function getResult() {
     await processMessage()
     isLoading.value = false
   }
+}
+
+async function getResultsFromProps() {
+  finalMessage.value = result.messages;
+  await Object.assign(finalResult, result);
+
+  for (const score in finalResult.subdomain_scores) {
+    keys.push(score)
+    values.push(finalResult.subdomain_scores[score])
+  }
+
+  await processMessage()
+  isLoading.value = false
 }
 
 async function processMessage() {
@@ -184,7 +204,7 @@ onBeforeMount(()=>{
 
     <p class="finalText">
       شما می‌ توانید برای دریافت راهکارهای اجرایی به منظور حل عارضه ‌های خود با مشاوران ما در تماس باشید
-      <br> <br>
+      <br>
       <a href="tel:+982332300357">32300357-023</a>
       یا
       <a href="tel:+989046504331">09046504331</a>

@@ -7,7 +7,7 @@ import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 
 const props = defineProps(["question"])
-const nationalId = sessionStorage.getItem("nationalID") || null;
+const nationalId = sessionStorage.getItem("nationalID");
 
 let nationalID = ref("")
 

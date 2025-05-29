@@ -16,7 +16,11 @@
     }
   }
 
-  setInterval(startTimer, 1000);
+  const timer = setInterval(startTimer, 1000);
+
+  if (minute.value === 0 && second.value === 0){
+    clearInterval(timer);
+  }
 </script>
 
 <template>
