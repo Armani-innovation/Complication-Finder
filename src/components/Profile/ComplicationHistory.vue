@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 import {getTokenInfo} from "@/composables/composable.js";
@@ -12,6 +12,7 @@ let username = ref("");
 let nationalID = ref("");
 let is_company = ref(null);
 const complications = reactive([]);
+const controller = new AbortController();
 
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
@@ -24,13 +25,27 @@ async function fetchInfos() {
 }
 
 async function fetchHistory() {
-  const history = await axios.get("questionnaires", {params: {username: username.value || nationalID.value}})
+  try {
+    const history = await axios.get("questionnaires", {
+      params: {username: username.value || nationalID.value},
+      signal: controller.signal
+    })
 
-  for (const historyKey in history.data) {
+    for (const historyKey in history.data) {
 
-    complications.push(history.data[historyKey]);
-    await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {params: {nationalID: nationalID.value}})
+      complications.push(history.data[historyKey]);
+      await axios.get(`questionnaire/${history.data[historyKey].id}/status`, {
+        params: {nationalID: nationalID.value},
+        signal: controller.signal
+      })
 
+    }
+  } catch (error) {
+    if (error.name === "CanceledError") {
+      console.log('درخواست لغو شد');
+    } else {
+      console.error('خطا در دریافت:', error);
+    }
   }
 }
 
@@ -66,17 +81,17 @@ const sortedComplications = computed(() => {
 
 async function handleCompleted(id) {
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
-  if (res.data.domain === 4){
-    await router.push({name: 'FinancialResult' , params: { result : JSON.stringify(res.data.report)} });
+  if (res.data.domain === 4) {
+    await router.push({name: 'FinancialResult', params: {result: JSON.stringify(res.data.report)}});
   } else {
-    await router.push({name: 'Result' , params: { result : JSON.stringify(res.data.report)} });
+    await router.push({name: 'Result', params: {result: JSON.stringify(res.data.report)}});
   }
 }
 
 async function handleNotPayed(id) {
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
   sessionStorage.setItem("questionnaire", id);
-  if (res.data.domain === 4){
+  if (res.data.domain === 4) {
     await router.push("/FinancialPayPage");
   } else {
     await router.push("/PayPage");
@@ -93,9 +108,12 @@ async function handleNotCompleted(id) {
   Object.assign(questionProp.question, res.data.next_question)
 
   // await router.push({name: "Questions", params: {question: JSON.stringify(res.data.next_question)}})
-  if (res.data.domain === 4){
-    await router.push({name: "FinancialQuestions", params: {question: JSON.stringify(questionProp)}})
-  }else {
+  if (res.data.domain === 4) {
+    await router.push({
+      name: "FinancialQuestions",
+      params: {question: JSON.stringify(questionProp)}
+    })
+  } else {
     await router.push({name: "Questions", params: {question: JSON.stringify(questionProp)}})
   }
 }
@@ -108,6 +126,10 @@ function formattedDate(dateStr) {
 
 onMounted(() => {
   fetchInfos();
+})
+
+onBeforeUnmount(() => {
+  controller.abort();
 })
 </script>
 
@@ -195,6 +217,8 @@ onMounted(() => {
 }
 
 .main .content select {
+  width: 15%;
+  height: 10%;
   padding: 1vh 1vw;
   border: none;
   outline: none;
@@ -214,7 +238,6 @@ onMounted(() => {
 .main .content .historyContainer {
   width: 100%;
   height: 70%;
-  margin-top: 3vh;
   overflow-y: auto;
   box-sizing: border-box;
   padding-left: 1vw;

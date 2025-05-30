@@ -2,6 +2,7 @@
 import router from "@/router/index.js";
 import {onMounted, ref} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
+import {onBeforeRouteUpdate} from "vue-router";
 
 let name = ref("");
 let username = ref("");
@@ -27,6 +28,13 @@ function handleSignOut() {
 onMounted(() => {
   fetchInfos();
 })
+
+onBeforeRouteUpdate((to, from, next) => {
+  if (to.fullPath === '/Profile') {
+    fetchInfos()
+  }
+  next();
+});
 
 </script>
 

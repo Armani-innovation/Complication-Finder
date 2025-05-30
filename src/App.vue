@@ -14,7 +14,7 @@ const route = useRoute();
       مرورگر شما از ویدئوی HTML5 پشتیبانی نمی‌کند.
     </video>
 
-    <Status v-show="route.name !== 'Profile' && route.name !== 'ProfileOptions' && route.name !== 'ComplicationHistory'" class="status"/>
+    <Status v-show="route.name !== 'Profile' && route.name !== 'ProfileOptions' && route.name !== 'ComplicationHistory' && route.name !== 'EditProfile'" class="status"/>
     <RouterView/>
     <img class="logo" src="./assets/images/logo1.png" alt="">
   </div>

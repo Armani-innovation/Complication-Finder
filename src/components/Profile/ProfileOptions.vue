@@ -25,8 +25,9 @@ onMounted(() => {
   <div class="main">
     <div class="optionsContainer">
       <div class="options">
-        <router-link class="link" to="/Profile/ComplicationHistory">سوابق عارضه یابی</router-link>
+        <router-link class="link" to="/ComplicationHistory">سوابق عارضه یابی</router-link>
         <router-link class="link" to="">سوابق مالی</router-link>
+        <router-link class="link" to="/EditProfile">ویراش پروفایل</router-link>
         <router-link class="link" to="/signin">بازگشت</router-link>
       </div>
       <div class="startComplication">

@@ -14,6 +14,7 @@ import FinancialResult from "@/components/Results/FinancialResult.vue";
 import ProfileOptions from "@/components/Profile/ProfileOptions.vue";
 import ComplicationHistory from "@/components/Profile/ComplicationHistory.vue";
 import FinancialPayPage from "@/components/PayPage/FinancialPayPage.vue";
+import EditProfile from "@/components/Profile/EditProfile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,11 +47,15 @@ const router = createRouter({
       children: [{
         name: "ProfileOptions",
         component: ProfileOptions,
-        path: "/Profile"
+        path: ""
       }, {
         name: "ComplicationHistory",
         component: ComplicationHistory,
-        path: "/Profile/ComplicationHistory"
+        path: "/ComplicationHistory"
+      }, {
+        name: "EditProfile",
+        component: EditProfile,
+        path: "/EditProfile"
       }]
     },
     {

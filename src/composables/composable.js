@@ -22,7 +22,7 @@ export async function getTokenInfo(token) {
   if (token) {
     const decoded = jwtDecode(token)
     const user = await axios.get("register/", {params: {id: decoded.user_id}})
-    return user.data;
+    return Object.assign(user.data, {user_id : decoded.user_id});
   }
 
 }

@@ -70,7 +70,7 @@ body {
   transition: all 0.3s ease;
 }
 
-.main ul li input {
+.main input {
   outline: none;
   width: 100%;
   height: 100%;
@@ -82,7 +82,7 @@ body {
   font-size: 13px;
 }
 
-.main ul li input:hover {
+.main input:hover {
   background-color: #f4f5f7;
 }
 
@@ -120,8 +120,7 @@ body {
   color: #0022FF;
 }
 
-
-.main ul li select {
+.main select {
   width: 100%;
   height: 100%;
   border: 0;
@@ -131,21 +130,21 @@ body {
   padding: 0 5%;
 }
 
-.main ul li select:required:invalid {
+.main select:required:invalid {
   color: gray;
 }
 
-.main ul li select option {
+.main select option {
   border: 0;
   outline: none;
   width: 90%;
 }
 
-.main ul li select .null {
+.main select .null {
   display: none;
 }
 
-.main ul li select option {
+.main select option {
   color: black;
 }
 
