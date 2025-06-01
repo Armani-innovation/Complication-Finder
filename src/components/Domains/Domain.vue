@@ -23,7 +23,7 @@ async function loadDomains() {
   nationalID.value = data.nationalID || data.username;
   if (nationalId) {
     nationalID.value = nationalId;
-    const res = await axios.get("company/" , {params : {nationalID : nationalID.value}});
+    const res = await axios.get("company/", {params: {nationalID: nationalID.value}});
     name.value = res.data.name;
   } else {
     name.value = data.name;
@@ -33,7 +33,7 @@ async function loadDomains() {
 
 async function fetchDomain(domain) {
   if (domain === "تحلیل صورت های مالی") {
-    await router.push("/FinancialComplications")
+    await router.push("/FinancialQuestions")
   } else {
     const retries = 3;
     isLoading.value = true;
@@ -71,7 +71,7 @@ onMounted(() => {
     <p>در چه حوزه ای میخواهید عارضه یابی را انجام دهید ؟</p>
     <ul>
       <li v-for="(domain , index) in domains" :key="domain" :for="index">
-        <input name="domain" type="radio" :id="index" :value="Number(index)" v-model="picked" />
+        <input name="domain" type="radio" :id="index" :value="Number(index)" v-model="picked"/>
         <label :for="index">
           <font-awesome-icon class="icon" :icon="domain.icon"/>
           {{ domain.name }}
@@ -79,11 +79,12 @@ onMounted(() => {
       </li>
     </ul>
     <div class="complicationFor">
-      <p style="color: #0056b3">شما در حال انجام عارضه یابی برای شر کت {{name}} هستید. </p>
-      <router-link to="/CompanyInfo" class="links"> تغییر شرکت </router-link>
+      <p style="color: #0056b3">شما در حال انجام عارضه یابی برای شر کت {{ name }} هستید. </p>
+      <router-link to="/CompanyInfo" class="links"> تغییر شرکت</router-link>
     </div>
     <p class="error" v-if="errMessage">{{ errMessage }}</p>
-    <router-link to="" v-if="picked !== null" class="saveAndNext" @click="fetchDomain(domains[selectedDomain].name)">
+    <router-link to="" v-if="picked !== null" class="saveAndNext"
+                 @click="fetchDomain(domains[selectedDomain].name)">
       شروع عارضه یابی
     </router-link>
   </div>
@@ -102,7 +103,7 @@ onMounted(() => {
   margin-top: 2vh;
 }
 
-.main .complicationFor a{
+.main .complicationFor a {
   margin-right: 1vw;
 }
 

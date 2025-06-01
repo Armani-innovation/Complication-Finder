@@ -1,9 +1,37 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import axios from "@/axios/axios.js";
 
 const router = useRouter();
 const route = useRoute();
+
+async function routePayPage() {
+  const res = await axios.post("request/") ;
+  console.log(res);
+  window.open(res.data.url);
+}
+
+async function checkPayment() {
+  const status = route.query.status
+  const authority = route.query.authority
+
+  if (status && authority) {
+    try {
+      const verify = await axios.get(`/api/verify-payment?authority=${authority}`)
+      if (verify.data.code === 100) {
+        alert("✅ پرداخت موفق بود")
+      } else {
+        alert("❌ پرداخت تایید نشد")
+      }
+    } catch {
+      alert("⚠️ خطا در بررسی پرداخت")
+    }
+
+    // پاک کردن query string برای رفرش‌های بعدی
+    await router.replace({ query: {} })
+  }
+}
 
 function handlePopState() {
   if (route.path === '/PayPage') {
@@ -18,6 +46,7 @@ function getResults() {
 onMounted(() => {
   history.pushState(null, '', window.location.href);
   window.addEventListener('popstate', handlePopState);
+  checkPayment();
 });
 
 onUnmounted(() => {
@@ -31,7 +60,7 @@ onUnmounted(() => {
       عارضه یابی شما با موفقیت انجام شد
       لطفا برای مشاهده گزارش مبلغ 5,000,000 تومان را پرداخت کنید
     </pre>
-    <router-link to="" class="saveAndNext" @click="getResults">
+    <router-link to="" class="saveAndNext" @click="routePayPage">
         پرداخت و مشاهده نتیجه
     </router-link>
   </div>
