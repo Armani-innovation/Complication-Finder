@@ -1,28 +1,10 @@
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import axios from "@/axios/axios.js";
 
-const router = useRouter();
-const route = useRoute();
-
-function handlePopState() {
-  if (route.path === '/PayPage') {
-    router.push('/Profile');
-  }
-};
-
-function getResults() {
-  router.push({name: 'FinancialResult' , params: { result : JSON.stringify(null)} });
+async function routePayPage() {
+  const res = await axios.post("request/") ;
+  window.location.href = res.data.url;
 }
-
-onMounted(() => {
-  history.pushState(null, '', window.location.href);
-  window.addEventListener('popstate', handlePopState);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('popstate', handlePopState);
-});
 </script>
 
 <template>
