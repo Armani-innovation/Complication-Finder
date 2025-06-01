@@ -15,6 +15,8 @@ import ProfileOptions from "@/components/Profile/ProfileOptions.vue";
 import ComplicationHistory from "@/components/Profile/ComplicationHistory.vue";
 import FinancialPayPage from "@/components/PayPage/FinancialPayPage.vue";
 import EditProfile from "@/components/Profile/EditProfile.vue";
+import SuccessfulPay from "@/components/PayPage/SuccessfulPay.vue";
+import UnsuccessfulPay from "@/components/PayPage/UnsuccessfulPay.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +65,8 @@ const router = createRouter({
       component: FinancialQuestions,
       path: "/FinancialQuestions"
     },
+    {name: "SuccessfulPay" , component: SuccessfulPay , path : "/SuccessfulPay"},
+    {name: "UnsuccessfulPay" , component: UnsuccessfulPay , path : "/UnsuccessfulPay"},
   ],
 });
 
