@@ -15,10 +15,11 @@ async function routePayPage() {
 async function checkPayment() {
   const status = route.query.status
   const authority = route.query.authority
-
+  console.log(authority) ;
+  console.log(status)
   if (status && authority) {
     try {
-      const verify = await axios.get(`/api/verify-payment?authority=${authority}`)
+      const verify = await axios.get(`/api/payment/verify/?authority=${authority}`)
       if (verify.data.code === 100) {
         alert("✅ پرداخت موفق بود")
       } else {
