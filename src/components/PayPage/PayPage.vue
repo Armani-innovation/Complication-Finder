@@ -3,13 +3,8 @@ import axios from "@/axios/axios.js";
 
 async function routePayPage() {
   const res = await axios.post("request/") ;
-  console.log(res);
-  window.open(res.data.url);
+  window.location.href = res.data.url;
 }
-
-window.addEventListener("message", (event) => {
-  console.log(event)
-});
 
 </script>
 
