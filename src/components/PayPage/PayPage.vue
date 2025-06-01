@@ -7,6 +7,10 @@ async function routePayPage() {
   window.open(res.data.url);
 }
 
+window.addEventListener("message", (event) => {
+  console.log(event)
+});
+
 </script>
 
 <template>

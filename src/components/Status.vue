@@ -59,6 +59,12 @@ watch(() => route.name, (newName) => {
     case "PayPage" :
       payPage()
       break;
+    case "SuccessfulPay" :
+      payPage()
+      break;
+    case "UnsuccessfulPay" :
+      payPage()
+      break;
     case "FinancialPayPage" :
       payPage()
       break;
