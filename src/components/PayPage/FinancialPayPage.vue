@@ -13,7 +13,7 @@ async function routePayPage() {
       عارضه یابی شما با موفقیت انجام شد
       لطفا برای مشاهده گزارش مبلغ 3,000,000 تومان را پرداخت کنید
     </pre>
-    <router-link to="" class="saveAndNext" @click="getResults">
+    <router-link to="" class="saveAndNext" @click="routePayPage">
       پرداخت و مشاهده نتیجه
     </router-link>
   </div>
