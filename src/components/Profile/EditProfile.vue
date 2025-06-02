@@ -12,7 +12,6 @@ const userInfo = reactive({
   is_company: null,
   name: null,
   username: null,
-  registrationNumber: null,
   size: null,
 })
 
