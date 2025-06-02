@@ -53,15 +53,6 @@ onMounted(() => {
           type="text"
         />
       </div>
-      <div v-if="userInfo.is_company">
-        <label for="registrationNumber">شماره ثبت شرکت</label>
-        <input
-          id="registrationNumber"
-          v-model="userInfo.registrationNumber"
-          type="text"
-          maxlength="4"
-        />
-      </div>
       <div>
         <label for="username">{{userInfo.is_company ? " شناسه ملی شرکت" : "کد ملی" }}</label>
         <input
