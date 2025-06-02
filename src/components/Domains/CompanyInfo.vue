@@ -25,7 +25,7 @@ async function fetchInfo() {
 }
 
 async function savaAndNext() {
-  if (!(data.company.name && data.company.registrationNumber && data.company.nationalID && data.company.company_domain && data.company.size)) {
+  if (!(data.company.name && data.company.nationalID && data.company.company_domain && data.company.size)) {
     errorMessage.value = "لطفا تمام فیلد ها را پر کنید"
   } else {
     isLoading.value = true;
