@@ -2,6 +2,7 @@
 import axios from "@/axios/axios.js";
 
 async function routePayPage() {
+  sessionStorage.setItem('lastRouteBeforePayment', "FinancialPayPage");
   const res = await axios.post("request/") ;
   window.location.href = res.data.url;
 }

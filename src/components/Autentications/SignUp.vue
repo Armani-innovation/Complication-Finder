@@ -14,7 +14,6 @@ let formData = reactive({
   username: "",
   password: "",
   repeatPassword: "",
-  registrationNumber: "",
   size: "",
   company_domain: "",
 });
@@ -130,15 +129,6 @@ async function handleMentor() {
           v-model="formData.name"
           type="text"
           placeholder="نام شرکت"
-        />
-      </li>
-
-      <li>
-        <input
-          v-model="formData.registrationNumber"
-          type="text"
-          placeholder="شماره ثبت شرکت"
-          maxlength="4"
         />
       </li>
 

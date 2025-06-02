@@ -1,9 +1,11 @@
 <script setup>
-import {onMounted, onUnmounted} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
+
+let previousRoute = ref("");
 
 function handlePopState() {
   if (route.path === '/PayPage') {
@@ -12,12 +14,18 @@ function handlePopState() {
 }
 
 function getResults() {
-  router.push({name: 'Result' , params: { result : JSON.stringify(null)} });
+  if (previousRoute.value === "FinancialPayPage"){
+    router.push({name: 'FinancialResult', params: {result: JSON.stringify(null)}});
+  }else {
+    router.push({name: 'Result', params: {result: JSON.stringify(null)}});
+  }
+
 }
 
 onMounted(() => {
   history.pushState(null, '', window.location.href);
   window.addEventListener('popstate', handlePopState);
+  previousRoute.value = sessionStorage.getItem("lastRouteBeforePayment");
 });
 
 onUnmounted(() => {

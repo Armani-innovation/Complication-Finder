@@ -10,7 +10,6 @@ const data = reactive({
   userid: 0,
   company: {
     name: "",
-    registrationNumber: "",
     nationalID: "",
     size: "",
     company_domain: "",
@@ -44,7 +43,7 @@ async function savaAndNext() {
   }
 }
 
-onMounted(()=>{
+onMounted(() => {
   fetchInfo()
 })
 </script>
@@ -58,8 +57,6 @@ onMounted(()=>{
       <li><input type="text" placeholder="نام شرکت" v-model="data.company.name"/></li>
       <li><input maxlength="11" type="text" placeholder="شناسه ملی شرکت"
                  v-model="data.company.nationalID"/></li>
-      <li><input maxlength="4" type="text" placeholder="شماره ثبت علامت تجاری"
-                 v-model="data.company.registrationNumber"/></li>
       <li>
         <input v-model="data.company.company_domain" type="text" placeholder="حوزه کاری شرکت">
       </li>
