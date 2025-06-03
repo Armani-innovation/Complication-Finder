@@ -1,7 +1,7 @@
 <script setup>
 import Timer from "@/components/Results/Timer.vue";
 import axios from "@/axios/axios.js";
-import {onBeforeMount, onMounted, ref, reactive} from "vue";
+import {onMounted, ref, reactive} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
 
 import jsPDF from "jspdf";
@@ -26,13 +26,15 @@ let message = reactive([]);
 
 let interval;
 
+let requested = ref(false);
+
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = nationalid.value || user.nationalID;
   name.value = user.name;
   domain.value = user.company_domain;
-  if (result){
+  if (result || requested.value) {
     await getResultsFromProps()
   } else {
     await firstRequest()
@@ -44,6 +46,7 @@ async function fetchInfos() {
 }
 
 async function firstRequest() {
+  sessionStorage.setItem("requested" , true) ;
   const res = await axios.post(`questionnaire/report/`, {
     nationalID: nationalID.value,
     questionnaire_id: questionnaire
@@ -102,30 +105,31 @@ const generatePDF = async () => {
   pdf.save(`گزارش عارضه یابی .pdf`);
 };
 
-function handleBeforeUnload(e) {
-  sessionStorage.setItem('diagnosisRefresh', 'true')
-
-  e.preventDefault()
-  e.returnValue = ''
-}
-
-const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
-
-if (diagnosisFlag === 'true') {
-  sessionStorage.removeItem('diagnosisRefresh')
-  alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
-  window.location.href = '/profile'
-}
+// function handleBeforeUnload(e) {
+//   sessionStorage.setItem('diagnosisRefresh', 'true')
+//
+//   e.preventDefault()
+//   e.returnValue = ''
+// }
+//
+// const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
+//
+// if (diagnosisFlag === 'true') {
+//   sessionStorage.removeItem('diagnosisRefresh')
+//   alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
+//   window.location.href = '/profile'
+// }
 
 onMounted(() => {
-  nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"))
+  nationalid.value = JSON.parse(sessionStorage.getItem("nationalID")) ;
+  requested.value = JSON.parse(sessionStorage.getItem("requested")) ;
   fetchInfos();
-  window.addEventListener('beforeunload', handleBeforeUnload)
+  // window.addEventListener('beforeunload', handleBeforeUnload)
 })
 
-onBeforeMount(()=>{
-  window.removeEventListener('beforeunload', handleBeforeUnload)
-})
+// onBeforeMount(()=>{
+//   window.removeEventListener('beforeunload', handleBeforeUnload)
+// })
 
 </script>
 

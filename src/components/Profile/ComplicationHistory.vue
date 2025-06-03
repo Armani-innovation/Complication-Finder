@@ -125,6 +125,7 @@ function formattedDate(dateStr) {
 }
 
 onMounted(() => {
+  sessionStorage.setItem("requested" , true) ;
   fetchInfos();
 })
 

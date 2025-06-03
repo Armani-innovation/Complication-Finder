@@ -60,6 +60,7 @@ async function nextQuestion() {
 }
 
 onMounted(async () => {
+  sessionStorage.setItem("requested" , false) ;
   isLoading.value = true;
   await fetchUser();
   await fetchQuestions()

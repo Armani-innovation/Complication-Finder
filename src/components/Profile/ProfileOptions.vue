@@ -17,6 +17,7 @@ function startComplication() {
 }
 
 onMounted(() => {
+  sessionStorage.setItem("requested" , false) ;
   fetchInfos();
 })
 </script>

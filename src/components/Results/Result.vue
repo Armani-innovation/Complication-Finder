@@ -3,7 +3,7 @@ import GaugeChart from "@/components/Charts/GaugeChart.vue";
 import RadarChart from "@/components/Charts/RadarChart.vue";
 import Timer from "@/components/Results/Timer.vue";
 import axios from "@/axios/axios.js";
-import {onBeforeMount, onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
 
 import jsPDF from "jspdf";
@@ -38,18 +38,20 @@ let secondPartMessage = reactive([]);
 
 let interval;
 
+let requested = ref(false);
+
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = user.nationalID;
   if (nationalid.value) {
-    const res = await axios.get("company/" , {params : {nationalID : nationalid.value}});
+    const res = await axios.get("company/", {params: {nationalID: nationalid.value}});
     name.value = res.data.name;
   } else {
     name.value = user.name;
   }
 
-  if (result){
+  if (result || requested.value) {
     await getResultsFromProps()
   } else {
     await firstRequest()
@@ -61,6 +63,7 @@ async function fetchInfos() {
 }
 
 async function firstRequest() {
+  sessionStorage.setItem("requested" , true) ;
   const res = await axios.post(`questionnaire/report/`, {
     nationalID: nationalID.value,
     questionnaire_id: questionnaire
@@ -141,30 +144,31 @@ const generatePDF = async () => {
 };
 
 
-function handleBeforeUnload(e) {
-  sessionStorage.setItem('diagnosisRefresh', 'true')
-
-  e.preventDefault()
-  e.returnValue = ''
-}
-
-const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
-
-if (diagnosisFlag === 'true') {
-  sessionStorage.removeItem('diagnosisRefresh')
-  alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
-  window.location.href = '/profile'
-}
+// function handleBeforeUnload(e) {
+//   sessionStorage.setItem('diagnosisRefresh', 'true')
+//
+//   e.preventDefault()
+//   e.returnValue = ''
+// }
+//
+// const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
+//
+// if (diagnosisFlag === 'true') {
+//   sessionStorage.removeItem('diagnosisRefresh')
+//   alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
+//   window.location.href = '/profile'
+// }
 
 onMounted(() => {
   nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"))
+  requested.value = JSON.parse(sessionStorage.getItem("requested")) ;
   fetchInfos();
-  window.addEventListener('beforeunload', handleBeforeUnload)
+  // window.addEventListener('beforeunload', handleBeforeUnload)
 })
 
-onBeforeMount(()=>{
-  window.removeEventListener('beforeunload', handleBeforeUnload)
-})
+// onBeforeMount(()=>{
+//   window.removeEventListener('beforeunload', handleBeforeUnload)
+// })
 
 </script>
 
@@ -177,9 +181,9 @@ onBeforeMount(()=>{
 
     <div class="finalResult">
       <h3>
-        گزارش عارضه یابی {{finalResult.domain}}
+        گزارش عارضه یابی {{ finalResult.domain }}
         <br>
-        <span>شرکت {{name}}</span>
+        <span>شرکت {{ name }}</span>
       </h3>
       <div class="textAndChart">
         <div>
@@ -203,7 +207,8 @@ onBeforeMount(()=>{
     </div>
 
     <p class="finalText">
-      شما می‌ توانید برای دریافت راهکارهای اجرایی به منظور حل عارضه ‌های خود با مشاوران ما در تماس باشید
+      شما می‌ توانید برای دریافت راهکارهای اجرایی به منظور حل عارضه ‌های خود با مشاوران ما در تماس
+      باشید
       <br>
       <a href="tel:+982332300357">32300357-023</a>
       یا
