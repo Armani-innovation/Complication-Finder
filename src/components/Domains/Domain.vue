@@ -3,8 +3,10 @@ import {onMounted, reactive, ref, computed} from "vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 import {getTokenInfo} from "@/composables/composable.js";
+import {useQuestionStore} from "@/stores/counter.js";
 
 const nationalId = sessionStorage.getItem("nationalID") || null;
+const questionStore = useQuestionStore();
 
 let name = ref("")
 let errMessage = ref("");
@@ -32,28 +34,28 @@ async function loadDomains() {
 }
 
 async function fetchDomain(domain) {
-  if (domain === "تحلیل صورت های مالی") {
-    await router.push("/FinancialQuestions")
-  } else {
-    const retries = 3;
-    isLoading.value = true;
+  const retries = 3;
+  isLoading.value = true;
 
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        const res = await axios.post("start-questionnaire/", {
-          domain,
-          nationalID: nationalID.value
-        });
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await axios.post("start-questionnaire/", {
+        domain,
+        nationalID: nationalID.value
+      });
+      questionStore.setQuestion(res.data);
+      isLoading.value = false;
+      if (domain === "تحلیل صورت های مالی" || domain === "بررسی اعتبار مالی شرکت") {
+        await router.push("/FinancialQuestions");
+      } else {
+        await router.push("/Questions");
+      }
+      break;
+    } catch {
 
+      if (attempt === retries) {
         isLoading.value = false;
-        await router.push({name: "Questions", params: {question: JSON.stringify(res.data)}});
-        break;
-      } catch {
-
-        if (attempt === retries) {
-          isLoading.value = false;
-          errMessage.value = "خطایی رخ داده است. لطفا دوباره تلاش کنید.";
-        }
+        errMessage.value = "خطایی رخ داده است. لطفا دوباره تلاش کنید.";
       }
     }
   }
@@ -61,6 +63,7 @@ async function fetchDomain(domain) {
 
 onMounted(() => {
   isLoading.value = true;
+  sessionStorage.removeItem("report_id")
   loadDomains();
 })
 </script>
@@ -92,7 +95,7 @@ onMounted(() => {
 
 <style scoped>
 .main {
-  width: 50%;
+  width: 60%;
   min-height: 30vh;
   min-width: 300px;
 }

@@ -1,46 +1,29 @@
 <script setup>
-import axios from "@/axios/axios.js";
+import {ref, reactive, onMounted} from "vue";
 import Pagination from "@/components/Questions/Pagination.vue";
-import {onMounted, reactive, ref} from "vue";
 import {getTokenInfo} from "@/composables/composable.js";
+import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
+import {useQuestionStore} from "@/stores/counter.js";
 
-const domain = "تحلیل صورت های مالی"
-let isLoading = ref(false);
+const nationalId = sessionStorage.getItem("nationalID");
+
+let nationalID = ref("")
 let questionCount = ref(0);
-let nationalID = ref("");
-let questionnaire = reactive(0);
+let isLoading = ref(false);
 let answer = ref("");
 
-const questions = reactive({
-  questionnaire: 0,
-  question: {
-    name: "",
-    text: "",
-    size: "",
-    question_type: "",
-    options: [],
-    link: null,
-    num_of_question: 1,
-    all_questions: 7
-  }
-})
+let questions = reactive(useQuestionStore().question);
+questionCount.value = questions.question.num_of_question;
+let questionnaire = reactive(0);
 
-async function fetchUser() {
+async function fetchInfos() {
   const token = sessionStorage.getItem("token");
-  const infos = await getTokenInfo(token);
-  nationalID.value = infos.nationalID;
-}
-
-async function fetchQuestions() {
-  const res = await axios.post("start-questionnaire/", {
-    domain,
-    nationalID: nationalID.value
-  })
-  isLoading.value = false;
-  Object.assign(questions, res.data)
-  sessionStorage.setItem("questionnaire", res.data.questionnaire);
-  questionnaire = Number(sessionStorage.getItem("questionnaire"));
+  const user = await getTokenInfo(token);
+  nationalID.value = user.nationalID;
+  if (nationalId) {
+    nationalID.value = nationalId;
+  }
 }
 
 async function nextQuestion() {
@@ -59,11 +42,11 @@ async function nextQuestion() {
   }
 }
 
-onMounted(async () => {
-  sessionStorage.setItem("requested" , false) ;
-  isLoading.value = true;
-  await fetchUser();
-  await fetchQuestions()
+onMounted(() => {
+  sessionStorage.setItem("requested", false);
+  sessionStorage.setItem("questionnaire", questions.questionnaire);
+  questionnaire = Number(sessionStorage.getItem("questionnaire"));
+  fetchInfos();
 })
 </script>
 

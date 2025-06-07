@@ -5,19 +5,17 @@ import OptionInfo from "@/components/Questions/OptionInfo.vue";
 import {getTokenInfo} from "@/composables/composable.js";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
+import {useQuestionStore} from "@/stores/counter.js";
 
-const props = defineProps(["question"])
 const nationalId = sessionStorage.getItem("nationalID");
 
 let nationalID = ref("")
-
 let questionCount = ref(0);
-
 let isLoading = ref(false);
 let questionLoading = ref(false);
 let lastQuestion = ref(false);
 
-let questions = reactive(JSON.parse(props.question));
+let questions = reactive(useQuestionStore().question);
 questionCount.value = questions.question.num_of_question ;
 let questionnaire = reactive(0);
 

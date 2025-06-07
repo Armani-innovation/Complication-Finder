@@ -3,6 +3,9 @@ import {computed, onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import axios from "@/axios/axios.js";
 import router from "@/router/index.js";
 import {getTokenInfo} from "@/composables/composable.js";
+import {useQuestionStore} from "@/stores/counter.js";
+
+const questionStore = useQuestionStore();
 
 const sortKey = ref('company');
 const sortOrder = ref('asc');
@@ -81,17 +84,22 @@ const sortedComplications = computed(() => {
 
 async function handleCompleted(id) {
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
-  if (res.data.domain === 4) {
-    await router.push({name: 'FinancialResult', params: {result: JSON.stringify(res.data.report)}});
+
+  sessionStorage.setItem("report_id", res.data.report_id)
+
+  if (res.data.status.domain === 4 || res.data.status.domain === 7) {
+    await router.push("/FinancialResult");
   } else {
-    await router.push({name: 'Result', params: {result: JSON.stringify(res.data.report)}});
+    await router.push("/Result");
   }
 }
 
 async function handleNotPayed(id) {
   const res = await axios.get(`questionnaire/${id}/status`, {params: {nationalID: nationalID.value}})
+
+  console.log(res.data)
   sessionStorage.setItem("questionnaire", id);
-  if (res.data.domain === 4) {
+  if (res.data.status.domain === 4 || res.data.status.domain === 7) {
     await router.push("/FinancialPayPage");
   } else {
     await router.push("/PayPage");
@@ -105,16 +113,14 @@ async function handleNotCompleted(id) {
     question: {}
   }
 
-  Object.assign(questionProp.question, res.data.next_question)
+  Object.assign(questionProp.question, res.data.status.next_question);
+  questionStore.setQuestion(questionProp);
 
   // await router.push({name: "Questions", params: {question: JSON.stringify(res.data.next_question)}})
-  if (res.data.domain === 4) {
-    await router.push({
-      name: "FinancialQuestions",
-      params: {question: JSON.stringify(questionProp)}
-    })
+  if (res.data.status.domain === 4 || res.data.status.domain === 7) {
+    await router.push("/FinancialQuestions");
   } else {
-    await router.push({name: "Questions", params: {question: JSON.stringify(questionProp)}})
+    await router.push("/Questions");
   }
 }
 
@@ -125,7 +131,7 @@ function formattedDate(dateStr) {
 }
 
 onMounted(() => {
-  sessionStorage.setItem("requested" , true) ;
+  sessionStorage.removeItem("report_id")
   fetchInfos();
 })
 

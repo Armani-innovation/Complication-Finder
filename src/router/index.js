@@ -26,21 +26,19 @@ const router = createRouter({
     {name: "SignUp", component: SignUp, path: "/SignUp"},
     {name: "CompanyInfo", component: CompanyInfo, path: "/CompanyInfo"},
     {name: "Domain", component: Domain, path: "/domains"},
-    {name: "Questions", component: Question, path: "/questions/:question", props: true},
+    {name: "Questions", component: Question, path: "/questions"},
     {name: "PayPage", component: PayPage, path: "/PayPage"},
-    {name: "Result", component: Result, path: "/result/:result", props: true},
+    {name: "Result", component: Result, path: "/result"},
     {name: "FinancialPayPage", component: FinancialPayPage, path: "/FinancialPayPage"},
     {
       name: "FinancialQuestions",
       component: FinancialQuestions,
-      path: "/FinancialQuestions/:question",
-      props: true
+      path: "/FinancialQuestions"
     },
     {
       name: "FinancialResult",
       component: FinancialResult,
-      path: "/FinancialResult/:result",
-      props: true
+      path: "/FinancialResult",
     },
     {
       name: "Profile",

@@ -9,9 +9,6 @@ import {getTokenInfo} from "@/composables/composable.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const props = defineProps(["result"])
-const result = JSON.parse(props.result)
-
 let nationalid = ref(null);
 let report_id = ref(null);
 
@@ -38,8 +35,6 @@ let secondPartMessage = reactive([]);
 
 let interval;
 
-let requested = ref(false);
-
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
@@ -51,8 +46,8 @@ async function fetchInfos() {
     name.value = user.name;
   }
 
-  if (result || requested.value) {
-    await getResultsFromProps()
+  if (report_id.value) {
+    await getResult() ;
   } else {
     await firstRequest()
     interval = setInterval(async () => {
@@ -63,12 +58,12 @@ async function fetchInfos() {
 }
 
 async function firstRequest() {
-  sessionStorage.setItem("requested" , true) ;
   const res = await axios.post(`questionnaire/report/`, {
     nationalID: nationalID.value,
     questionnaire_id: questionnaire
   })
-  report_id.value = res.data.report_id
+  report_id.value = res.data.report_id ;
+  sessionStorage.setItem("report_id", report_id.value);
 }
 
 async function getResult() {
@@ -86,19 +81,6 @@ async function getResult() {
     await processMessage()
     isLoading.value = false
   }
-}
-
-async function getResultsFromProps() {
-  finalMessage.value = result.messages;
-  await Object.assign(finalResult, result);
-
-  for (const score in finalResult.subdomain_scores) {
-    keys.push(score)
-    values.push(finalResult.subdomain_scores[score])
-  }
-
-  await processMessage()
-  isLoading.value = false
 }
 
 async function processMessage() {
@@ -143,32 +125,14 @@ const generatePDF = async () => {
   pdf.save(`گزارش عارضه یابی ${finalResult.domain} شرکت ${name.value}.pdf`);
 };
 
-
-// function handleBeforeUnload(e) {
-//   sessionStorage.setItem('diagnosisRefresh', 'true')
-//
-//   e.preventDefault()
-//   e.returnValue = ''
-// }
-//
-// const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
-//
-// if (diagnosisFlag === 'true') {
-//   sessionStorage.removeItem('diagnosisRefresh')
-//   alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
-//   window.location.href = '/profile'
-// }
-
 onMounted(() => {
-  nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"))
-  requested.value = JSON.parse(sessionStorage.getItem("requested")) ;
+  nationalid.value = JSON.parse(sessionStorage.getItem("nationalID"));
+  report_id.value = sessionStorage.getItem("report_id");
+  console.log(report_id.value);
+  console.log(typeof report_id.value);
   fetchInfos();
-  // window.addEventListener('beforeunload', handleBeforeUnload)
 })
 
-// onBeforeMount(()=>{
-//   window.removeEventListener('beforeunload', handleBeforeUnload)
-// })
 
 </script>
 

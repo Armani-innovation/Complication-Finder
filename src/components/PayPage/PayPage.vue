@@ -1,6 +1,7 @@
 <script setup>
 import axios from "@/axios/axios.js";
 import {onMounted} from "vue";
+import {isFinancial} from "@/stores/counter.js";
 
 async function routePayPage() {
   const res = await axios.post("request/") ;
@@ -9,6 +10,7 @@ async function routePayPage() {
 
 onMounted(()=> {
   sessionStorage.setItem("requested" , false) ;
+  isFinancial.value = false;
 })
 
 </script>

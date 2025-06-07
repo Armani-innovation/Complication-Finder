@@ -7,9 +7,6 @@ import {getTokenInfo} from "@/composables/composable.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const props = defineProps(["result"]);
-const result = JSON.parse(props.result);
-
 let nationalid = ref(null);
 
 let report_id = ref(null);
@@ -26,16 +23,15 @@ let message = reactive([]);
 
 let interval;
 
-let requested = ref(false);
-
 async function fetchInfos() {
   const token = sessionStorage.getItem("token");
   const user = await getTokenInfo(token);
   nationalID.value = nationalid.value || user.nationalID;
   name.value = user.name;
   domain.value = user.company_domain;
-  if (result || requested.value) {
-    await getResultsFromProps()
+
+  if (report_id.value) {
+    await getResult() ;
   } else {
     await firstRequest()
     interval = setInterval(async () => {
@@ -63,13 +59,6 @@ async function getResult() {
     await processMessage()
     isLoading.value = false
   }
-}
-
-async function getResultsFromProps() {
-  finalMessage.value = result;
-
-  await processMessage()
-  isLoading.value = false
 }
 
 async function processMessage() {
@@ -105,31 +94,11 @@ const generatePDF = async () => {
   pdf.save(`گزارش عارضه یابی .pdf`);
 };
 
-// function handleBeforeUnload(e) {
-//   sessionStorage.setItem('diagnosisRefresh', 'true')
-//
-//   e.preventDefault()
-//   e.returnValue = ''
-// }
-//
-// const diagnosisFlag = sessionStorage.getItem('diagnosisRefresh')
-//
-// if (diagnosisFlag === 'true') {
-//   sessionStorage.removeItem('diagnosisRefresh')
-//   alert('شما صفحه را رفرش کردید. برای دیدن نتیجه عارضه‌یابی به پروفایل خود بروید.')
-//   window.location.href = '/profile'
-// }
-
 onMounted(() => {
   nationalid.value = JSON.parse(sessionStorage.getItem("nationalID")) ;
-  requested.value = JSON.parse(sessionStorage.getItem("requested")) ;
+  report_id.value = sessionStorage.getItem("report_id");
   fetchInfos();
-  // window.addEventListener('beforeunload', handleBeforeUnload)
 })
-
-// onBeforeMount(()=>{
-//   window.removeEventListener('beforeunload', handleBeforeUnload)
-// })
 
 </script>
 

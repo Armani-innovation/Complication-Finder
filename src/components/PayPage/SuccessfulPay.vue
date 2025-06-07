@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, onUnmounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import {isFinancial} from "@/stores/counter.js";
 
 const router = useRouter();
 const route = useRoute();
@@ -14,12 +15,11 @@ function handlePopState() {
 }
 
 function getResults() {
-  if (previousRoute.value === "FinancialPayPage"){
-    router.push({name: 'FinancialResult', params: {result: JSON.stringify(null)}});
+  if (isFinancial.value){
+    router.push("/FinancialResult");
   }else {
-    router.push({name: 'Result', params: {result: JSON.stringify(null)}});
+    router.push("/Result");
   }
-
 }
 
 onMounted(() => {
