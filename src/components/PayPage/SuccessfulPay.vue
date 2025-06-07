@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, onUnmounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {isFinancial} from "@/stores/counter.js";
 
 const router = useRouter();
 const route = useRoute();
@@ -15,7 +14,7 @@ function handlePopState() {
 }
 
 function getResults() {
-  if (isFinancial.value){
+  if (previousRoute.value === "FinancialPayPage"){
     router.push("/FinancialResult");
   }else {
     router.push("/Result");
@@ -23,6 +22,7 @@ function getResults() {
 }
 
 onMounted(() => {
+  previousRoute.value = sessionStorage.getItem("lastRouteBeforePayment")
   history.pushState(null, '', window.location.href);
   window.addEventListener('popstate', handlePopState);
   previousRoute.value = sessionStorage.getItem("lastRouteBeforePayment");

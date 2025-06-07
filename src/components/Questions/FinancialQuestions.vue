@@ -43,7 +43,6 @@ async function nextQuestion() {
 }
 
 onMounted(() => {
-  sessionStorage.setItem("requested", false);
   sessionStorage.setItem("questionnaire", questions.questionnaire);
   questionnaire = Number(sessionStorage.getItem("questionnaire"));
   fetchInfos();

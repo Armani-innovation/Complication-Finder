@@ -42,7 +42,6 @@ async function fetchInfos() {
 }
 
 async function firstRequest() {
-  sessionStorage.setItem("requested" , true) ;
   const res = await axios.post(`questionnaire/report/`, {
     nationalID: nationalID.value,
     questionnaire_id: questionnaire

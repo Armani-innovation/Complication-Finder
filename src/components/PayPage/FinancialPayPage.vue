@@ -1,17 +1,14 @@
 <script setup>
 import axios from "@/axios/axios.js";
 import {onMounted} from "vue";
-import {isFinancial} from "@/stores/counter.js";
 
 async function routePayPage() {
-  sessionStorage.setItem('lastRouteBeforePayment', "FinancialPayPage");
   const res = await axios.post("request/") ;
   window.location.href = res.data.url;
 }
 
 onMounted(()=> {
-  sessionStorage.setItem("requested" , false) ;
-  isFinancial.value = true;
+  sessionStorage.setItem('lastRouteBeforePayment', "FinancialPayPage");
 })
 </script>
 

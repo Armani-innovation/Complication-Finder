@@ -48,7 +48,6 @@ function sendLastQuestion() {
 }
 
 onMounted(() => {
-  sessionStorage.setItem("requested" , false) ;
   fetchInfos();
   sessionStorage.setItem("questionnaire", questions.questionnaire);
   questionnaire = Number(sessionStorage.getItem("questionnaire"));
