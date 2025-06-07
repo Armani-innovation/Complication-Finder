@@ -76,7 +76,7 @@ const generatePDF = async () => {
     useCORS: true,
   });
 
-  const imgData = canvas.toDataURL("image/jpeg", 0.7);
+  const imgData = canvas.toDataURL("image/jpeg", 1);
   const pdf = new jsPDF("p", "mm", "a4");
 
   const imgWidth = 210;
