@@ -69,28 +69,30 @@ async function processMessage() {
 
 const generatePDF = async () => {
   const element = document.getElementById("pdf-content");
-
   if (!element) return;
 
-  const canvas = await html2canvas(element, {scale: 3});
-  const imgData = canvas.toDataURL("image/png");
+  const canvas = await html2canvas(element, {
+    scale: 1.5,
+    useCORS: true,
+  });
+
+  const imgData = canvas.toDataURL("image/jpeg", 0.7);
   const pdf = new jsPDF("p", "mm", "a4");
+
   const imgWidth = 210;
   const pageHeight = 297;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
   let yPosition = 0;
 
   while (yPosition < imgHeight) {
-    pdf.addImage(imgData, "PNG", 0, -yPosition, imgWidth, imgHeight);
+    pdf.addImage(imgData, "JPEG", 0, -yPosition, imgWidth, imgHeight);
     yPosition += pageHeight;
-
     if (yPosition < imgHeight) {
       pdf.addPage();
     }
   }
 
-  pdf.save(`گزارش عارضه یابی .pdf`);
+  pdf.save(`گزارش عارضه یابی ${domain.value} شرکت ${name.value}.pdf`);
 };
 
 onMounted(() => {
